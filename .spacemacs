@@ -68,7 +68,12 @@ This function should only modify configuration layer settings."
    ;; `dotspacemacs/user-config'. To use a local version of a package, use the
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(origami)
+   dotspacemacs-additional-packages '(origami
+                                      (copilot :location (recipe
+                                                          :fetcher github
+                                                          :repo "copilot-emacs/copilot.el"
+                                                          :file ("*.el")))
+                                     )
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -583,11 +588,8 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+  ;; 编辑模式下jl代替esc
   (setq-default evil-escape-key-sequence "jl")
-  ;; (set-face-background 'hl-line "brightred")
-  ;; Minor Modes hook
-  ;; (add-hook 'prog-mode-hook 'flycheck-mode)
-  ;; (add-hook 'prog-mode-hook 'company-mode)
   ;; 垂直对齐线
   (add-hook 'prog-mode-hook 'indent-guide-mode)
   ;; 格式化
@@ -603,6 +605,47 @@ before packages are loaded."
       "z m" 'origami-close-node-recursively
       "z a" 'origami-toggle-node
       "z A" 'origami-toggle-all-nodes))
+  ;; github copilot
+  (setq copilot-node-executable "/usr/local/opt/node@20/bin/node")
+  (setq copilot-network-proxy '(:host "127.0.0.1" :port 7890))
+  (with-eval-after-load 'company
+    ;; disable inline previews
+    (delp 'company-preview-if-just-one-frontend company-frontends))
+  (with-eval-after-load 'copilot
+    (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+    (define-key copilot-completion-map (kbd "C-TAB") 'copilot-accept-completion-by-word)
+    (define-key copilot-completion-map (kbd "C-<tab>") 'copilot-accept-completion-by-word))
+  (add-hook 'prog-mode-hook 'copilot-mode)
+  ;; 复制到剪贴板
+  (cond
+   ((eq system-type 'gnu/linux)
+    (use-package xclip
+      :if (display-graphic-p)
+      :config
+      (xclip-mode 1)))
+
+   ((eq system-type 'darwin)
+    (defun copy-to-clipboard ()
+      (interactive)
+      (if (use-region-p)
+          (progn
+            (shell-command-on-region (region-beginning) (region-end) "pbcopy")
+            (message "Yanked region to clipboard!")
+            (deactivate-mark))
+        (message "No region active; can't yank to clipboard!")))
+    (global-set-key (kbd "C-c C-y") 'copy-to-clipboard))
+
+   ((eq system-type 'windows-nt)
+    (defun copy-to-clipboard ()
+      (interactive)
+      (if (use-region-p)
+          (progn
+            (shell-command-on-region (region-beginning) (region-end) "clip.exe")
+            (message "Yanked region to clipboard!")
+            (deactivate-mark))
+        (message "No region active; can't yank to clipboard!")))
+    (global-set-key (kbd "C-c C-y") 'copy-to-clipboard)))
 )
 
 
