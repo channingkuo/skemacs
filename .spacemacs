@@ -613,6 +613,14 @@ before packages are loaded."
   (with-eval-after-load 'evil
     (define-key evil-normal-state-map (kbd "K") 'move-up-10-lines))
 
+  ;; 取消lsp 标题面包屑，图标会乱码
+  (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :init
+    :config
+    (setq lsp-headerline-breadcrumb-enable nil)
+    (lsp-enable-which-key-integration t))
+
   ;; 垂直对齐线
   (add-hook 'prog-mode-hook 'indent-guide-mode)
 
