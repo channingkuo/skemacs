@@ -32,7 +32,8 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(python
+   '(yaml
+     python
      windows-scripts
      typescript
      javascript
@@ -53,6 +54,7 @@ This function should only modify configuration layer settings."
      markdown
      multiple-cursors
      org
+     emoji
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
@@ -244,7 +246,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; Initial message in the scratch buffer, such as "Welcome to Spacemacs!"
    ;; (default nil)
-   dotspacemacs-initial-scratch-message nil
+   dotspacemacs-initial-scratch-message "write anything here..."
 
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
@@ -692,7 +694,18 @@ before packages are loaded."
                            "--print-width" "100"
                            "--trailing-comma" "none"
                            "--html-whitespace-sensitivity" "ignore"
-                           "--semi" "false"))
+                           "--semi"))
+
+  ;; 确保 lsp-mode 和 lsp-tailwindcss 正确加载
+  (use-package lsp-tailwindcss
+    :after lsp-mode
+    :init
+    ;; 如果需要 add-on mode，取消注释以下一行
+    (setq lsp-tailwindcss-add-on-mode t)
+    )
+
+  ;; 自动安装语言服务器
+  (setq lsp-tailwindcss-auto-install-server t)
   )
 
 
@@ -708,9 +721,6 @@ This function is called at the very end of Spacemacs initialization."
    ;; If you edit it by hand, you could mess it up, so be careful.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
-   '(package-selected-packages
-     '(vue-mode browse-at-remote diff-hl eat esh-help eshell-prompt-extras eshell-z evil-org gh-md gnuplot helm-lsp helm-org-rifle lsp-origami origami lsp-ui markdown-toc multi-term multi-vterm mwim org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-project-capture org-category-capture org-rich-yank orgit-forge orgit shell-pop terminal-here unfill vterm xterm-color auto-dictionary auto-yasnippet flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct forge ghub closql emacsql treepy git-link git-messenger git-modes git-timemachine gitignore-templates helm-c-yasnippet helm-company helm-git-grep helm-ls-git smeargle tide treemacs-magit magit magit-section git-commit with-editor transient yasnippet-snippets typescript-mode counsel-gtags dap-mode lsp-docker lsp-treemacs bui yaml lsp-mode markdown-mode ggtags import-js grizzl js-doc js2-refactor multiple-cursors livid-mode nodejs-repl npm-mode skewer-mode js2-mode tern add-node-modules-path company-web web-completion-data company counsel-css counsel swiper ivy emmet-mode helm-css-scss impatient-mode htmlize simple-httpd prettier-js pug-mode sass-mode haml-mode scss-mode slim-mode tagedit web-beautify web-mode yasnippet ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint helm-ag google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
-  (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
    ;; Your init file should contain only one such instance.
