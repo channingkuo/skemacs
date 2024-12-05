@@ -706,6 +706,11 @@ before packages are loaded."
 
   ;; 自动安装语言服务器
   (setq lsp-tailwindcss-auto-install-server t)
+
+  ;; 禁用 `"` 和 `<` 的自动补全
+  (with-eval-after-load 'smartparens
+    ;; 禁用 `"` 的补全
+    (sp-pair "\"" nil :actions nil))
   )
 
 
