@@ -50,6 +50,8 @@ This function should only modify configuration layer settings."
      emacs-lisp
      git
      helm
+     (java :variables
+           java-backend 'lsp)
      lsp
      markdown
      multiple-cursors
@@ -627,12 +629,12 @@ before packages are loaded."
     (define-key evil-visual-state-map (kbd "L") 'evil-last-non-blank))
 
   ;; 取消lsp 标题面包屑，图标会乱码
-  ;; (use-package lsp-mode
-  ;;   :commands (lsp lsp-deferred)
-  ;;   :init
-  ;;   :config
-  ;;   (setq lsp-headerline-breadcrumb-enable nil)
-  ;;   (lsp-enable-which-key-integration t))
+  (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :init
+    :config
+    (setq lsp-headerline-breadcrumb-enable nil)
+    (lsp-enable-which-key-integration t))
 
   ;; 垂直对齐线
   (add-hook 'prog-mode-hook 'indent-guide-mode)
@@ -721,6 +723,9 @@ before packages are loaded."
   (with-eval-after-load 'smartparens
     ;; 禁用 `"` 的补全
     (sp-pair "\"" nil :actions nil))
+
+  ;; 修改lsp-java使用的Java版本
+  (setq lsp-java-java-path "/usr/local/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home/bin/java")
   )
 
 
