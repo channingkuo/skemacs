@@ -726,6 +726,14 @@ before packages are loaded."
 
   ;; 修改lsp-java使用的Java版本
   (setq lsp-java-java-path "/usr/local/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home/bin/java")
+  (setq lombok-jar-path (expand-file-name "/Users/kuo/lombok.jar"))
+  (setq lsp-java-vmargs `(
+                          "-XX:+UseParallelGC"
+                          "-XX:GCTimeRatio=4"
+                          "-XX:AdaptiveSizePolicyWeight=90"
+                          "-Dsun.zip.disableMemoryMapping=true"
+                          ,(concat "-javaagent:" lombok-jar-path)
+                          ))
   )
 
 
