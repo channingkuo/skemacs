@@ -1,3 +1,3 @@
 [submodule "spacemacs"]
 	path = spacemacs
-	url = https://github.com/channingkuo/spacemacs.git
+	url = git@github.com:channingkuo/spacemacs.git
