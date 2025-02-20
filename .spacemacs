@@ -48,7 +48,7 @@ This function should only modify configuration layer settings."
      auto-completion
      better-defaults
      emacs-lisp
-     git
+     ;; git
      helm
      (java :variables
            java-backend 'lsp)
@@ -75,10 +75,10 @@ This function should only modify configuration layer settings."
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(origami
-                                      (copilot :location (recipe
-                                                          :fetcher github
-                                                          :repo "copilot-emacs/copilot.el"
-                                                          :file ("*.el")))
+                                      ;; (copilot :location (recipe
+                                      ;;                     :fetcher github
+                                      ;;                     :repo "copilot-emacs/copilot.el"
+                                      ;;                     :file ("*.el")))
                                       lsp-tailwindcss
                                       )
 
@@ -655,8 +655,8 @@ before packages are loaded."
       "z A" 'origami-toggle-all-nodes))
 
   ;; github copilot
-  (setq copilot-node-executable "/usr/local/opt/node@20/bin/node")
-  (setq copilot-network-proxy '(:host "127.0.0.1" :port 7890))
+  ;; (setq copilot-node-executable "/usr/local/opt/node@20/bin/node")
+  ;; (setq copilot-network-proxy '(:host "127.0.0.1" :port 7890))
 
   (with-eval-after-load 'company
     ;; disable inline previews
@@ -725,8 +725,8 @@ before packages are loaded."
     (sp-pair "\"" nil :actions nil))
 
   ;; 修改lsp-java使用的Java版本
-  (setq lsp-java-java-path "/usr/local/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home/bin/java")
-  (setq lombok-jar-path (expand-file-name "/Users/kuo/lombok.jar"))
+  ;; (setq lsp-java-java-path "/usr/local/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home/bin/java")
+  (setq lombok-jar-path (expand-file-name "/home/lombok.jar"))
   (setq lsp-java-vmargs `(
                           "-XX:+UseParallelGC"
                           "-XX:GCTimeRatio=4"
