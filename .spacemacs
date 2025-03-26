@@ -706,6 +706,29 @@ before packages are loaded."
                                                         (evil-with-state 'normal
                                                           (execute-kbd-macro (kbd "\"_dP")))))
 
+  ;; 把系统粘贴板内容复制到"寄存器
+  (defun kuo/get-system-clipboard ()
+    "获取系统剪贴板内容"
+    (cond ((memq system-type '(gnu gnu/linux gnu/kfreebsd))
+           (let ((wayland (getenv "WAYLAND_DISPLAY")))
+             (if wayland
+                 (shell-command-to-string "wl-paste -n 2>/dev/null")
+               (shell-command-to-string "xclip -selection clipboard -o 2>/dev/null"))))
+          ((eq system-type 'darwin)  ; macOS
+           (shell-command-to-string "pbpaste"))
+          ((eq system-type 'windows-nt)  ; Windows
+           (shell-command-to-string "powershell -command Get-Clipboard"))
+          (t (gui-get-selection 'CLIPBOARD))))  ; 回退到 Emacs 内置方法
+
+  (defun kuo/paste-clipboard-to-default-register ()
+    (interactive)
+    (let ((clipboard-content (kuo/get-system-clipboard)))
+      (if (and clipboard-content (> (length clipboard-content) 0))
+          (progn
+            (evil-set-register ?\" clipboard-content)
+            (message "Yanked to \" register!"))
+        (message "Clipboard is empty!"))))
+  (global-set-key (kbd "C-c 0") 'kuo/paste-clipboard-to-default-register)
 
   ;; 配置prettier格式
   (setq prettier-js-args '(
