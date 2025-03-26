@@ -700,6 +700,13 @@ before packages are loaded."
         (message "No region active; can't yank to clipboard!")))
     (global-set-key (kbd "C-c C-y") 'copy-to-clipboard)))
 
+  ;; v模式下C-c C-p直接替换不污染寄存器
+  (evil-define-key 'visual global-map (kbd "C-c C-p") (lambda ()
+                                                        (interactive)
+                                                        (evil-with-state 'normal
+                                                          (execute-kbd-macro (kbd "\"_dP")))))
+
+
   ;; 配置prettier格式
   (setq prettier-js-args '(
                            "--single-quote" "true"
