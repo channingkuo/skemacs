@@ -656,7 +656,7 @@ before packages are loaded."
 
   ;; github copilot
   (setq copilot-node-executable "/usr/local/opt/node@20/bin/node")
-  (setq copilot-network-proxy '(:host "127.0.0.1" :port 7890))
+  (setq copilot-network-proxy '(:host "127.0.0.1" :port 7892))
 
   (with-eval-after-load 'company
     ;; disable inline previews
@@ -774,17 +774,67 @@ before packages are loaded."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(package-selected-packages
-     '(dap-mode lsp-docker bui yasnippet-snippets yapfify yaml-mode ws-butler writeroom-mode winum which-key wgrep web-mode web-beautify vundo volatile-highlights vim-powerline vi-tilde-fringe unfill undo-fu-session undo-fu typescript-mode treemacs-projectile treemacs-persp treemacs-magit treemacs-icons-dired treemacs-evil toc-org terminal-here term-cursor tagedit symon symbol-overlay string-inflection string-edit-at-point sphinx-doc spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs request rainbow-delimiters quickrun pytest pylookup pyenv-mode pydoc py-isort pug-mode prettier-js powershell popwin poetry pippel pipenv pip-requirements pcre2el password-generator paradox overseer orgit-forge org-superstar org-rich-yank org-projectile org-present org-pomodoro org-mime org-download org-contrib org-cliplink open-junk-file npm-mode nodejs-repl nameless mwim multi-vterm multi-term multi-line markdown-toc macrostep lsp-ui lsp-treemacs lsp-tailwindcss lsp-pyright lsp-origami lorem-ipsum livid-mode live-py-mode link-hint json-reformat json-navigator json-mode js2-refactor js-doc inspector info+ indent-guide importmagic impatient-mode hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-org helm-mode-manager helm-make helm-lsp helm-ls-git helm-git-grep helm-descbinds helm-css-scss helm-company helm-comint helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitignore-templates git-timemachine git-modes git-messenger git-link gh-md flyspell-correct-helm flycheck-pos-tip flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emr emoji-cheat-sheet-plus emmet-mode elisp-slime-nav elisp-demos elisp-def eat dumb-jump drag-stuff dotenv-mode disable-mouse dired-quick-sort diminish diff-hl devdocs define-word cython-mode copilot company-web company-emoji company-anaconda column-enforce-mode code-review code-cells clean-aindent-mode centered-cursor-mode browse-at-remote bmx-mode blacken auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   )
-  )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(dap-mode lsp-docker bui yasnippet-snippets yapfify yaml-mode ws-butler
+              writeroom-mode winum which-key wgrep web-mode web-beautify vundo
+              volatile-highlights vim-powerline vi-tilde-fringe unfill
+              undo-fu-session undo-fu typescript-mode treemacs-projectile
+              treemacs-persp treemacs-magit treemacs-icons-dired treemacs-evil
+              toc-org terminal-here term-cursor tagedit symon symbol-overlay
+              string-inflection string-edit-at-point sphinx-doc
+              spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline
+              space-doc smeargle slim-mode shell-pop scss-mode sass-mode
+              restart-emacs request rainbow-delimiters quickrun pytest pylookup
+              pyenv-mode pydoc py-isort pug-mode prettier-js powershell popwin
+              poetry pippel pipenv pip-requirements pcre2el password-generator
+              paradox overseer orgit-forge org-superstar org-rich-yank
+              org-projectile org-present org-pomodoro org-mime org-download
+              org-contrib org-cliplink open-junk-file npm-mode nodejs-repl
+              nameless mwim multi-vterm multi-term multi-line markdown-toc
+              macrostep lsp-ui lsp-treemacs lsp-tailwindcss lsp-pyright
+              lsp-origami lorem-ipsum livid-mode live-py-mode link-hint
+              json-reformat json-navigator json-mode js2-refactor js-doc
+              inspector info+ indent-guide importmagic impatient-mode
+              hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses
+              highlight-numbers highlight-indentation hide-comnt helm-xref
+              helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile
+              helm-org-rifle helm-org helm-mode-manager helm-make helm-lsp
+              helm-ls-git helm-git-grep helm-descbinds helm-css-scss
+              helm-company helm-comint helm-c-yasnippet helm-ag google-translate
+              golden-ratio gnuplot gitignore-templates git-timemachine git-modes
+              git-messenger git-link gh-md flyspell-correct-helm
+              flycheck-pos-tip flycheck-package flycheck-elsa flx-ido
+              fancy-battery eyebrowse expand-region evil-visualstar
+              evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line
+              evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc
+              evil-matchit evil-lisp-state evil-lion evil-indent-plus
+              evil-iedit-state evil-goggles evil-exchange evil-evilified-state
+              evil-escape evil-easymotion evil-collection evil-cleverparens
+              evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras
+              esh-help emr emoji-cheat-sheet-plus emmet-mode elisp-slime-nav
+              elisp-demos elisp-def eat dumb-jump drag-stuff dotenv-mode
+              disable-mouse dired-quick-sort diminish diff-hl devdocs
+              define-word cython-mode copilot company-web company-emoji
+              company-anaconda column-enforce-mode code-review code-cells
+              clean-aindent-mode centered-cursor-mode browse-at-remote bmx-mode
+              blacken auto-yasnippet auto-highlight-symbol auto-dictionary
+              auto-compile all-the-icons aggressive-indent ace-link
+              ace-jump-helm-line))
+ '(safe-local-variable-values
+   '((web-mode-indent-style . 2) (web-mode-block-padding . 2)
+     (web-mode-script-padding . 2) (web-mode-style-padding . 2)
+     (typescript-backend . tide) (typescript-backend . lsp)
+     (javascript-backend . tide) (javascript-backend . tern)
+     (javascript-backend . lsp))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+)
