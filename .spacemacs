@@ -32,7 +32,12 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(yaml
+   '(;; ----------------------------------------------------------------
+     ;; Example of useful layers you may want to use right away.
+     ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
+     ;; `M-m f e R' (Emacs style) to install them.
+     ;; ----------------------------------------------------------------
+     yaml
      python
      windows-scripts
      typescript
@@ -40,11 +45,6 @@ This function should only modify configuration layer settings."
      html
      vue
      prettier
-     ;; ----------------------------------------------------------------
-     ;; Example of useful layers you may want to use right away.
-     ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
-     ;; `M-m f e R' (Emacs style) to install them.
-     ;; ----------------------------------------------------------------
      auto-completion
      better-defaults
      emacs-lisp
@@ -53,6 +53,8 @@ This function should only modify configuration layer settings."
      (java :variables
            java-backend 'lsp)
      lsp
+     (dap :variables
+          dap-auto-configure-features '(sessions breakpoints))
      markdown
      multiple-cursors
      org
@@ -248,15 +250,15 @@ It should only modify the values of Spacemacs settings."
 
    ;; Initial message in the scratch buffer, such as "Welcome to Spacemacs!"
    ;; (default nil)
-   dotspacemacs-initial-scratch-message "write anything here..."
+   dotspacemacs-initial-scratch-message "STATISTICS:47.110.37.106:30000\nSERVER:47.110.37.106:30001\nHMS:47.110.37.106:30011"
 
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   ;; dotspacemacs-themes '(spacemacs-dark
-   ;;                       spacemacs-light)
-   dotspacemacs-themes '(leuven
-                         leuven-dark)
+   dotspacemacs-themes '(spacemacs-dark
+                         spacemacs-light)
+   ;; dotspacemacs-themes '(leuven
+   ;;                       leuven-dark)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -756,13 +758,22 @@ before packages are loaded."
   ;; 修改lsp-java使用的Java版本
   (setq lsp-java-java-path "/usr/local/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home/bin/java")
   (setq lombok-jar-path (expand-file-name "/Users/kuo/lombok.jar"))
-  (setq lsp-java-vmargs `(
+  (setq lsp-java-vmargs `("-Xmx1G"  ; 设置最大堆内存为 1GB
                           "-XX:+UseParallelGC"
                           "-XX:GCTimeRatio=4"
                           "-XX:AdaptiveSizePolicyWeight=90"
                           "-Dsun.zip.disableMemoryMapping=true"
                           ,(concat "-javaagent:" lombok-jar-path)
                           ))
+  ;; 远程调试java, 服务器地址固定，端口会在启动的询问
+  (with-eval-after-load 'dap-mode
+    (dap-register-debug-template
+     "Remote Java: 106"
+     (list :type "java"
+           :request "attach"
+           :hostName "47.110.37.106"
+           :port nil
+           :name "Remote Java: 106")))
   )
 
 
