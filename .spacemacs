@@ -39,7 +39,7 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      yaml
      python
-     windows-scripts
+     ;; windows-scripts
      typescript
      javascript
      html
@@ -47,25 +47,28 @@ This function should only modify configuration layer settings."
      prettier
      auto-completion
      better-defaults
-     emacs-lisp
+     ;; emacs-lisp
      git
      helm
      (java :variables
            java-backend 'lsp)
      lsp
-     (dap :variables
-          dap-auto-configure-features '(sessions breakpoints))
-     markdown
+     (dap :variables dap-auto-configure-features nil)
+     ;; markdown
      multiple-cursors
      org
-     emoji
+     ;; emoji
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
-     spell-checking
+     ;; spell-checking
      syntax-checking
      version-control
      treemacs)
+     ;; (spacemacs-layouts :variables
+     ;;                    layouts-enable-autosave t
+     ;;                    layouts-autosave-delay 300
+     ;;                    spacemacs-layouts-restrict-spc-tab t))
 
 
    ;; List of additional packages that will be installed without being wrapped
@@ -77,10 +80,6 @@ This function should only modify configuration layer settings."
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(origami
-                                      (copilot :location (recipe
-                                                          :fetcher github
-                                                          :repo "copilot-emacs/copilot.el"
-                                                          :file ("*.el")))
                                       lsp-tailwindcss
                                       )
 
@@ -97,7 +96,7 @@ This function should only modify configuration layer settings."
    ;; installs only the used packages but won't delete unused ones. `all'
    ;; installs *all* packages supported by Spacemacs and never uninstalls them.
    ;; (default is `used-only')
-   dotspacemacs-install-packages 'used-only))
+   dotspacemacs-install-packages 'used-but-keep-unused))
 
 (defun dotspacemacs/init ()
   "Initialization:
@@ -188,7 +187,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil show the version string in the Spacemacs buffer. It will
    ;; appear as (spacemacs version)@(emacs version)
    ;; (default t)
-   dotspacemacs-startup-buffer-show-version nil
+   dotspacemacs-startup-buffer-show-version t
 
    ;; Specify the startup banner. Default value is `official', it displays
    ;; the official spacemacs logo. An integer value is the index of text
@@ -215,8 +214,8 @@ It should only modify the values of Spacemacs settings."
    ;; pair of numbers, e.g. `(recents-by-project . (7 .  5))', where the first
    ;; number is the project limit and the second the limit on the recent files
    ;; within a project.
-   dotspacemacs-startup-lists '((recents . 5)
-                                (projects . 10))
+   dotspacemacs-startup-lists '((recents . 5))
+   ;; (projects . 10))
 
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
@@ -242,7 +241,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, *scratch* buffer will be persistent. Things you write down in
    ;; *scratch* buffer will be saved and restored automatically.
-   dotspacemacs-scratch-buffer-persistent nil
+   dotspacemacs-scratch-buffer-persistent t
 
    ;; If non-nil, `kill-buffer' on *scratch* buffer
    ;; will bury it instead of killing.
@@ -250,7 +249,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; Initial message in the scratch buffer, such as "Welcome to Spacemacs!"
    ;; (default nil)
-   dotspacemacs-initial-scratch-message "STATISTICS:47.110.37.106:30000\nSERVER:47.110.37.106:30001\nHMS:47.110.37.106:30011"
+   dotspacemacs-initial-scratch-message "47.110.37.106\nSTATISTICS:30000\nSERVER:30001\nHMS:30011\n"
 
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
@@ -374,7 +373,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil a progress bar is displayed when spacemacs is loading. This
    ;; may increase the boot time on some systems and emacs builds, set it to
    ;; nil to boost the loading time. (default t)
-   dotspacemacs-loading-progress-bar t
+   dotspacemacs-loading-progress-bar nil
 
    ;; If non-nil the frame is fullscreen when Emacs starts up. (default nil)
    ;; (Emacs 24.4+ only)
@@ -447,11 +446,11 @@ It should only modify the values of Spacemacs settings."
    ;;   :size-limit-kb 1000)
    ;; When used in a plist, `visual' takes precedence over `relative'.
    ;; (default nil)
-   dotspacemacs-line-numbers 'relative
+   dotspacemacs-line-numbers nil
 
    ;; Code folding method. Possible values are `evil', `origami' and `vimish'.
    ;; (default 'evil)
-   dotspacemacs-folding-method 'evil
+   dotspacemacs-folding-method 'origami
 
    ;; If non-nil and `dotspacemacs-activate-smartparens-mode' is also non-nil,
    ;; `smartparens-strict-mode' will be enabled in programming modes.
@@ -656,21 +655,6 @@ before packages are loaded."
       "z a" 'origami-toggle-node
       "z A" 'origami-toggle-all-nodes))
 
-  ;; github copilot
-  (setq copilot-network-proxy '(:host "127.0.0.1" :port 7892))
-
-  (with-eval-after-load 'company
-    ;; disable inline previews
-    (delq 'company-preview-if-just-one-frontend company-frontends))
-
-  (with-eval-after-load 'copilot
-    (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
-    (define-key copilot-completion-map (kbd "C-TAB") 'copilot-accept-completion-by-word)
-    (define-key copilot-completion-map (kbd "C-<tab>") 'copilot-accept-completion-by-word))
-
-  (add-hook 'prog-mode-hook 'copilot-mode)
-
   ;; 复制到剪贴板
   (cond
    ((eq system-type 'gnu/linux)
@@ -748,12 +732,26 @@ before packages are loaded."
     )
 
   ;; 自动安装语言服务器
-  (setq lsp-tailwindcss-auto-install-server t)
+  ;; (setq lsp-tailwindcss-auto-install-server t)
 
   ;; 禁用 `"` 和 `<` 的自动补全
   (with-eval-after-load 'smartparens
     ;; 禁用 `"` 的补全
     (sp-pair "\"" nil :actions nil))
+
+  ;; 修复ripgrep搜索问题 - 禁用grep忽略列表
+  (with-eval-after-load 'helm-ag
+    (setq helm-ag-use-grep-ignore-list nil))
+
+  ;; 修复退出时终端乱码问题 - 确保正确关闭鼠标追踪模式
+  (defun spacemacs/disable-mouse-tracking ()
+    "Disable mouse tracking to prevent terminal escape sequences."
+    (when (and (not (display-graphic-p))
+               (terminal-live-p (frame-terminal)))
+      (send-string-to-terminal "\e[?1000l\e[?1002l\e[?1003l\e[?1006l")))
+
+  ;; 在退出时调用清理函数
+  (add-hook 'kill-emacs-hook 'spacemacs/disable-mouse-tracking)
 
   ;; 修改lsp-java使用的Java版本
   (setq lsp-java-java-path "/usr/local/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home/bin/java")
@@ -765,13 +763,13 @@ before packages are loaded."
                           "-Dsun.zip.disableMemoryMapping=true"
                           ,(concat "-javaagent:" lombok-jar-path)
                           ))
-  ;; 远程调试java, 服务器地址固定，端口会在启动的询问
+  ;; 远程调试java, 服务器地址会在启动时询问，端口会在启动时询问
   (with-eval-after-load 'dap-mode
     (dap-register-debug-template
      "Remote Java: 106"
      (list :type "java"
            :request "attach"
-           :hostName "47.110.37.106"
+           :hostName nil
            :port nil
            :name "Remote Java: 106")))
   )
@@ -790,51 +788,49 @@ This function is called at the very end of Spacemacs initialization."
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
    '(package-selected-packages
-     '(dap-mode lsp-docker bui yasnippet-snippets yapfify yaml-mode ws-butler
-                writeroom-mode winum which-key wgrep web-mode web-beautify vundo
-                volatile-highlights vim-powerline vi-tilde-fringe unfill
-                undo-fu-session undo-fu typescript-mode treemacs-projectile
-                treemacs-persp treemacs-magit treemacs-icons-dired treemacs-evil
-                toc-org terminal-here term-cursor tagedit symon symbol-overlay
-                string-inflection string-edit-at-point sphinx-doc
-                spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline
-                space-doc smeargle slim-mode shell-pop scss-mode sass-mode
-                restart-emacs request rainbow-delimiters quickrun pytest pylookup
-                pyenv-mode pydoc py-isort pug-mode prettier-js powershell popwin
-                poetry pippel pipenv pip-requirements pcre2el password-generator
-                paradox overseer orgit-forge org-superstar org-rich-yank
-                org-projectile org-present org-pomodoro org-mime org-download
-                org-contrib org-cliplink open-junk-file npm-mode nodejs-repl
-                nameless mwim multi-vterm multi-term multi-line markdown-toc
-                macrostep lsp-ui lsp-treemacs lsp-tailwindcss lsp-pyright
-                lsp-origami lorem-ipsum livid-mode live-py-mode link-hint
-                json-reformat json-navigator json-mode js2-refactor js-doc
-                inspector info+ indent-guide importmagic impatient-mode
-                hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses
-                highlight-numbers highlight-indentation hide-comnt helm-xref
-                helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile
-                helm-org-rifle helm-org helm-mode-manager helm-make helm-lsp
-                helm-ls-git helm-git-grep helm-descbinds helm-css-scss
-                helm-company helm-comint helm-c-yasnippet helm-ag google-translate
-                golden-ratio gnuplot gitignore-templates git-timemachine git-modes
-                git-messenger git-link gh-md flyspell-correct-helm
-                flycheck-pos-tip flycheck-package flycheck-elsa flx-ido
-                fancy-battery eyebrowse expand-region evil-visualstar
-                evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line
-                evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc
-                evil-matchit evil-lisp-state evil-lion evil-indent-plus
-                evil-iedit-state evil-goggles evil-exchange evil-evilified-state
-                evil-escape evil-easymotion evil-collection evil-cleverparens
-                evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras
-                esh-help emr emoji-cheat-sheet-plus emmet-mode elisp-slime-nav
-                elisp-demos elisp-def eat dumb-jump drag-stuff dotenv-mode
-                disable-mouse dired-quick-sort diminish diff-hl devdocs
-                define-word cython-mode copilot company-web company-emoji
-                company-anaconda column-enforce-mode code-review code-cells
-                clean-aindent-mode centered-cursor-mode browse-at-remote bmx-mode
-                blacken auto-yasnippet auto-highlight-symbol auto-dictionary
-                auto-compile all-the-icons aggressive-indent ace-link
-                ace-jump-helm-line))
+     '(a ace-jump-helm-line ace-link aggressive-indent alert all-the-icons
+         auto-compile auto-dictionary auto-highlight-symbol auto-yasnippet blacken
+         bmx-mode browse-at-remote bui centered-cursor-mode clean-aindent-mode
+         closql code-cells code-review column-enforce-mode company-anaconda
+         company-emoji company-web copilot cython-mode dap-mode deferred
+         define-word devdocs diff-hl diminish dired-quick-sort disable-mouse
+         dotenv-mode drag-stuff dumb-jump eat elisp-def elisp-demos
+         elisp-slime-nav emacsql emmet-mode emoji-cheat-sheet-plus emr esh-help
+         eshell-prompt-extras eshell-z eval-sexp-fu evil-anzu evil-args
+         evil-cleverparens evil-collection evil-easymotion evil-escape
+         evil-evilified-state evil-exchange evil-goggles evil-iedit-state
+         evil-indent-plus evil-lion evil-lisp-state evil-matchit evil-mc
+         evil-nerd-commenter evil-numbers evil-org evil-surround evil-textobj-line
+         evil-tutor evil-unimpaired evil-visual-mark-mode evil-visualstar
+         exec-path-from-shell expand-region eyebrowse fancy-battery flx-ido
+         flycheck-elsa flycheck-package flycheck-pos-tip flyspell-correct-helm
+         forge gh-md ghub git-link git-messenger git-modes git-timemachine
+         gitignore-templates gntp gnuplot golden-ratio google-translate helm-ag
+         helm-c-yasnippet helm-comint helm-company helm-css-scss helm-descbinds
+         helm-git-grep helm-ls-git helm-lsp helm-make helm-mode-manager helm-org
+         helm-org-rifle helm-projectile helm-purpose helm-pydoc helm-swoop
+         helm-themes helm-xref hide-comnt highlight-indentation highlight-numbers
+         highlight-parentheses hl-todo holy-mode hungry-delete hybrid-mode
+         impatient-mode importmagic indent-guide info+ inspector js-doc
+         js2-refactor json-mode json-navigator json-reformat link-hint
+         live-py-mode livid-mode llama log4e lorem-ipsum lsp-docker lsp-origami
+         lsp-pyright lsp-tailwindcss lsp-treemacs lsp-ui macrostep magit
+         magit-section markdown-toc multi-line multi-term multi-vterm mwim
+         nameless nodejs-repl npm-mode open-junk-file org-category-capture
+         org-cliplink org-contrib org-download org-mime org-pomodoro org-present
+         org-project-capture org-projectile org-rich-yank org-superstar orgit
+         orgit-forge overseer paradox password-generator pcre2el pip-requirements
+         pipenv pippel poetry popwin powershell prettier-js pug-mode py-isort
+         pydoc pyenv-mode pylookup pytest quickrun rainbow-delimiters request
+         restart-emacs sass-mode scss-mode shell-pop slim-mode smeargle space-doc
+         spaceline spacemacs-purpose-popwin spacemacs-whitespace-cleanup
+         sphinx-doc string-edit-at-point string-inflection symbol-overlay symon
+         tagedit term-cursor terminal-here toc-org transient treemacs-evil
+         treemacs-icons-dired treemacs-magit treemacs-persp treemacs-projectile
+         treepy typescript-mode undo-fu undo-fu-session unfill vi-tilde-fringe
+         vim-powerline volatile-highlights vundo web-beautify web-mode wgrep
+         which-key which-key-posframe winum with-editor writeroom-mode ws-butler
+         yaml-mode yapfify yasnippet-snippets))
    '(safe-local-variable-values
      '((js2-basic-offset . 2) (web-mode-indent-style . 2)
        (web-mode-block-padding . 2) (web-mode-script-padding . 2)
