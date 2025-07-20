@@ -31,9 +31,11 @@
 /recentf~
 /session.*
 /srecode-map.el
+/tree-sitter
 \#*
 ac-comphist.dat
 auto-save-list/
+auto-save/
 bbdb
 bookmarks
 crown/
@@ -68,6 +70,7 @@ transient/
 url/*
 var/
 workspace
+undo/*
 
 # Private directory
 /doc/COMMUNITY.org
@@ -99,3 +102,14 @@ gtags.files
 eln-cache/
 meghanada/
 vimish-fold/
+amx-items
+projects
+
+.claude/
+CLAUDE.md
+.gemini/
+GEMINI.md
+
+core/banners/111-banner.txt
+core/banners/112-banner.txt
+core/banners/113-banner.txt
