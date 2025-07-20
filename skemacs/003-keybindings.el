@@ -19,6 +19,8 @@
 (global-set-key (kbd "C-j u") 'hydra-undo-tree/body)
 ;; 08-multiple-cursors.el
 (global-set-key (kbd "C-j m") 'hydra-multiple-cursors/body)
+;; 105-dap.el
+(global-set-key (kbd "C-j C-d") 'hydra-dap-mode/body)
 
 ;; window相关快捷键设置
 (define-prefix-command 'window)
@@ -38,8 +40,8 @@
 ;; buffer 相关快捷键统一到C-x b前缀下
 (define-prefix-command 'buffer)
 (global-set-key (kbd "C-x b") 'buffer)
-;; 强化buffer切换
-(global-set-key (kbd "C-x b b") 'skemacs/switch-buffer)
+;; 强化buffer切换——有bug，暂时使用ido-switch-buffer
+(global-set-key (kbd "C-x b b") 'ido-switch-buffer)
 ;; next buffer
 (global-set-key (kbd "C-x b n") 'next-buffer)
 ;; previous buffer

@@ -1,4 +1,5 @@
 ;; Project-aware buffer management
+;; 想要模仿spacemacs的buffer list功能，显示当前项目下的所有buffer且显示项目的最近打开文件
 (require 'projectile)
 (require 'ivy)
 

@@ -1,6 +1,7 @@
 ;; macOS specific params
 (defconst *is-a-mac* (eq system-type 'darwin))
 
+(setq recentf-max-saved-items 100)
 ;; 在关闭 Emacs 前询问是否确认关闭，防止误触
 (setq confirm-kill-emacs #'yes-or-no-p)
 ;; 自动补全括号
