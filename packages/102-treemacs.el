@@ -3,11 +3,14 @@
   :ensure t
   :defer t
   :config
-  (treemacs-tag-follow-mode)
   (setq treemacs-width 30
         treemacs-width-is-initially-locked nil        ; Allow resizing from start
         treemacs-display-in-side-window nil           ; Use normal window instead of side window
-        treemacs-is-never-other-window nil)
+        treemacs-is-never-other-window nil
+        treemacs-show-cursor nil                      ; Hide cursor in treemacs
+        treemacs-silent-refresh t)                    ; Suppress refresh messages
+  ;; 禁用tag-follow-mode以避免显示函数
+  (treemacs-tag-follow-mode -1)
   :bind
   (:map global-map
         ("M-0"       . treemacs-select-window)
@@ -24,6 +27,6 @@
   :ensure t
   :after (treemacs projectile))
 
-(use-package lsp-treemacs
-  :ensure t
-  :after (treemacs lsp))
+;; (use-package lsp-treemacs
+;;   :ensure t
+;;   :after (treemacs lsp))
