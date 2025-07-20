@@ -33,16 +33,17 @@
             (let ((relative-files (mapcar (lambda (file)
                                            (file-relative-name file (projectile-project-root)))
                                          recent-files)))
-              (ivy-read "Recent files: " relative-files
-                        :action (lambda (relative-path)
-                                  (let ((full-path (expand-file-name relative-path (projectile-project-root))))
-                                    (if (file-exists-p full-path)
-                                        (find-file full-path)
-                                      (message "File no longer exists: %s" full-path))))
-                        :caller 'skemacs/project-recent-files-restore))
+              (let ((ivy-truncate-lines nil))  ; 允许换行显示长路径
+                (ivy-read "Recent files: " relative-files
+                          :action (lambda (relative-path)
+                                    (let ((full-path (expand-file-name relative-path (projectile-project-root))))
+                                      (if (file-exists-p full-path)
+                                          (find-file full-path)
+                                        (message "File no longer exists: %s" full-path))))
+                          :caller 'skemacs/project-recent-files-restore)))
           (message "No recent files found for current project")))
     (message "Not in a project")))
 
-;; Override projectile-recentf to use our implementation
+;; Override projectile-recentf to use my implementation
 (with-eval-after-load 'projectile
   (define-key projectile-command-map (kbd "e") #'skemacs/project-recent-files-restore))

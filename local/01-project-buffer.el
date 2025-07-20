@@ -2,12 +2,6 @@
 (require 'projectile)
 (require 'ivy)
 
-;; Define face for recent files separator
-(defface skemacs/recent-files-separator
-  '((t :background "#d946ef" :foreground "#000000" :weight bold :extend t))
-  "Face for recent files separator line."
-  :group 'skemacs)
-
 (defun skemacs/should-filter-buffer-p (buffer)
   "Check if buffer should be filtered out from display."
   (let ((name (buffer-name buffer)))
@@ -74,7 +68,7 @@
                                                (concat "~" (substring dir (length (expand-file-name "~"))))
                                              dir)))
                           (propertize shortened-dir 'face '(:foreground "blue"))))))
-    (format "%-25s %8s %15s %s"
+    (format "%-25s %8s %20s %s"
             name formatted-size mode (or colored-dir ""))))
 
 (defun skemacs/get-project-buffer-list ()
@@ -89,9 +83,11 @@
              (recent-files (when (fboundp 'skemacs/project-recent-files-get)
                             (skemacs/project-recent-files-get)))
              (recent-file-names (mapcar (lambda (file) 
-                                         (if (string-prefix-p (expand-file-name "~") file)
-                                             (concat "~" (substring file (length (expand-file-name "~"))))
-                                           file))
+                                         (let ((project-root (projectile-project-root))
+                                               (expanded-file (expand-file-name file)))
+                                           (if (string-prefix-p project-root expanded-file)
+                                               (substring expanded-file (length project-root))
+                                             file)))
                                        recent-files))
              (all-candidates (append project-buffers
                                    (when recent-file-names
@@ -100,7 +96,7 @@
                                                           (width (- (window-width) 1))
                                                           (padding (max 0 (- width (length text)))))
                                                      (propertize (concat text (make-string padding ? ))
-                                                                 'face 'skemacs/recent-files-separator)))
+                                                                 'face 'query-replace)))
                                              recent-file-names)))))
         (if all-candidates
             (let ((ivy-truncate-lines t)
