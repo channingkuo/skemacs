@@ -4,6 +4,7 @@
 * DONE 使用emacs打开单文件时只加载基础配置
 * DONE treemacs 不自动出现function
 * TODO dap java attach总是附加到localhost
+* TODO 折叠代码块快捷键配置
 * TODO 格式化格式设置: java格式化ok了
 * TODO flycheck
 * TODO mode-line

@@ -4,8 +4,10 @@
 (global-set-key (kbd "M-p") 'skemacs/previous-ten-lines)
 ;; 复制选中内容到剪贴板
 (global-set-key (kbd "C-c C-y") 'skemacs/copy-to-clipboard)
+(which-key-add-key-based-replacements "C-c C-y" "copy-to-clipboard")
 ;; 重新加载配置文件
 (global-set-key (kbd "C-x a i R") 'skemacs/reload-config)
+(which-key-add-key-based-replacements "C-x a i R" "reload-config")
 
 ;; 将 C-j 设为前缀键，覆盖原来的 electric-newline-and-maybe-indent
 (define-prefix-command 'skemacs)
@@ -17,10 +19,20 @@
 (global-set-key (kbd "C-j C-k") 'kill-whole-line)
 ;; 54-undo-tree.el
 (global-set-key (kbd "C-j u") 'hydra-undo-tree/body)
+(which-key-add-key-based-replacements "C-j u" "undo-tree-hydra")
 ;; 08-multiple-cursors.el
 (global-set-key (kbd "C-j m") 'hydra-multiple-cursors/body)
+(which-key-add-key-based-replacements "C-j m" "multiple-cursors-hydra")
 ;; 105-dap.el
 (global-set-key (kbd "C-j C-d") 'hydra-dap-mode/body)
+(which-key-add-key-based-replacements "C-j C-d" "dap-mode-hydra")
+
+;; projectile相关快捷键
+(which-key-add-key-based-replacements "C-c p" "project")
+(global-set-key (kbd "C-c p e") 'projectile-recentf)
+
+;; lsp相关快捷键
+(which-key-add-key-based-replacements "C-c l" "lsp")
 
 ;; window相关快捷键设置
 (define-prefix-command 'window)
@@ -32,10 +44,13 @@
 ;; 覆盖window-toggle-side-windows, 水平分隔window
 (global-set-key (kbd "C-x w s") 'split-window-below)
 (global-set-key (kbd "C-x w S") 'skemacs/split-window-horizontally)
+(which-key-add-key-based-replacements "C-x w s" "split-window-below")
 (global-set-key (kbd "C-x w v") 'split-window-right)
 (global-set-key (kbd "C-x w V") 'skemacs/split-window-vertically)
+(which-key-add-key-based-replacements "C-x w v" "split-window-right")
 ;; 99-window-hydra.el
 (global-set-key (kbd "C-x w {") 'hydra-window-resize/body)
+(which-key-add-key-based-replacements "C-x w {" "window-resize-hydra")
 
 ;; buffer 相关快捷键统一到C-x b前缀下
 (define-prefix-command 'buffer)
