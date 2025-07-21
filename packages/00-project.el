@@ -2,8 +2,8 @@
   :ensure t
   :init
   (projectile-mode +1)
-  :bind (:map projectile-mode-map
-              ("C-c p" . projectile-command-map))
+  :bind (:map projectile
+              ("C-c p" . projectile))
   :config
   (setq projectile-indexing-method 'alien)
   (setq projectile-switch-project-action #'projectile-dired))
