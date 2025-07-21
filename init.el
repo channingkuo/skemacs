@@ -22,11 +22,6 @@
   (add-hook 'emacs-startup-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
-;; 设置自定义配置文件位置
-(setq custom-file (expand-file-name ".skemacs" user-emacs-directory))
-(when (file-exists-p custom-file)
-  (load custom-file))
-
 ;; 定义自定义配置目录
 ;; 这个目录用于存放个人的 Emacs Lisp 文件
 (defconst skemacs-config-dir (expand-file-name "skemacs" user-emacs-directory)
@@ -190,6 +185,16 @@
                                                   file-name
                                                   (float-time (time-subtract time2 time1))))))))))
   )
+
+;; 设置自定义配置文件位置
+(setq custom-file (expand-file-name ".skemacs" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (let ((time1 (current-time)))
+    (load custom-file nil t)
+    (let ((time2 (current-time)))
+      (skemacs/update-banner-status (format "Loaded   .skemacs in %.6f seconds"
+                                            (float-time (time-subtract time2 time1)))))))
+
 ;; 如果skemacs-startup-type是with-file或with-new-file，单独加载002-config.el
 (when (memq skemacs-startup-type '(with-file with-new-file))
   (let ((config-file (expand-file-name "002-config.el" skemacs-config-dir)))

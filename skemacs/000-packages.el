@@ -1,6 +1,19 @@
 (require 'package)
+(setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+                         ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+                         ("melpa"  . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
+(when (not package-archive-contents)
+  (package-refresh-contents))
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+;; 设置 use-package 全部延迟加载，开启后无法控制加载顺序
+;; (setq use-package-always-defer t)
+(setq use-package-expand-minimally t)
 ;; 不加这一句可能有问题，建议读者尝试一下
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 ;; 设置 HTTP/HTTPS/SOCKS5 代理
