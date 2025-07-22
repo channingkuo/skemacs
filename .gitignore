@@ -45,6 +45,7 @@ elnode/
 elpa/
 EmmyLua-LS-all.jar
 eproject.lst
+eshell/
 eshell/alias
 eshell/history
 eshell/lastdir
