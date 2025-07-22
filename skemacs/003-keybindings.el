@@ -50,13 +50,15 @@
 (which-key-add-key-based-replacements "C-x w v" "split-window-right")
 ;; 99-window-hydra.el
 (global-set-key (kbd "C-x w {") 'hydra-window-resize/body)
+(global-set-key (kbd "C-x w }") 'hydra-window-resize/body)
 (which-key-add-key-based-replacements "C-x w {" "window-resize-hydra")
+(which-key-add-key-based-replacements "C-x w }" "window-resize-hydra")
 
 ;; buffer 相关快捷键统一到C-x b前缀下
 (define-prefix-command 'buffer)
 (global-set-key (kbd "C-x b") 'buffer)
-;; 强化buffer切换——有bug，暂时使用ido-switch-buffer
-(global-set-key (kbd "C-x b b") 'ido-switch-buffer)
+;; 强化buffer切换——暂时使用ivy-switch-buffer
+(global-set-key (kbd "C-x b b") 'ivy-switch-buffer)
 ;; next buffer
 (global-set-key (kbd "C-x b n") 'next-buffer)
 ;; previous buffer

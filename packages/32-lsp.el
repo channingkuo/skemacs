@@ -6,6 +6,17 @@
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l" lsp-file-watch-threshold 500)
   :hook 
+  ;; Frontend modes
+  (js-mode . lsp-deferred)
+  (js2-mode . lsp-deferred)
+  (typescript-mode . lsp-deferred)
+  (typescript-ts-mode . lsp-deferred)
+  (js-ts-mode . lsp-deferred)
+  (tsx-ts-mode . lsp-deferred)
+  (web-mode . lsp-deferred)
+  (css-mode . lsp-deferred)
+  (scss-mode . lsp-deferred)
+  (less-css-mode . lsp-deferred)
   ;; which-key integration
   (lsp-mode . lsp-enable-which-key-integration)
   :commands (lsp lsp-deferred)
@@ -32,6 +43,18 @@
                           "-Dfile.encoding=UTF-8"
                           ,(concat "-javaagent:" lombok-jar-path)
                           ))
+  ;; Frontend LSP servers configuration
+  (with-eval-after-load 'lsp-mode
+    ;; CSS LSP server
+    (setq lsp-css-validate t)
+    (setq lsp-scss-validate t)
+    (setq lsp-less-validate t)
+    ;; Configure LSP to use Prettier for formatting
+    (setq lsp-javascript-format-enable nil)  ; 禁用内置格式化
+    (setq lsp-typescript-format-enable nil)  ; 禁用内置格式化
+    ;; 设置 Prettier 作为格式化器
+    (setq lsp-javascript-preferences-use-prettier t)
+    (setq lsp-typescript-preferences-use-prettier t))
   :bind
   ;; 可快速搜索工作区内的符号（类名、函数名、变量名等）
   ("C-c l s" . lsp-ivy-workspace-symbol))

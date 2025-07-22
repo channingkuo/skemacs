@@ -5,9 +5,13 @@
 * DONE treemacs 不自动出现function
 * TODO [#B] dap java attach总是附加到localhost
 * TODO [#C] 折叠代码块快捷键配置
-* TODO [#D] 格式化格式设置: java格式化ok了
+* TODO [#D] 格式化格式设置
+** DONE java文件格式化
+** TODO java相关的其他文件比如xml，properties等文件格式化
+** DONE 前端项目(Vue, Angular)，js/ts/html/json等文件格式化
 * TODO flycheck
 * TODO [#A] mode-line
+* TODO switch-to-buffer 会根据当前buffer窗口大小显示，导致窗口过小
 * TODO theme
 * TODO layout保存项目打开的窗口布局
 * TODO 前端项目lsp配置
