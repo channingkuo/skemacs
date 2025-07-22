@@ -35,3 +35,12 @@
    ("C-x C-SPC" . 'counsel-mark-ring)
    :map minibuffer-local-map
    ("C-r" . counsel-minibuffer-history)))
+
+(use-package ivy-rich
+  :custom
+  (ivy-virtual-abbreviate 'full)
+  (ivy-rich-switch-buffer-align-virtual-buffer nil)
+  (ivy-rich-path-style 'full)
+  :config
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+  :hook (after-init . ivy-rich-mode))
