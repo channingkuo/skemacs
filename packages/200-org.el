@@ -1,8 +1,16 @@
 (use-package org
   :config
+  (setq font-lock-ensure t)
+  (setq org-log-done 'time)
+  (setq-default org-display-custom-times t)
   (setq org-time-stamp-custom-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
   (setq org-return-follows-link t)
-  (setq calendar-week-start-day 1))
+  (setq calendar-week-start-day 1)
+  
+  (setq org-src-window-setup 'split-window-right)
+  (setq org-directory "~/org")
+  
+  (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
 ;; (use-package org
 ;;   :config
 ;;   (setq font-lock-ensure t)
@@ -37,16 +45,16 @@
 
 ;;   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
 
-;; (use-package org-bullets
-;;   :defer 20
-;;   :hook (org-mode . org-bullets-mode)
-;;   :config
-;;   (setq org-bullets-bullet-list '("◉" "⁑" "⁂" "❖" "✮" "✱" "✸"))
-;;   (setq org-ascii-bullets '((ascii ?* ?+ ?-) (latin1 ?* ?+ ?-) (utf-8 ?* ?+ ?-))))
+(use-package org-bullets
+  :defer 20
+  :hook (org-mode . org-bullets-mode)
+  :config
+  (setq org-bullets-bullet-list '("◉" "⁑" "⁂" "❖" "✮" "✱" "✸"))
+  (setq org-ascii-bullets '((ascii ?* ?+ ?-) (latin1 ?* ?+ ?-) (utf-8 ?* ?+ ?-))))
 
-;; (use-package org-appear
-;;   :config
-;;   (setq org-appear-autolinks t)
-;;   :hook (org-mode . org-appear-mode))
+(use-package org-appear
+  :config
+  (setq org-appear-autolinks t)
+  :hook (org-mode . org-appear-mode))
 
-;; (use-package org-reverse-datetree)
+(use-package org-reverse-datetree)
