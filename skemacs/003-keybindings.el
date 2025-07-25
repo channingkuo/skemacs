@@ -26,6 +26,14 @@
 ;; 105-dap.el
 (global-set-key (kbd "C-j C-d") 'hydra-dap-mode/body)
 (which-key-add-key-based-replacements "C-j C-d" "dap-mode-hydra")
+;; org
+(define-prefix-command 'org)
+(global-set-key (kbd "C-j o") 'org)
+(global-set-key (kbd "C-j o o") 'skemacs/open-org-directory)
+(which-key-add-key-based-replacements "C-j o o" "org directory")
+(global-set-key (kbd "C-j o c") 'org-capture)
+;; iimage-mode 预览图片
+(global-set-key (kbd "C-j o C-p") 'iimage-mode)
 
 ;; projectile相关快捷键
 (which-key-add-key-based-replacements "C-c p" "project")

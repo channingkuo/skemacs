@@ -1,60 +1,36 @@
 (use-package org
   :config
-  (setq font-lock-ensure t)
-  (setq org-log-done 'time)
-  (setq-default org-display-custom-times t)
-  (setq org-time-stamp-custom-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
-  (setq org-return-follows-link t)
-  (setq calendar-week-start-day 1)
+  ;; 自动换行
+  (setq truncate-lines nil)
+  ;; 代码块语法高亮
+  (setq org-src-fontify-natively t)
+  (setq org-todo-keywords '((sequence "TODO(t)" "DOING(i)" "|" "DONE(d@/!)" "ABORT(a@/!)")))
+  (setq org-todo-keyword-faces '(("TODO"  . "red")
+                                 ("DOING" . "yellow")
+                                 ("DONE"  . "green")
+                                 ("ABORT" . "gray")))
+  (setq org-enforce-todo-dependencies t)
+  (setq org-default-notes-file "~/org/capture.org")
   
-  (setq org-src-window-setup 'split-window-right)
-  (setq org-directory "~/org")
-  
-  (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
-;; (use-package org
-;;   :config
-;;   (setq font-lock-ensure t)
-;;   (setq org-log-done 'time)
-;;   (setq org-log-into-drawer "LOGBOOK")
-;;   (setq-default org-display-custom-times t)
-;;   (setq org-time-stamp-custom-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
-;;   (setq org-startup-indented t)
-;;   (setq org-return-follows-link t)
-;;   (setq org-pretty-entities t)
-;;   (setq org-pretty-entities-include-sub-superscripts t)
-;;   (setq org-hide-emphasis-markers t)
-;;   (setq org-agenda-block-separator "")
-;;   (setq org-fontify-whole-heading-line t)
-;;   (setq org-fontify-done-headline t)
-;;   (setq org-fontify-quote-and-verse-blocks t)
-;;   (setq org-startup-with-inline-images t)
-;;   ;; (setq org-image-actual-width '(500))
-;;   (setq org-startup-folded 'showall)
-;;   (setq org-edit-src-content-indentation 0)
-;;   (setq org-html-link-org-files-as-html t)
-;;   (setq org-src-fontify-natively t)
-;;   (setq calendar-week-start-day 1)
+  (setq org-capture-templates
+        '(("t" "Capture a new Task" entry (file+headline "~/org/capture.org" "Todos Lists")
+           "* TODO %?\12%u\12%a\12")
+          ("n" "Note" entry (file+headline "~/org/capture.org" "Notes")
+           "* %?\12%u\12%a\12")
+          ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
+           "* %?\12Entered on %U\12%a\12"))))
+  ;; (add-to-list 'org-capture-templates
+  ;;            '("r" "Book Reading Task" entry
+  ;;              (file+olp "~/org/capture.org" "Reading" "Book")
+  ;;              "* TODO %^{书名}\n%u\n%a\n" :clock-in t :clock-resume t)))
 
-;;   (setq org-src-window-setup 'current-window) ;; or 'split-window-right
-;;   (setq org-confirm-babel-evaluate nil)
+;; 已配置
+;; M-<up>	将当前 headline 及其内容作为整体向上移动	 
+;; M-<down>	将当前 headline 及其内容作为整体向下移动
+;; M-<return>	在当前 headline 前建立一个同级 headline
 
-;;   (setq org-directory "~/org")
-;;   (setq org-directory-publish "~/org/www")
-;;   (setq my-work-notes-directory "~/org/work/notes")
-;;   (setq my-work-notes-publish-directory "~/org/work/publish")
+;; 未配置
+;; C-<return>	在当前 headline 所属的内容后建立一个同级 headline	无 headline 时创建一个一级 headline
 
-;;   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
-
-(use-package org-bullets
-  :defer 20
-  :hook (org-mode . org-bullets-mode)
-  :config
-  (setq org-bullets-bullet-list '("◉" "⁑" "⁂" "❖" "✮" "✱" "✸"))
-  (setq org-ascii-bullets '((ascii ?* ?+ ?-) (latin1 ?* ?+ ?-) (utf-8 ?* ?+ ?-))))
-
-(use-package org-appear
-  :config
-  (setq org-appear-autolinks t)
-  :hook (org-mode . org-appear-mode))
-
-(use-package org-reverse-datetree)
+;; M-<right>	降低当前 headline 的层级	 
+;; M-<left>	提高当前 headline 的层级	 

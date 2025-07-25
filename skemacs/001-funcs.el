@@ -91,3 +91,12 @@
   "Enlarge window vertically by DELTA lines."
   (interactive "p")
   (enlarge-window delta))
+
+;; 打开~/org目录
+(defun skemacs/open-org-directory ()
+  "Open the org directory."
+  (interactive)
+  (let ((org-dir "~/org/"))
+    (if (file-directory-p org-dir)
+        (dired org-dir)
+      (message "Directory %s does not exist." org-dir))))
