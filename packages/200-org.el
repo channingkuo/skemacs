@@ -1,16 +1,59 @@
 (use-package org
   :config
+  (setq org-ellipsis " ⤵")
   ;; 自动换行
   (setq truncate-lines nil)
   ;; 代码块语法高亮
   (setq org-src-fontify-natively t)
+  (setq org-log-done 'time)
   (setq org-todo-keywords '((sequence "TODO(t)" "DOING(i)" "|" "DONE(d@/!)" "ABORT(a@/!)")))
-  (setq org-todo-keyword-faces '(("TODO"  . "red")
-                                 ("DOING" . "yellow")
-                                 ("DONE"  . "green")
-                                 ("ABORT" . "gray")))
+  (setq org-todo-keyword-faces '(("TODO"  . (:foreground "red" :weight bold))
+                                 ("DOING" . (:foreground "orange" :weight bold))
+                                 ("DONE"  . (:foreground "green" :weight bold))
+                                 ("ABORT" . (:foreground "gray" :weight bold :strike-through t))))
+  ;; 为不同 TODO 状态的 headline 设置颜色的 hook
+  (defun skemacs/org-set-todo-headline-colors ()
+    "为不同 TODO 状态设置 headline 颜色"
+    (font-lock-add-keywords nil
+      '(("^\\*+ TODO \\(.*\\)$" 1 '(:foreground "#ff6c6b" :weight bold) t)
+        ("^\\*+ DOING \\(.*\\)$" 1 '(:foreground "#ECBE7B" :weight bold) t)
+        ("^\\*+ DONE \\(.*\\)$" 1 '(:foreground "#98be65" :strike-through t) t)
+        ("^\\*+ ABORT \\(.*\\)$" 1 '(:foreground "#5B6268" :strike-through t) t))
+      'append))
+  (add-hook 'org-mode-hook 'skemacs/org-set-todo-headline-colors)
+
   (setq org-enforce-todo-dependencies t)
+  (setq org-directory "~/org")
+  (setq org-directory-publish "~/org/www")
   (setq org-default-notes-file "~/org/capture.org")
+  (setq font-lock-ensure t)
+  (setq org-log-into-drawer "LOGBOOK")
+  (setq-default org-display-custom-times t)
+  (setq org-time-stamp-custom-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
+  (setq org-startup-indented t)
+  (setq org-return-follows-link t)
+  (setq org-pretty-entities t)
+  (setq org-pretty-entities-include-sub-superscripts t)
+  (setq org-hide-emphasis-markers t)
+  ;; (setq org-agenda-block-separator "")
+  (setq org-fontify-whole-heading-line t)
+  (setq org-fontify-done-headline t)
+  (setq org-fontify-quote-and-verse-blocks t)
+  ;; 加载的时候不显示图片
+  (setq org-startup-with-inline-images nil)
+  (setq org-image-actual-width '(300))
+  (setq org-startup-folded 'overview)
+  ;; 自动显示到2级标题的 hook
+  (defun skemacs/org-show-two-levels ()
+    "打开文件时只显示1级和2级标题"
+    (org-content 2))
+  (add-hook 'org-mode-hook 'skemacs/org-show-two-levels)
+
+  (setq org-edit-src-content-indentation 0)
+  (setq org-html-link-org-files-as-html t)
+  (setq org-confirm-babel-evaluate t)
+  (setq org-src-tab-acts-natively t)
+  (setq org-src-preserve-indentation t)
   
   (setq org-capture-templates
         '(("t" "Capture a new Task" entry (file+headline "~/org/capture.org" "Todos Lists")
