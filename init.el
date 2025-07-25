@@ -140,7 +140,7 @@
         (redisplay t))))
   (when close
     ;; 延迟关闭启动buffer并显示dashboard
-    (run-with-timer 2 nil (lambda ()
+    (run-with-timer 1 nil (lambda ()
                             (when (get-buffer "*skemacs-startup*")
                               (kill-buffer "*skemacs-startup*"))
                             (pcase skemacs-startup-type
