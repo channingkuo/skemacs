@@ -1,4 +1,5 @@
 (use-package org
+;; 检查下org版本问题
   :config
   (setq org-ellipsis " ⤵")
   ;; 自动换行
@@ -10,15 +11,15 @@
   (setq org-todo-keyword-faces '(("TODO"  . (:foreground "red" :weight bold))
                                  ("DOING" . (:foreground "orange" :weight bold))
                                  ("DONE"  . (:foreground "green" :weight bold))
-                                 ("ABORT" . (:foreground "gray" :weight bold :strike-through t))))
+                                 ("ABORT" . (:foreground "#5B6268" :weight bold))))
   ;; 为不同 TODO 状态的 headline 设置颜色的 hook
   (defun skemacs/org-set-todo-headline-colors ()
     "为不同 TODO 状态设置 headline 颜色"
     (font-lock-add-keywords nil
       '(("^\\*+ TODO \\(.*\\)$" 1 '(:foreground "#ff6c6b" :weight bold) t)
         ("^\\*+ DOING \\(.*\\)$" 1 '(:foreground "#ECBE7B" :weight bold) t)
-        ("^\\*+ DONE \\(.*\\)$" 1 '(:foreground "#98be65" :strike-through t) t)
-        ("^\\*+ ABORT \\(.*\\)$" 1 '(:foreground "#5B6268" :strike-through t) t))
+        ("^\\*+ DONE \\(.*\\)$" 1 '(:foreground "#98be65") t)
+        ("^\\*+ ABORT \\(.*\\)$" 1 '(:foreground "#5B6268") t))
       'append))
   (add-hook 'org-mode-hook 'skemacs/org-set-todo-headline-colors)
 
@@ -62,10 +63,6 @@
            "* %?\12%u\12%a\12")
           ("j" "Journal" entry (file+olp+datetree "~/org/journal.org")
            "* %?\12Entered on %U\12%a\12"))))
-  ;; (add-to-list 'org-capture-templates
-  ;;            '("r" "Book Reading Task" entry
-  ;;              (file+olp "~/org/capture.org" "Reading" "Book")
-  ;;              "* TODO %^{书名}\n%u\n%a\n" :clock-in t :clock-resume t)))
 
 ;; 已配置
 ;; M-<up>	将当前 headline 及其内容作为整体向上移动	 
