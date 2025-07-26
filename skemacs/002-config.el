@@ -42,3 +42,6 @@
 (when (display-graphic-p) (toggle-scroll-bar -1))
 ;; 平滑滚动
 (pixel-scroll-precision-mode t)
+;; 静音铃声
+(setq visible-bell nil)
+(setq ring-bell-function 'ignore)
