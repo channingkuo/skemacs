@@ -24,8 +24,8 @@
 (global-set-key (kbd "C-j m") 'hydra-multiple-cursors/body)
 (which-key-add-key-based-replacements "C-j m" "multiple-cursors-hydra")
 ;; 105-dap.el
-(global-set-key (kbd "C-j C-d") 'hydra-dap-mode/body)
-(which-key-add-key-based-replacements "C-j C-d" "dap-mode-hydra")
+;; (global-set-key (kbd "C-j C-d") 'hydra-dap-mode/body)
+;; (which-key-add-key-based-replacements "C-j C-d" "dap-mode-hydra")
 ;; org
 (define-prefix-command 'org)
 (global-set-key (kbd "C-j o") 'org)
