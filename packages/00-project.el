@@ -7,8 +7,6 @@
   :config
   (setq projectile-indexing-method 'alien)
   (setq projectile-switch-project-action #'projectile-dired))
-;;   (setq projectile-mode-line "Projectile")
-;;   (setq projectile-track-known-projects-automatically nil))
 
 (use-package counsel-projectile
   :ensure t
@@ -20,12 +18,15 @@
   :ensure t
   :after (projectile)
   :config
-  (setq dashboard-banner-logo-title "Welcome to skemacs!") ;; 个性签名，随读者喜好设置
-  (setq dashboard-projects-backend 'projectile) ;; 安装了 projectile 后再使用
-  (setq dashboard-startup-banner (skemacs/get-banner-path)) ;; 也可以自定义图片
-  (setq dashboard-buffer-name "*skemacs*") ;; 自定义dashboard buffer名称
-  (setq dashboard-items '((recents  . 5)    ;; 显示多少个最近文件
-			              (bookmarks . 5)   ;; 显示多少个最近书签
-			              (projects . 10))) ;; 显示多少个最近项目
+  (setq dashboard-banner-logo-title "Welcome to skemacs!")
+  (setq dashboard-projects-backend 'projectile)
+  (setq dashboard-startup-banner (skemacs/get-banner-path))
+  (setq dashboard-buffer-name "*skemacs*")
+  (setq dashboard-center-content t)
+  (setq dashboard-items '((recents  . 10)
+                          (projects . 10)
+			                    (bookmarks . 10)
+                          (agenda    . 5)))
+  (setq dashboard-week-agenda t)
+  (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda))
   ;; (dashboard-setup-startup-hook)  ; 禁用原始启动hook，使用自定义启动逻辑
-  )
