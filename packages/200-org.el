@@ -15,6 +15,7 @@
                   (local-set-key (kbd "C-<return>") 'org-return-and-maybe-indent))))
     ;; (org-mode-hook . org-bullets-mode))
   :config
+  (highlight-symbol-mode -1)
   ;; Must do this so the agenda knows where to look for my files
   (setq org-agenda-files '("~/org"))
   (setq org-directory "~/org")
@@ -331,15 +332,32 @@
 ;; M-<right>	降低当前 headline 的层级	 
 ;; M-<left>	提高当前 headline 的层级	 
 
-;; 自定义TODO状态排序函数
+;; 自定义TODO状态排序函数，支持优先级二级排序
 (defun skemacs/org-sort-todo-keywords ()
-  "按照预定义的TODO关键词顺序排序org条目"
+  "按照预定义的TODO关键词顺序排序org条目, 同一TODO状态内按优先级排序"
   (interactive)
   (let ((todo-order '("IN-PROGRESS" "PLANNING" "TODO" "VERIFYING" "BLOCKED" "DONE" "OBE" "WONT-DO")))
     (org-sort-entries nil ?f
                       (lambda ()
-                        (let ((todo-state (org-get-todo-state)))
-                          (if todo-state
-                              (or (cl-position todo-state todo-order :test 'string=) 999)
-                            1000)))
+                        (save-excursion
+                          (org-back-to-heading t)
+                          (let* ((todo-state (org-get-todo-state))
+                                 (todo-index (if todo-state
+                                                 (or (cl-position todo-state todo-order :test 'string=) 999)
+                                               1000))
+                                 ;; 直接获取当前行的优先级
+                                 (priority-char (save-excursion
+                                                  (beginning-of-line)
+                                                  (if (re-search-forward "\\[#\\([ABCD]\\)\\]" (line-end-position) t)
+                                                      (string-to-char (match-string 1))
+                                                    nil)))
+                                 ;; 将优先级字符转换为数字
+                                 (priority-value (cond
+                                                  ((eq priority-char ?A) 1)
+                                                  ((eq priority-char ?B) 2)
+                                                  ((eq priority-char ?C) 3)
+                                                  ((eq priority-char ?D) 4)
+                                                  (t 5))))
+                            ;; 组合排序键：TODO状态索引*10 + 优先级值
+                            (+ (* todo-index 10) priority-value))))
                       '<)))
