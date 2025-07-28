@@ -96,7 +96,7 @@
 
         ("e" "Emacs Config To-Do"
          entry (file+headline "~/org/emacs.org" "Emacs Config Tasks")
-         "* TODO [#B] %?\n:Created: %T\n "
+         "* TODO [#B] %? %^g\n:Created: %T\n "
          :empty-lines 0)
 
         ("m" "Meeting"
@@ -109,7 +109,7 @@
 
         ("c" "Code To-Do"
          entry (file+headline "~/org/todos.org" "Code Related Tasks")
-         "* TODO [#B] %?\n:Created: %T\n%i\n%a\nProposed Solution: "
+         "* TODO [#B] %? %^g\n:Created: %T\n%i\n%a\nProposed Solution: "
          :empty-lines 0)
 
       ))
@@ -131,28 +131,33 @@
         ("WONT-DO" . (:foreground "LimeGreen" :weight bold))
       ))
 
+  ;; 设置之后会覆盖tag标签的颜色， 只设置TODO关键字的颜色也很OK
   ;; 为不同 TODO 状态的 headline 设置颜色的 hook
-  (defun skemacs/org-set-todo-headline-colors ()
-    "为不同 TODO 状态设置 headline 颜色"
-    (font-lock-add-keywords nil
-      '(("^\\*+ TODO \\(.*\\)$" 1 '(:foreground "GoldenRod" :weight bold) t)
-        ("^\\*+ PLANNING \\(.*\\)$" 1 '(:foreground "DeepPink" :weight bold) t)
-        ("^\\*+ IN-PROGRESS \\(.*\\)$" 1 '(:foreground "Cyan" :weight bold) t)
-        ("^\\*+ VERIFYING \\(.*\\)$" 1 '(:foreground "DarkOrange" :weight bold) t)
-        ("^\\*+ BLOCKED \\(.*\\)$" 1 '(:foreground "Red" :weight bold) t)
-        ("^\\*+ DONE \\(.*\\)$" 1 '(:foreground "LimeGreen") t)
-        ("^\\*+ OBE \\(.*\\)$" 1 '(:foreground "LimeGreen") t)
-        ("^\\*+ WONT-DO \\(.*\\)$" 1 '(:foreground "LimeGreen") t))
-      'append))
-  (add-hook 'org-mode-hook 'skemacs/org-set-todo-headline-colors)
+  ;; (defun skemacs/org-set-todo-headline-colors ()
+  ;;   "为不同 TODO 状态设置 headline 颜色"
+  ;;   (font-lock-add-keywords nil
+  ;;     '(("^\\*+ TODO \\(.*\\)$" 1 '(:foreground "GoldenRod" :weight bold) t)
+  ;;       ("^\\*+ PLANNING \\(.*\\)$" 1 '(:foreground "DeepPink" :weight bold) t)
+  ;;       ("^\\*+ IN-PROGRESS \\(.*\\)$" 1 '(:foreground "Cyan" :weight bold) t)
+  ;;       ("^\\*+ VERIFYING \\(.*\\)$" 1 '(:foreground "DarkOrange" :weight bold) t)
+  ;;       ("^\\*+ BLOCKED \\(.*\\)$" 1 '(:foreground "Red" :weight bold) t)
+  ;;       ("^\\*+ DONE \\(.*\\)$" 1 '(:foreground "LimeGreen") t)
+  ;;       ("^\\*+ OBE \\(.*\\)$" 1 '(:foreground "LimeGreen") t)
+  ;;       ("^\\*+ WONT-DO \\(.*\\)$" 1 '(:foreground "LimeGreen") t))
+  ;;     'append))
+  ;; (add-hook 'org-mode-hook 'skemacs/org-set-todo-headline-colors)
 
   ;; Tags
   (setq org-tag-alist '(
+                        ;; emacs config tags
+                        ("#feature" . ?u)
+                        ("#setup" . ?s)
+                        ("#test" . ?t)
+
                         ;; Ticket types
                         (:startgroup . nil)
-                        ("@bug" . ?b)
                         ("@feature" . ?u)
-                        ("@spike" . ?j)                      
+                        ("@spike" . ?j)
                         (:endgroup . nil)
 
                         ;; Ticket flags
@@ -170,10 +175,11 @@
                         (:endgroup . nil)
 
                         ;; Code TODOs tags
-                        ("QA" . ?q)
                         ("backend" . ?k)
                         ("broken_code" . ?c)
                         ("frontend" . ?f)
+                        ("bug" . ?b)
+                        ("refactor" . ?r)
 
                         ;; Special tags
                         ("CRITICAL" . ?x)
@@ -190,14 +196,16 @@
                         ("accomplishment" . ?a)
                       ))
 
-
   ;; Tag colors
   (setq org-tag-faces
       '(
+        ("#test"    . (:foreground "gray"          :weight bold))
+        ("bug"      . (:foreground "red"          :weight bold))
+        ("#feature" . (:foreground "DeepPink"         :weight bold))
+        ("#setup"   . (:foreground "green"       :weight bold))
         ("planning"  . (:foreground "mediumPurple1" :weight bold))
         ("backend"   . (:foreground "royalblue1"    :weight bold))
         ("frontend"  . (:foreground "forest green"  :weight bold))
-        ("QA"        . (:foreground "sienna"        :weight bold))
         ("meeting"   . (:foreground "yellow1"       :weight bold))
         ("CRITICAL"  . (:foreground "red1"          :weight bold))
       ))
@@ -244,6 +252,7 @@
           ;; Don't compress things (change to suite your tastes)
           ((org-agenda-compact-blocks nil)))
           
+          ;; TODO 针对tag分类
           ;; James's Super View
           ("j" "James's Super View"
           (
