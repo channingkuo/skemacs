@@ -26,14 +26,24 @@
 ;; 105-dap.el
 ;; (global-set-key (kbd "C-j C-d") 'hydra-dap-mode/body)
 ;; (which-key-add-key-based-replacements "C-j C-d" "dap-mode-hydra")
+
 ;; org
 (define-prefix-command 'org)
 (global-set-key (kbd "C-j o") 'org)
 (global-set-key (kbd "C-j o o") 'skemacs/open-org-directory)
-(which-key-add-key-based-replacements "C-j o o" "org directory")
+(which-key-add-key-based-replacements "C-j o o" "open-org-directory")
+;; Shortcuts for storing links, viewing the agenda, and starting a capture
+(global-set-key (kbd "C-j o a") 'org-agenda)
 (global-set-key (kbd "C-j o c") 'org-capture)
+(global-set-key (kbd "C-j o l") 'org-store-link)
+(global-set-key (kbd "C-j o i") 'org-insert-link)
 ;; iimage-mode 预览图片
 (global-set-key (kbd "C-j o C-p") 'iimage-mode)
+;; Remap the change priority keys to use the UP or DOWN key
+(global-set-key (kbd "C-j o <up>") 'org-priority-up)
+(global-set-key (kbd "C-j o <down>") 'org-priority-down)
+;; When you want to change the level of an org item, use SMR
+(global-set-key (kbd "C-c C-g C-r") 'org-shiftmetaright)
 
 ;; projectile相关快捷键
 (which-key-add-key-based-replacements "C-c p" "project")

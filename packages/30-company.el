@@ -16,5 +16,5 @@
 
 (use-package company-box
   :ensure t
-  :if window-system
+  :if (display-graphic-p)
   :hook (company-mode . company-box-mode))

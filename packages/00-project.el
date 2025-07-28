@@ -18,15 +18,17 @@
   :ensure t
   :after (projectile)
   :config
+  (add-to-list 'dashboard-items '(agenda) t)
+  (setq dashboard-week-agenda t)
+  (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
   (setq dashboard-banner-logo-title "Welcome to skemacs!")
   (setq dashboard-projects-backend 'projectile)
   (setq dashboard-startup-banner (skemacs/get-banner-path))
   (setq dashboard-buffer-name "*skemacs*")
   (setq dashboard-center-content t)
-  (setq dashboard-items '((recents  . 10)
-                          (projects . 10)
-			                    (bookmarks . 10)
+  (setq dashboard-items '((recents   . 10)
+                          (projects  . 10)
+                          (bookmarks . 5)
                           (agenda    . 5)))
-  (setq dashboard-week-agenda t)
-  (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda))
   ;; (dashboard-setup-startup-hook)  ; 禁用原始启动hook，使用自定义启动逻辑
+)
