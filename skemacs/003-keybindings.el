@@ -44,6 +44,9 @@
 (global-set-key (kbd "C-j o <down>") 'org-priority-down)
 ;; When you want to change the level of an org item, use SMR
 (global-set-key (kbd "C-c C-g C-r") 'org-shiftmetaright)
+;; TODO状态排序
+(global-set-key (kbd "C-j o s") 'skemacs/org-sort-todo-keywords)
+(which-key-add-key-based-replacements "C-j o s" "sort-by-todo-order")
 
 ;; projectile相关快捷键
 (which-key-add-key-based-replacements "C-c p" "project")

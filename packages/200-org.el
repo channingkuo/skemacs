@@ -60,18 +60,6 @@
     (org-content 2))
   (add-hook 'org-mode-hook 'skemacs/org-show-two-levels)
 
-  ;; (custom-theme-set-faces
-  ;;   'user
-  ;;   `(org-level-8 ((t (, :inherit default :weight bold))))
-  ;;   `(org-level-7 ((t (, :inherit default :weight bold))))
-  ;;   `(org-level-6 ((t (, :inherit default :weight bold))))
-  ;;   `(org-level-5 ((t (, :inherit default :weight bold))))
-  ;;   `(org-level-4 ((t (, :inherit default :weight bold :height 1.1))))
-  ;;   `(org-level-3 ((t (, :inherit default :weight bold :height 1.2))))
-  ;;   `(org-level-2 ((t (, :inherit default :weight bold :height 1.3))))
-  ;;   `(org-level-1 ((t (, :inherit default :weight bold :height 1.5))))
-  ;;   `(org-document-title ((t (, :inherit default :weight bold :height 1.6 :underline nil)))))
-
   (setq org-capture-templates
       '(    
         ("j" "Work Log Entry"
@@ -342,3 +330,16 @@
 
 ;; M-<right>	降低当前 headline 的层级	 
 ;; M-<left>	提高当前 headline 的层级	 
+
+;; 自定义TODO状态排序函数
+(defun skemacs/org-sort-todo-keywords ()
+  "按照预定义的TODO关键词顺序排序org条目"
+  (interactive)
+  (let ((todo-order '("IN-PROGRESS" "PLANNING" "TODO" "VERIFYING" "BLOCKED" "DONE" "OBE" "WONT-DO")))
+    (org-sort-entries nil ?f
+                      (lambda ()
+                        (let ((todo-state (org-get-todo-state)))
+                          (if todo-state
+                              (or (cl-position todo-state todo-order :test 'string=) 999)
+                            1000)))
+                      '<)))
