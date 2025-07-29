@@ -12,7 +12,7 @@
     (format "^ \\(%s\\)$"
       (mapconcat #'identity
         '("Projectile.*" "company.*" "AcePY" "ws" "hs" "Wrap" "Abbrev" "ElDoc" "Ind" "Flymake.*" "ELDOC-BOX"
-          "Undo-Tree" "counsel" "ivy" "yas" "WK" "GG" "Hi" "Apheleia" "Lens")
+          "Undo-Tree" "counsel" "ivy" "yas" "WK" "GG" "Hi" "Apheleia" "Lens" "AD")
          "\\|")))
   :custom
   (sml/replacer-regexp-list
