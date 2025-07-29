@@ -1,0 +1,2 @@
+*** byte compilation
+**** emacs --batch -f batch-byte-compile skemacs/*.el packages/*.el local/*.el
