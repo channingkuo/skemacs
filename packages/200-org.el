@@ -1,4 +1,3 @@
-;; 检查下org版本问题
 (use-package org
   :ensure t
   ;; Associate all org files with org mode
@@ -137,65 +136,59 @@
 
   ;; Tags
   (setq org-tag-alist '(
-                        ;; emacs config tags
-                        ("#feature" . ?u)
-                        ("#setup" . ?s)
-                        ("#test" . ?t)
+                        ("@setup" . ?s)
+                        ("@test" . ?t)
 
-                        ;; Ticket types
-                        (:startgroup . nil)
                         ("@feature" . ?u)
                         ("@spike" . ?j)
-                        (:endgroup . nil)
-
-                        ;; Ticket flags
-                        ("@write_future_ticket" . ?w)
                         ("@emergency" . ?e)
-                        ("@research" . ?r)
+                        ("@research" . ?h)
 
-                        ;; Meeting types
-                        (:startgroup . nil)
-                        ("big_sprint_review" . ?i)
-                        ("cents_sprint_retro" . ?n)
-                        ("dsu" . ?d)
-                        ("grooming" . ?g)
-                        ("sprint_retro" . ?s)
-                        (:endgroup . nil)
-
-                        ;; Code TODOs tags
                         ("backend" . ?k)
                         ("broken_code" . ?c)
                         ("frontend" . ?f)
                         ("bug" . ?b)
                         ("refactor" . ?r)
-
-                        ;; Special tags
-                        ("CRITICAL" . ?x)
-                        ("obstacle" . ?o)
-
-                        ;; Meeting tags
-                        ("HR" . ?h)
-                        ("general" . ?l)
-                        ("meeting" . ?m)
-                        ("misc" . ?z)
-                        ("planning" . ?p)
-
-                        ;; Work Log Tags
+                        ;; 杂项
+                        ("misc" . ?m)
+                        ("new_work" . ?n)
+                        ;; 成就
                         ("accomplishment" . ?a)
+                        ;; Special tags
+                        ;; 影响重大, 最优先级
+                        ("CRITICAL" . ?x)
+                        ;; 阻碍 阻力
+                        ("OBSTACLE" . ?o)
                       ))
 
-  ;; Tag colors
+  ;; Tag colors organized by urgency hierarchy
   (setq org-tag-faces
       '(
-        ("#test"    . (:foreground "gray"          :weight bold))
-        ("bug"      . (:foreground "red"          :weight bold))
-        ("#feature" . (:foreground "DeepPink"         :weight bold))
-        ("#setup"   . (:foreground "green"       :weight bold))
-        ("planning"  . (:foreground "mediumPurple1" :weight bold))
-        ("backend"   . (:foreground "royalblue1"    :weight bold))
-        ("frontend"  . (:foreground "forest green"  :weight bold))
-        ("meeting"   . (:foreground "yellow1"       :weight bold))
-        ("CRITICAL"  . (:foreground "red1"          :weight bold))
+        ;; HIGHEST URGENCY - Critical/Emergency items (bright reds, maximum visibility)
+        ("CRITICAL"       . (:foreground "red1"       :weight bold :box t))
+        ("@emergency"     . (:foreground "red"        :weight bold))
+        ("bug"            . (:foreground "red2"       :weight bold))
+        ("broken_code"    . (:foreground "DarkRed"    :weight bold))
+        ("OBSTACLE"       . (:foreground "DarkOrange" :weight bold))
+
+        ;; HIGH PRIORITY - Very visible (oranges, bright yellows)
+        ("@spike"         . (:foreground "DarkOrange" :weight bold))
+        ("@feature"       . (:foreground "OrangeRed"  :weight bold))
+        ("new_work"       . (:foreground "gold"       :weight bold))
+
+        ;; MEDIUM PRIORITY - Moderately visible (blues, purples, magentas)
+        ("backend"        . (:foreground "MediumBlue"   :weight bold))
+        ("frontend"       . (:foreground "purple"       :weight bold))
+        ("refactor"       . (:foreground "MediumOrchid" :weight bold))
+        ("@research"      . (:foreground "SteelBlue"    :weight bold))
+
+        ;; LOW PRIORITY - Subtle colors (greens, cyans)
+        ("@setup"         . (:foreground "ForestGreen" :weight bold))
+        ("accomplishment" . (:foreground "LimeGreen"   :weight bold))
+
+        ;; NEUTRAL/INFO - Muted colors (grays)
+        ("@test"          . (:foreground "DimGray"))
+        ("misc"           . (:foreground "gray60"))
       ))
 
   ;; Agenda View "d"
@@ -240,9 +233,7 @@
           ;; Don't compress things (change to suite your tastes)
           ((org-agenda-compact-blocks nil)))
           
-          ;; TODO 针对tag分类
-          ;; James's Super View
-          ("j" "James's Super View"
+          ("j" "TODO and Tags View"
           (
             (agenda ""
                     (
@@ -261,64 +252,65 @@
                       ;; Define the super agenda groups (sorts by order)
                       (org-super-agenda-groups
                       '(
-                        ;; Filter where tag is CRITICAL
-                        (:name "Critical Tasks"
-                                :tag "CRITICAL"
+                        ;; Filter where tag is CRITICAL emergency broken_code bug
+                        (:name "Emergency Tasks"
+                                :tag ("CRITICAL" "@emergency" "broken_code" "bug")
                                 :order 0
                                 )
                         ;; Filter where TODO state is IN-PROGRESS
                         (:name "Currently Working"
                                 :todo "IN-PROGRESS"
-                                :order 1
+                                :order 10
                                 )
                         ;; Filter where TODO state is PLANNING
                         (:name "Planning Next Steps"
                                 :todo "PLANNING"
-                                :order 2
+                                :order 20
                                 )
-                        ;; Filter where TODO state is BLOCKED or where the tag is obstacle
+                        ;; Filter where TODO state is BLOCKED or where the tag is OBSTACLE
                         (:name "Problems & Blockers"
                                 :todo "BLOCKED"
-                                :tag "obstacle"                              
-                                :order 3
+                                :tag "OBSTACLE"
+                                :order 30
                                 )
-                        ;; Filter where tag is @write_future_ticket
-                        (:name "Tickets to Create"
-                                :tag "@write_future_ticket"
-                                :order 4
+                        ;; Filter where tag is @spike @feature
+                        (:name "Features & Spikes"
+                                :tag ("@spike" "@feature")
+                                :order 40
                                 )
                         ;; Filter where tag is @research
                         (:name "Research Required"
                                 :tag "@research"
-                                :order 7
+                                :order 70
                                 )
-                        ;; Filter where tag is meeting and priority is A (only want TODOs from meetings)
-                        (:name "Meeting Action Items"
-                                :and (:tag "meeting" :priority "A")
-                                :order 8
-                                )
-                        ;; Filter where state is TODO and the priority is A and the tag is not meeting
+                        ;; Filter where state is TODO and the priority is A
                         (:name "Other Important Items"
-                                :and (:todo "TODO" :priority "A" :not (:tag "meeting"))
-                                :order 9
+                                :and (:todo "TODO" :priority "A")
+                                :order 90
                                 )
                         ;; Filter where state is TODO and priority is B
                         (:name "General Backlog"
                                 :and (:todo "TODO" :priority "B")
-                                :order 10
+                                :order 100
                                 )
                         ;; Filter where the priority is C or less (supports future lower priorities)
                         (:name "Non Critical"
                                 :priority<= "C"
-                                :order 11
+                                :order 110
                                 )
                         ;; Filter where TODO state is VERIFYING
                         (:name "Currently Being Verified"
                                 :todo "VERIFYING"
-                                :order 20
+                                :order 200
                                 )
                       ))))))))
   )
+
+(use-package org-super-agenda
+  :ensure t
+  :after org
+  :config
+  (org-super-agenda-mode 1))
 
 ;; 已配置
 ;; M-<up>	将当前 headline 及其内容作为整体向上移动	 

@@ -39,6 +39,7 @@
 - [[#org-mode-configuration][Org Mode Configuration]]
   - [[#todo-workflow][TODO Workflow]]
   - [[#capture-templates][Capture Templates]]
+  - [[#tag-system][Tag System]]
   - [[#agenda-configuration][Agenda Configuration]]
 - [[#usage-guide][Usage Guide]]
   - [[#first-time-setup][First Time Setup]]
@@ -593,6 +594,52 @@ OBE/WONT-DO ← ← ← ← ← ← ← ← ← ← ← ← ← ← ← ← ←
 3. Fill in details
 4. =C-c C-c= - Save and file
 
+** Tag System
+:PROPERTIES:
+:CUSTOM_ID: tag-system
+:END:
+
+*** Tag Color Hierarchy
+
+Tags are organized by urgency and severity with color coding for quick visual identification:
+
+**** HIGHEST URGENCY - Critical/Emergency Items
+- *CRITICAL*: Red text with yellow background and box border (maximum visibility)
+- *@emergency*: Red text (critical situations)
+- *bug*: Red2 text (software defects)
+- *broken_code*: DarkRed text (non-functional code)
+- *OBSTACLE*: DarkOrange text (blocking issues)
+
+**** HIGH PRIORITY - Very Visible Colors  
+- *@spike*: DarkOrange (urgent development work)
+- *@feature*: OrangeRed (new feature development)
+- *new_work*: Gold (new tasks requiring attention)
+
+**** MEDIUM PRIORITY - Moderately Visible Colors
+- *backend*: MediumBlue (backend development)
+- *frontend*: Purple (frontend/UI work)
+- *refactor*: MediumOrchid (code improvement)
+- *planning*: RoyalBlue (planning activities)
+- *@research*: SteelBlue (research tasks)
+
+**** LOW PRIORITY - Subtle Colors
+- *@setup*: ForestGreen (configuration/setup)
+- *accomplishment*: LimeGreen (completed achievements)
+
+**** NEUTRAL/INFO - Muted Colors
+- *@test*: DimGray (testing-related items)
+- *misc*: Gray60 (miscellaneous items)
+
+*** Tag Usage Guidelines
+
+Use tags to categorize tasks by:
+- **Type**: @feature, @test, @setup, @research, @emergency
+- **Area**: backend, frontend, bug
+- **Status**: broken_code, obstacle, accomplishment  
+- **Priority**: CRITICAL, new_work, misc
+
+Example: =* TODO Fix login bug :@feature:bug:backend:=
+
 ** Agenda Configuration
 :PROPERTIES:
 :CUSTOM_ID: agenda-configuration
@@ -606,14 +653,44 @@ OBE/WONT-DO ← ← ← ← ← ← ← ← ← ← ← ← ← ← ← ← ←
 - Normal priority tasks
 - Low-priority tasks
 
-**** Super View (=j=)
+**** TODO and Tags View (=j=)
 Advanced filtering with org-super-agenda:
-- Critical tasks
-- Currently working items
-- Planning tasks
-- Blockers and problems
-- Research items
-- Meeting action items
+- **Emergency Tasks** (order 0): CRITICAL, @emergency, broken_code, bug tags
+- **Currently Working** (order 10): IN-PROGRESS todos
+- **Planning Next Steps** (order 20): PLANNING todos  
+- **Problems & Blockers** (order 30): BLOCKED todos and OBSTACLE tags
+- **Research Required** (order 40): @spike, @feature tags
+- **Research Required** (order 70): @research tag
+- **Other Important Items** (order 90): TODO with priority A
+- **General Backlog** (order 100): TODO with priority B
+- **Non Critical** (order 110): Priority C or lower
+- **Currently Being Verified** (order 200): VERIFYING todos
+
+*** Tag Filter Syntax
+Multiple tags can be used in org-super-agenda filters:
+
+**** OR Logic (任一标签匹配)
+#+BEGIN_SRC elisp
+(:name "Emergency Tasks"
+ :tag ("CRITICAL" "@emergency" "broken_code" "bug")
+ :order 0)
+#+END_SRC
+
+**** AND Logic (同时满足多个条件)
+#+BEGIN_SRC elisp
+(:name "Important TODOs"
+ :and (:todo "TODO" :priority "A")
+ :order 90)
+#+END_SRC
+
+**** Complex Filtering (复杂条件组合)
+#+BEGIN_SRC elisp
+(:name "High Priority Development"
+ :and (:tag ("@feature" "@spike")
+       :priority ("A" "B")
+       :not (:tag "OBSTACLE"))
+ :order 1)
+#+END_SRC
 
 *** Priority System
 - =A=: High priority (urgent, important)
