@@ -1,2 +1,849 @@
-*** byte compilation
-**** emacs --batch -f batch-byte-compile skemacs/*.el packages/*.el local/*.el
+#+TITLE: Skemacs Configuration
+#+AUTHOR: Kuo
+#+DATE: 2025-07-29
+#+STARTUP: overview
+
+* Table of Contents :TOC:
+:PROPERTIES:
+:TOC:      :include all :depth 3
+:END:
+:CONTENTS:
+- [[#overview][Overview]]
+- [[#architecture][Architecture]]
+  - [[#directory-structure][Directory Structure]]
+  - [[#loading-system][Loading System]]
+  - [[#startup-process][Startup Process]]
+- [[#key-bindings-reference][Key Bindings Reference]]
+  - [[#global-key-bindings][Global Key Bindings]]
+  - [[#c-j-prefix-system][C-j Prefix System]]
+  - [[#hydra-interfaces][Hydra Interfaces]]
+  - [[#org-mode-bindings][Org Mode Bindings]]
+  - [[#development-bindings][Development Bindings]]
+- [[#package-configurations][Package Configurations]]
+  - [[#core-packages][Core Packages]]
+  - [[#development-environment][Development Environment]]
+  - [[#ui-enhancements][UI Enhancements]]
+  - [[#productivity-tools][Productivity Tools]]
+- [[#development-environment-setup][Development Environment Setup]]
+  - [[#java-development][Java Development]]
+  - [[#frontend-development][Frontend Development]]
+  - [[#lsp-configuration][LSP Configuration]]
+  - [[#debugging-setup][Debugging Setup]]
+- [[#performance-monitoring][Performance Monitoring]]
+  - [[#startup-timing][Startup Timing]]
+  - [[#gc-optimization][GC Optimization]]
+  - [[#loading-reports][Loading Reports]]
+- [[#theme-system][Theme System]]
+  - [[#auto-dark-mode][Auto Dark Mode]]
+  - [[#theme-configuration][Theme Configuration]]
+- [[#org-mode-configuration][Org Mode Configuration]]
+  - [[#todo-workflow][TODO Workflow]]
+  - [[#capture-templates][Capture Templates]]
+  - [[#agenda-configuration][Agenda Configuration]]
+- [[#usage-guide][Usage Guide]]
+  - [[#first-time-setup][First Time Setup]]
+  - [[#daily-workflow][Daily Workflow]]
+  - [[#customization][Customization]]
+- [[#troubleshooting][Troubleshooting]]
+  - [[#common-issues][Common Issues]]
+  - [[#performance-tips][Performance Tips]]
+  - [[#debugging-configuration][Debugging Configuration]]
+- [[#file-reference][File Reference]]
+- [[#maintenance][Maintenance]]
+:END:
+
+* Overview
+:PROPERTIES:
+:CUSTOM_ID: overview
+:END:
+
+Skemacs is a modular, performance-optimized Emacs configuration designed for Java and frontend(Vue, Angular, JS, TS, HTML...) development with LSP integration. It features a two-tier loading system, extensive key binding customization, and comprehensive development tools.
+
+** Key Features
+
+- ⚡ Fast startup with GC optimization and lazy loading
+- 🎯 Java-focused development environment with LSP
+- 🔧 Modular configuration with numbered file system
+- 🌓 Automatic dark/light theme switching
+- 📊 Built-in performance monitoring
+- 🎹 Hydra-based transient key bindings
+- 📝 Comprehensive Org-mode setup
+- 🌳 Project management with Treemacs and Projectile
+
+* Architecture
+:PROPERTIES:
+:CUSTOM_ID: architecture
+:END:
+
+** Directory Structure
+:PROPERTIES:
+:CUSTOM_ID: directory-structure
+:END:
+
+#+BEGIN_SRC
+~/.emacs.d/
+├── init.el                 # Bootstrap and orchestration
+├── skemacs/               # Core configuration (4 files)
+│   ├── 000-packages.el    # Package management and loading
+│   ├── 001-funcs.el       # Custom utility functions
+│   ├── 002-config.el      # Basic Emacs settings
+│   └── 003-keybindings.el # Global key bindings
+├── packages/              # Individual package configs (30+ files)
+│   ├── 00-theme.el        # Theme and appearance
+│   ├── 02-ivy.el         # Completion framework
+│   ├── 32-lsp.el         # LSP configuration
+│   ├── 110-java.el       # Java development
+│   └── ...
+├── local/                 # Local/custom packages
+├── banners/              # Startup banners
+└── themes/               # Custom themes
+#+END_SRC
+
+** Loading System
+:PROPERTIES:
+:CUSTOM_ID: loading-system
+:END:
+
+The configuration uses a two-tier loading system:
+
+1. *Core Layer* (=skemacs/=): Essential functionality loaded first
+2. *Package Layer* (=packages/=): Feature-specific configurations loaded alphabetically
+
+*** Loading Order
+
+1. =init.el= - Bootstrap with timing instrumentation
+2. =skemacs/000-003= - Core settings, functions, packages, keybindings
+3. =packages/*= - Alphabetically by filename with performance monitoring
+
+** Startup Process
+:PROPERTIES:
+:CUSTOM_ID: startup-process
+:END:
+
+The startup process includes several optimizations:
+
+- GC threshold adjustment during initialization
+- Startup type detection (file, folder, plain)
+- Banner display with loading progress
+- Per-file timing reports for performance monitoring
+
+* Key Bindings Reference
+:PROPERTIES:
+:CUSTOM_ID: key-bindings-reference
+:END:
+
+** Global Key Bindings
+:PROPERTIES:
+:CUSTOM_ID: global-key-bindings
+:END:
+
+*** Navigation
+| Key     | Function                    | Description               |
+|---------+-----------------------------+---------------------------|
+| =M-n=   | =skemacs/next-ten-lines=    | Move 10 lines down        |
+| =M-p=   | =skemacs/previous-ten-lines= | Move 10 lines up          |
+| =C-o=   | =pop-global-mark=           | Return to previous location |
+| =M-g w= | =avy-goto-word-1=           | Jump to word               |
+
+*** File and Buffer Management
+| Key           | Function               | Description              |
+|---------------+------------------------+--------------------------|
+| =C-x a i R=   | =skemacs/reload-config= | Reload Emacs config      |
+| =C-x b b=     | =ivy-switch-buffer=     | Switch buffer            |
+| =C-x b n=     | =next-buffer=           | Next buffer              |
+| =C-x b p=     | =previous-buffer=       | Previous buffer          |
+| =C-x b k=     | =kill-buffer=           | Kill buffer              |
+
+*** Clipboard
+| Key         | Function                      | Description              |
+|-------------+-------------------------------+--------------------------|
+| =C-c C-y=   | =skemacs/copy-to-clipboard=   | Copy to system clipboard |
+
+** C-j Prefix System
+:PROPERTIES:
+:CUSTOM_ID: c-j-prefix-system
+:END:
+
+The =C-j= key serves as a custom prefix for specialized commands:
+
+*** Core Commands
+| Key           | Function                  | Description               |
+|---------------+---------------------------+---------------------------|
+| =C-j C-SPC=   | =avy-goto-char-timer=     | Quick jump to character   |
+| =C-j C-k=     | =kill-whole-line=         | Delete entire line        |
+| =C-j u=       | =hydra-undo-tree/body=    | Undo tree hydra           |
+| =C-j m=       | =hydra-multiple-cursors/body= | Multiple cursors hydra |
+
+*** Org Mode Commands
+| Key           | Function                  | Description               |
+|---------------+---------------------------+---------------------------|
+| =C-j o o=     | =skemacs/open-org-directory= | Open ~/org directory   |
+| =C-j o a=     | =org-agenda=              | Org agenda                |
+| =C-j o c=     | =org-capture=             | Org capture               |
+| =C-j o l=     | =org-store-link=          | Store org link            |
+| =C-j o i=     | =org-insert-link=         | Insert org link           |
+| =C-j o s=     | =skemacs/org-sort-todo-keywords= | Sort TODO items    |
+
+** Hydra Interfaces
+:PROPERTIES:
+:CUSTOM_ID: hydra-interfaces
+:END:
+
+Hydras provide transient key binding interfaces for related commands:
+
+*** Window Management Hydra (=C-x w {= or =C-x w }=)
+#+BEGIN_SRC
+Window Resize Hydra:
+  {: shrink vertical    }: enlarge vertical
+  [: shrink horizontal  ]: enlarge horizontal
+  q: quit
+#+END_SRC
+
+*** Undo Tree Hydra (=C-j u=)
+#+BEGIN_SRC
+Undo Tree:
+  p: Undo    n: Redo
+  v: Visualize (opens tree view)
+  q: Quit
+#+END_SRC
+
+*** Multiple Cursors Hydra (=C-j m=)
+#+BEGIN_SRC
+Multiple Cursors:
+  n: Mark next        p: Mark previous
+  N: Skip next        P: Skip previous
+  l: Edit lines       a: Mark all
+  s: Search & mark    0: Insert numbers
+  A: Insert letters   |: Align
+  q: Quit
+#+END_SRC
+
+** Org Mode Bindings
+:PROPERTIES:
+:CUSTOM_ID: org-mode-bindings
+:END:
+
+*** Priority Management
+| Key             | Function            | Description        |
+|-----------------+---------------------+--------------------|
+| =C-j o <up>=    | =org-priority-up=   | Increase priority  |
+| =C-j o <down>=  | =org-priority-down= | Decrease priority  |
+
+*** Structure Editing
+| Key           | Function                  | Description              |
+|---------------+---------------------------+--------------------------|
+| =C-<return>=  | =org-return-and-maybe-indent= | New line with indent |
+| =C-c C-g C-r= | =org-shiftmetaright=      | Promote/demote item      |
+
+** Development Bindings
+:PROPERTIES:
+:CUSTOM_ID: development-bindings
+:END:
+
+*** LSP Commands (=C-c l= prefix)
+| Key         | Function                        | Description               |
+|-------------+---------------------------------+---------------------------|
+| =C-c l s=   | =lsp-ivy-workspace-symbol=      | Search workspace symbols  |
+
+*** Project Commands (=C-c p= prefix)
+| Key       | Function               | Description            |
+|-----------+------------------------+------------------------|
+| =C-c p e= | =projectile-recentf=   | Recent project files   |
+
+*** Git Commands
+| Key     | Function         | Description    |
+|---------+------------------+----------------|
+| =C-x g= | =magit-status=   | Git status     |
+
+*** Treemacs Commands
+| Key         | Function                        | Description            |
+|-------------+---------------------------------+------------------------|
+| =M-0=       | =treemacs-select-window=        | Focus treemacs         |
+| =C-x t t=   | =treemacs=                      | Toggle treemacs        |
+| =C-x t C-t= | =treemacs-find-file=            | Find file in treemacs  |
+
+* Package Configurations
+:PROPERTIES:
+:CUSTOM_ID: package-configurations
+:END:
+
+** Core Packages
+:PROPERTIES:
+:CUSTOM_ID: core-packages
+:END:
+
+*** Ivy/Counsel/Swiper (02-ivy.el)
+Complete completion framework providing:
+- =ivy-mode= for minibuffer completion
+- =counsel-mode= for enhanced commands
+- =swiper= for in-buffer search
+- =ivy-rich= for detailed completion candidates
+
+Key bindings:
+- =C-s=: =swiper= (search in buffer)
+- =C-c v/s/V=: ivy view management
+- =C-x C-SPC=: =counsel-mark-ring=
+
+*** Which-key (01-which-key.el)
+Shows available key bindings in popup after partial key sequence.
+
+*** Hydra (02-hydra.el)
+Provides transient key binding interfaces for complex command sequences.
+
+** Development Environment
+:PROPERTIES:
+:CUSTOM_ID: development-environment
+:END:
+
+*** LSP Mode (32-lsp.el)
+Language Server Protocol integration with optimizations for Java:
+
+#+BEGIN_SRC elisp
+;; Key settings
+(setq lsp-keymap-prefix "C-c l")
+(setq lsp-java-java-path "/usr/local/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home/bin/java")
+(setq lsp-java-vmargs '("-Xmx2G" "-Xms512m" "-XX:+UseG1GC"))
+#+END_SRC
+
+Supported languages:
+- Java (primary focus)
+- JavaScript/TypeScript
+- CSS/SCSS/Less
+- Web development languages
+
+*** Company Mode (30-company.el)
+Auto-completion with optimized settings:
+- Prefix length: 1 character
+- Instant completion (0 delay)
+- Numbered options for quick selection
+- Integration with yasnippet
+
+*** Yasnippet (31-yasnippet.el)
+Code snippet expansion:
+- =S-<tab>=: Expand snippet
+- Integrated with company-mode
+- Custom snippets in prog-mode
+
+*** Java Development (110-java.el)
+Specialized Java configuration:
+- LSP-Java integration
+- Project detection (Maven/Gradle)
+- Code formatting with IntelliJ IDEA style
+- Lombok support
+
+** UI Enhancements
+:PROPERTIES:
+:CUSTOM_ID: ui-enhancements
+:END:
+
+*** Theme System (00-theme.el)
+Auto-dark mode with system integration:
+- Automatic light/dark switching on macOS
+- Modus themes (vivendi-tritanopia/operandi-tinted)
+- Configurable polling interval
+
+*** Smart Mode Line (53-smart-mode-line.el)
+Enhanced mode line with better information display.
+
+*** Rainbow Delimiters (52-rainbow-delimiters.el)
+Color-coded parentheses for better code readability.
+
+*** Highlight Symbol (51-highlight-symbol.el)  
+Automatically highlights symbol under cursor.
+
+** Productivity Tools
+:PROPERTIES:
+:CUSTOM_ID: productivity-tools
+:END:
+
+*** Magit (101-magit.el)
+Git integration:
+- =C-x g=: Git status
+- Auto-revert disabled for performance
+
+*** Treemacs (102-treemacs.el)
+File tree sidebar:
+- Width: 30 columns
+- Project integration via treemacs-projectile
+- Tag follow mode disabled
+
+*** Undo Tree (54-undo-tree.el)
+Visual undo system with branching history.
+
+*** Multiple Cursors (08-multiple-cursors.el)
+Edit multiple locations simultaneously with hydra interface.
+
+*** Avy (06-avy.el)
+Quick navigation to any visible character/word.
+
+* Development Environment Setup
+:PROPERTIES:
+:CUSTOM_ID: development-environment-setup
+:END:
+
+** Java Development
+:PROPERTIES:
+:CUSTOM_ID: java-development
+:END:
+
+The configuration is optimized for Java development with the following setup:
+
+*** Requirements
+- OpenJDK 17 (configured path in lsp.el)
+- Lombok JAR file
+- Maven or Gradle projects
+
+*** LSP-Java Configuration
+#+BEGIN_SRC elisp
+;; JVM optimization for Java projects
+(setq lsp-java-vmargs `("-Xmx2G"
+                        "-Xms512m" 
+                        "-XX:+UseG1GC"
+                        "-XX:MaxGCPauseMillis=200"
+                        ,(concat "-javaagent:" lombok-jar-path)))
+#+END_SRC
+
+*** Features
+- Automatic project detection
+- Code completion with method signatures
+- Error highlighting with Flycheck
+- Code formatting with IntelliJ IDEA style
+- Import organization
+- Debugging support via DAP mode
+
+** Frontend Development
+:PROPERTIES:
+:CUSTOM_ID: frontend-development
+:END:
+
+Support for modern web development:
+
+*** Supported Languages
+- JavaScript (js-mode, js-ts-mode)
+- TypeScript (typescript-mode, typescript-ts-mode)
+- React/JSX (tsx-ts-mode)
+- CSS/SCSS/Less
+- Web templates (web-mode)
+
+*** Features
+- LSP integration for all supported languages
+- Prettier formatting integration
+- CSS validation
+- Live error checking
+
+** LSP Configuration
+:PROPERTIES:
+:CUSTOM_ID: lsp-configuration
+:END:
+
+*** Performance Optimizations
+- File watching disabled to prevent recursion
+- Limited completion results (100 items)
+- Progress reports disabled
+- Diagnostic integration with Flycheck
+
+*** Key Commands
+- =C-c l s=: Search workspace symbols
+- =M-.=: Go to definition
+- =M-,=: Return from definition
+- =C-c l r r=: Rename symbol
+- =C-c l f f=: Format buffer
+
+** Debugging Setup
+:PROPERTIES:
+:CUSTOM_ID: debugging-setup
+:END:
+
+*** DAP Mode (105-dap.el)
+Debug Adapter Protocol support for:
+- Java debugging
+- Breakpoint management  
+- Variable inspection
+- Call stack navigation
+
+Note: DAP hydra bindings are commented out but available.
+
+* Performance Monitoring
+:PROPERTIES:
+:CUSTOM_ID: performance-monitoring
+:END:
+
+** Startup Timing
+:PROPERTIES:
+:CUSTOM_ID: startup-timing
+:END:
+
+The configuration includes comprehensive startup timing:
+
+#+BEGIN_SRC elisp
+;; Startup time tracking
+(defvar skemacs-start-time (current-time))
+
+;; GC optimization during startup
+(let ((normal-gc-cons-threshold (* 400 1024 1024))
+      (init-gc-cons-threshold (* 800 1024 1024)))
+  (setq gc-cons-threshold init-gc-cons-threshold)
+  (add-hook 'emacs-startup-hook
+            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+#+END_SRC
+
+** GC Optimization
+:PROPERTIES:
+:CUSTOM_ID: gc-optimization
+:END:
+
+- Startup GC threshold: 800MB
+- Runtime GC threshold: 400MB  
+- Automatic restoration after startup
+
+** Loading Reports
+:PROPERTIES:
+:CUSTOM_ID: loading-reports
+:END:
+
+Files taking longer than 0.5 seconds to load are reported:
+#+BEGIN_SRC
+Loaded package-name.el in 0.753214 seconds
+#+END_SRC
+
+View loading progress in the =*skemacs-startup*= buffer during startup.
+
+* Theme System
+:PROPERTIES:
+:CUSTOM_ID: theme-system
+:END:
+
+** Auto Dark Mode
+:PROPERTIES:
+:CUSTOM_ID: auto-dark-mode
+:END:
+
+Automatic theme switching based on system appearance:
+
+*** Configuration
+#+BEGIN_SRC elisp
+(setq auto-dark-allow-osascript t)
+(setq auto-dark-polling-interval-seconds 3600)  ; Check hourly
+(setq auto-dark-themes '((modus-vivendi-tritanopia) (modus-operandi-tinted)))
+#+END_SRC
+
+*** Supported Systems
+- macOS: AppleScript integration
+- Windows: Registry-based detection
+- Linux: Limited support
+
+** Theme Configuration
+:PROPERTIES:
+:CUSTOM_ID: theme-configuration
+:END:
+
+*** Dark Theme: =modus-vivendi-tritanopia=
+- High contrast colors
+- Tritanopia-friendly palette
+- Excellent for programming
+
+*** Light Theme: =modus-operandi-tinted=
+- Warm, tinted background
+- Reduced eye strain
+- Professional appearance
+
+* Org Mode Configuration
+:PROPERTIES:
+:CUSTOM_ID: org-mode-configuration
+:END:
+
+** TODO Workflow
+:PROPERTIES:
+:CUSTOM_ID: todo-workflow
+:END:
+
+*** States
+#+BEGIN_SRC
+TODO → PLANNING → IN-PROGRESS → VERIFYING → DONE
+  ↓       ↓          ↓            ↓         ↑
+BLOCKED → → → → → → → → → → → → → → → → → → → ↑
+  ↓                                        ↑
+OBE/WONT-DO ← ← ← ← ← ← ← ← ← ← ← ← ← ← ← ← ←
+#+END_SRC
+
+*** Color Coding
+- *TODO*: GoldenRod
+- *PLANNING*: DeepPink  
+- *IN-PROGRESS*: Cyan
+- *VERIFYING*: DarkOrange
+- *BLOCKED*: Red
+- *DONE/OBE/WONT-DO*: LimeGreen
+  
+** Capture Templates
+:PROPERTIES:
+:CUSTOM_ID: capture-templates
+:END:
+
+*** Available Templates
+- =j=: Work Log Entry (daily tree)
+- =n=: Random Note
+- =g=: General To-Do
+- =e=: Emacs Config To-Do
+- =m=: Meeting (with attendees, notes, action items)
+- =c=: Code To-Do (with context)
+
+*** Usage
+1. =C-j o c= - Open capture menu
+2. Select template letter
+3. Fill in details
+4. =C-c C-c= - Save and file
+
+** Agenda Configuration
+:PROPERTIES:
+:CUSTOM_ID: agenda-configuration
+:END:
+
+*** Custom Views
+
+**** Daily View (=d=)
+- High-priority unfinished tasks
+- 7-day calendar view
+- Normal priority tasks
+- Low-priority tasks
+
+**** Super View (=j=)
+Advanced filtering with org-super-agenda:
+- Critical tasks
+- Currently working items
+- Planning tasks
+- Blockers and problems
+- Research items
+- Meeting action items
+
+*** Priority System
+- =A=: High priority (urgent, important)
+- =B=: Normal priority (default)
+- =C=: Low priority (nice to have)
+
+* Usage Guide
+:PROPERTIES:
+:CUSTOM_ID: usage-guide
+:END:
+
+** First Time Setup
+:PROPERTIES:
+:CUSTOM_ID: first-time-setup
+:END:
+
+1. *Install Emacs 25.1+* (26.1+ recommended)
+
+2. *Clone/copy this configuration* to =~/.emacs.d/=
+
+3. *Start Emacs* - packages will install automatically
+
+4. *Configure Java path* in =packages/32-lsp.el= if different
+
+5. *Set up Org directories*:
+   #+BEGIN_SRC bash
+   mkdir -p ~/org
+   #+END_SRC
+
+** Daily Workflow
+:PROPERTIES:
+:CUSTOM_ID: daily-workflow
+:END:
+
+*** Project Development
+1. =C-x t t= - Open Treemacs for project navigation
+2. =C-c p f= - Find file in project
+3. =M-.= - Navigate to definitions
+4. =C-c l s= - Search project symbols
+5. =C-x g= - Git status when ready to commit
+
+*** Org Mode Workflow
+1. =C-j o a= - Check daily agenda
+2. =C-j o c= - Capture new items throughout day
+3. =C-j o o= - Access org files for detailed editing
+4. =C-j o s= - Sort TODO items by priority and status
+
+*** Window Management
+1. =C-x w v/s= - Split windows
+2. =C-x w h/j/k/l= - Navigate between windows
+3. =C-x w {= - Resize windows with hydra
+4. =M-0= - Focus on Treemacs
+
+** Customization
+:PROPERTIES:
+:CUSTOM_ID: customization
+:END:
+
+*** Adding New Packages
+1. Create new file in =packages/= with appropriate number prefix
+2. Use =use-package= format with =:ensure t=
+3. Add key bindings to =skemacs/003-keybindings.el= if needed
+4. Restart Emacs or =C-x a i R= to reload
+
+*** Custom Functions
+Add to =skemacs/001-funcs.el= with =skemacs/= prefix:
+#+BEGIN_SRC elisp
+(defun skemacs/my-function ()
+  "Description of function."
+  (interactive)
+  ;; function body
+  )
+#+END_SRC
+
+*** Key Binding Patterns
+- Global bindings: =skemacs/003-keybindings.el=
+- =C-j= prefix for custom commands
+- Package-specific bindings in respective package files
+- Use =which-key-add-key-based-replacements= for descriptions
+
+* Troubleshooting
+:PROPERTIES:
+:CUSTOM_ID: troubleshooting
+:END:
+
+** Common Issues
+:PROPERTIES:
+:CUSTOM_ID: common-issues
+:END:
+
+*** Slow Startup
+1. Check loading times in =*Messages*= buffer
+2. Files >0.5s are automatically reported
+3. Consider lazy loading with =:defer t=
+4. Use =:hook= instead of global modes when possible
+
+*** LSP Not Working
+1. Verify Java path in =32-lsp.el=
+2. Check project has =pom.xml= or =build.gradle=
+3. Restart LSP: =M-x lsp-workspace-restart=
+4. Check =*lsp-log*= buffer for errors
+
+*** Package Installation Failures
+1. Check internet connection and proxy settings
+2. =M-x package-refresh-contents=
+3. Delete =~/.emacs.d/elpa= and restart
+4. Check MELPA archive accessibility
+
+** Performance Tips
+:PROPERTIES:
+:CUSTOM_ID: performance-tips
+:END:
+
+*** Memory Management
+- Monitor with =M-x emacs-uptime= and =M-x memory-usage=
+- Consider increasing GC thresholds for large projects
+- Use =M-x list-processes= to check background processes
+
+*** File Operations
+- Use =:defer t= for packages not needed at startup
+- Disable unnecessary modes (file watching, auto-revert)
+- Consider =projectile-cache-file= for large projects
+  
+** Debugging Configuration
+:PROPERTIES:
+:CUSTOM_ID: debugging-configuration
+:END:
+
+*** Loading Issues
+1. Start with =emacs -Q= to test vanilla Emacs
+2. Load files individually: =M-x load-file=
+3. Check =*Messages*= and =*Warnings*= buffers
+4. Use =debug-on-error= for detailed backtraces
+
+*** Key Binding Conflicts
+1. =C-h k= - Describe key to see current binding
+2. =C-h b= - List all current bindings
+3. =M-x which-key-show-top-level= - See prefix keys
+
+* File Reference
+:PROPERTIES:
+:CUSTOM_ID: file-reference
+:END:
+
+** Core Files
+
+*** =init.el=
+Bootstrap file with:
+- Startup timing and GC optimization
+- Directory definitions and loading orchestration
+- Banner display and progress reporting
+- Startup type detection
+
+*** =skemacs/000-packages.el=
+Package management:
+- Repository configuration (TUNA mirrors + MELPA)
+- use-package setup
+- Proxy configuration for Chinese environment
+- Package loading with timing
+
+*** =skemacs/001-funcs.el=
+Custom utility functions:
+- Navigation functions (10-line movement)
+- Window management (split and move)
+- Clipboard integration (cross-platform)
+- Window resizing functions
+
+*** =skemacs/002-config.el=
+Basic Emacs settings:
+- UI configuration (toolbars, scrollbars, line numbers)
+- Editor behavior (electric pairs, auto-revert)
+- File handling (backups, auto-save)
+- Programming mode hooks
+
+*** =skemacs/003-keybindings.el=
+Global key binding definitions:
+- Movement and navigation bindings
+- =C-j= prefix key setup
+- Window and buffer management
+- Org-mode key bindings
+
+** Package Files (Numbered by Category)
+
+*** 00-09: Core UI/Navigation
+- =00-theme.el=: Auto dark mode and theme switching
+- =01-project.el=: Project management
+- =01-which-key.el=: Key binding help
+- =02-hydra.el=: Transient key binding framework
+- =02-ivy.el=: Completion framework
+- =06-avy.el=: Quick navigation
+- =07-ace-window.el=: Window switching
+- =08-multiple-cursors.el=: Multi-cursor editing
+- =09-mwim.el=: Smart beginning/end of line movement
+
+*** 30-39: Development Core
+- =30-company.el=: Auto-completion
+- =31-yasnippet.el=: Code snippet expansion
+- =32-lsp.el=: Language Server Protocol
+
+*** 50-59: Enhancement Features  
+- =51-highlight-symbol.el=: Symbol highlighting
+- =52-rainbow-delimiters.el=: Colored parentheses
+- =53-smart-mode-line.el=: Enhanced mode line
+- =54-undo-tree.el=: Visual undo system
+
+*** 100-110: Advanced Development Tools
+- =100-flycheck.el=: Syntax checking
+- =101-magit.el=: Git integration
+- =102-treemacs.el=: File tree sidebar
+- =105-dap.el=: Debug Adapter Protocol
+- =110-java.el=: Java development environment
+- =113-frontend.el=: Frontend development tools
+
+*** 200+: Productivity and Organization
+- =200-org.el=: Org-mode configuration
+- =201-org-bullets.el=: Org-mode visual enhancements
+
+*** 99: Special Utilities
+- =99-window-hydra.el=: Window management hydra interface
+
+* Maintenance
+:PROPERTIES:
+:CUSTOM_ID: maintenance
+:END:
+
+** Byte Compilation
+To improve startup performance, compile all configuration files:
+
+#+BEGIN_SRC bash
+emacs --batch -f batch-byte-compile skemacs/*.el packages/*.el local/*.el
+#+END_SRC
+
+---
