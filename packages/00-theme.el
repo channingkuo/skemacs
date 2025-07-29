@@ -139,7 +139,7 @@ It can be dark, light, or nil."
       auto-dark--last-dark-mode-state
       (lwarn 'auto-dark
              :warning
-             "couldn’t determine current system appearance")))
+             "couldn't determine current system appearance")))
 
 (defun auto-dark--initialized-p ()
   "Check whether initialization is far enough along to change themes."
@@ -164,7 +164,7 @@ already set the theme for the current dark mode state."
   (mapc #'frame-set-background-mode (frame-list)))
 
 (defun auto-dark--enable-themes (&optional themes)
-  "Re-enable THEMES, which defaults to ‘custom-enabled-themes’.
+  "Re-enable THEMES, which defaults to 'custom-enabled-themes'.
 This will load themes if necessary."
   (interactive)
   (let ((full-themes (remq 'user
@@ -268,11 +268,11 @@ time."
    ((and (eq system-type 'darwin)
          auto-dark-allow-osascript)
     'osascript)
-   ((and (eq system-type 'gnu/linux)
-         (member 'dbus features)
-         (cl-search "termux-fix-shebang"
-                    (shell-command-to-string "command -v termux-fix-shebang")))
-    'termux)
+;;    ((and (eq system-type 'gnu/linux)
+;;          (member 'dbus features)
+;;          (cl-search "termux-fix-shebang"
+;;                     (shell-command-to-string "command -v termux-fix-shebang")))
+;;     'termux)
    ((and (eq system-type 'windows-nt)
          auto-dark-allow-powershell)
     'powershell)
@@ -305,9 +305,9 @@ modes."))))
 (defcustom auto-dark-themes nil
   "The themes to enable for dark and light modes.
 The default is to use the themes in `custom-enabled-themes', but that only works
-if the themes are aware of `frame-background-mode', which many aren’t.
+if the themes are aware of `frame-background-mode', which many aren't.
 
-If your themes aren’t aware of `frame-background-mode' (or you just prefer
+If your themes aren't aware of `frame-background-mode' (or you just prefer
 different themes for dark and light modes), you can set explicit lists of themes
 for each mode. Like with `custom-enabled-themes', the earlier themes in the list
 have higher precedence.
