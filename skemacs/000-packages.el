@@ -31,10 +31,13 @@
             (file-name (file-name-nondirectory file)))
         (skemacs/update-banner-status (format "Loading  %s..." file-name))
         (load file nil t)
-        (let ((time2 (current-time)))
+        (let ((time2 (current-time))
+              (time-delta (float-time (time-subtract (current-time) time1))))
+          (when (> time-delta 0.5)
+            (message "Loaded %s in %.6f seconds" file-name time-delta))
           (skemacs/update-banner-status (format "Loaded   %s in %.6f seconds" 
                                                 file-name
-                                                (float-time (time-subtract time2 time1))))))))))
+                                                time-delta))))))))
 
 ;; 加载 local 对应的配置文件
 (when (file-directory-p local-packages-config-dir)
@@ -45,7 +48,10 @@
             (file-name (file-name-nondirectory file)))
         (skemacs/update-banner-status (format "Loading  %s..." file-name))
         (load file nil t)
-        (let ((time2 (current-time)))
+        (let ((time2 (current-time))
+              (time-delta (float-time (time-subtract (current-time) time1))))
+          (when (> time-delta 0.5)
+            (message "Loaded %s in %.6f seconds" file-name time-delta))
           (skemacs/update-banner-status (format "Loaded   %s in %.6f seconds" 
                                                 file-name
-                                                (float-time (time-subtract time2 time1))))))))))
+                                                time-delta))))))))
