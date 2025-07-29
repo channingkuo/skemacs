@@ -920,7 +920,6 @@ Global key binding definitions:
 To improve startup performance, compile all configuration files:
 
 #+BEGIN_SRC bash
+rm skemacs/*.elc packages/*.elc local/*.elc
 emacs --batch -f batch-byte-compile skemacs/*.el packages/*.el local/*.el
 #+END_SRC
-
----

@@ -54,20 +54,20 @@
     (setq lsp-typescript-format-enable nil)  ; 禁用内置格式化
     ;; 设置 Prettier 作为格式化器
     (setq lsp-javascript-preferences-use-prettier t)
-    (setq lsp-typescript-preferences-use-prettier t))
-  :bind
-  ;; 可快速搜索工作区内的符号（类名、函数名、变量名等）
-  ("C-c l s" . lsp-ivy-workspace-symbol))
+    (setq lsp-typescript-preferences-use-prettier t)))
+  ;; :bind
+  ;; ;; 可快速搜索工作区内的符号（类名、函数名、变量名等）
+  ;; ("C-c l s" . lsp-ivy-workspace-symbol))
 
 ;; 图形化的支持
-(use-package lsp-ui
-  :ensure t
-  :config
-  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
-  (setq lsp-ui-doc-position 'top))
+;; (use-package lsp-ui
+;;   :ensure t
+;;   :config
+;;   (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+;;   (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+;;   (setq lsp-ui-doc-position 'top))
 
-;; 利用 ivy 辅助 lsp
-(use-package lsp-ivy
-  :ensure t
-  :after (lsp-mode))
+;; ;; 利用 ivy 辅助 lsp
+;; (use-package lsp-ivy
+;;   :ensure t
+;;   :after (lsp-mode))
