@@ -34,6 +34,8 @@
   "Custom local configuration directory for Emacs packages.")
 (defconst banners-config-dir (expand-file-name "banners" user-emacs-directory)
   "Custom local configuration directory for Emacs banners.")
+(defconst themes-config-dir (expand-file-name "themes" user-emacs-directory)
+  "Custom local configuration directory for Emacs themes.")
 
 ;; 将自定义配置目录添加到 load-path
 (unless (member skemacs-config-dir load-path)
@@ -41,6 +43,9 @@
 
 ;; Banner配置
 (defconst skemacs-banner-file 112 "Default banner file.")
+;; 加载主题
+(setq custom-safe-themes t)
+(add-to-list 'load-path themes-config-dir)
 
 (defun skemacs/get-banner-path ()
   "Get the complete path to the banner file."

@@ -13,7 +13,6 @@
     (org-mode . (lambda () 
                   (local-set-key (kbd "C-j") 'skemacs)
                   (local-set-key (kbd "C-<return>") 'org-return-and-maybe-indent))))
-    ;; (org-mode-hook . org-bullets-mode))
   :config
   (highlight-symbol-mode -1)
   ;; Must do this so the agenda knows where to look for my files
