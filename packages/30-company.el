@@ -8,8 +8,8 @@
   (setq yas-before-expand-snippet-hook nil)
   (setq yas-keymap-disable-hook nil)
   (setq yas-buffer-local-condition 'always))
-  ;; TODO 设置自定义 snippets
-  ;; (setq yas-snippet-dirs '((expand-file-name "snippets" user-emacs-directory))))
+;; TODO 设置自定义 snippets
+;; (setq yas-snippet-dirs '((expand-file-name "snippets" user-emacs-directory))))
 
 (use-package yasnippet-snippets
   :ensure t

@@ -88,7 +88,7 @@
          (skip-next (setq skip-next nil))
          ((string-prefix-p "--" arg)
           (when (member arg '("--load" "--funcall" "--eval" "--user" 
-                             "--daemon" "--bg-daemon" "--chdir"))
+                              "--daemon" "--bg-daemon" "--chdir"))
             (setq skip-next t)))
          ((string-prefix-p "-" arg)
           (when (string-match-p "[lfeut]" (substring arg 1))
@@ -147,28 +147,28 @@
                               (kill-buffer "*skemacs-startup*"))
                             (pcase skemacs-startup-type
                               ('with-dot ;; do nothing
-                              )
+                               )
                               ('with-folder ;; do nothing
-                              )
+                               )
                               ('with-file ;; do nothing
-                              )
+                               )
                               ('with-new-file ;; do nothing
-                              )
+                               )
                               (_ ;; plain or other types
-                              ;; 确保显示dashboard
-                              (let ((dashboard-buffer (get-buffer "*skemacs*")))
-                              (if dashboard-buffer
-                                  ;; 如果dashboard buffer存在，切换到它
-                                  (switch-to-buffer dashboard-buffer)
-                                ;; 否则创建并显示dashboard
-                                (when (fboundp 'dashboard-open)
-                                  (dashboard-open))
-                                ;; 如果dashboard-open不存在，尝试手动创建
-                                (unless (get-buffer "*skemacs*")
-                                  (with-current-buffer (get-buffer-create "*skemacs*")
-                                    (dashboard-mode)
-                                    (dashboard-insert-startupify-lists)
-                                    (switch-to-buffer (current-buffer))))))))))))
+                               ;; 确保显示dashboard
+                               (let ((dashboard-buffer (get-buffer "*skemacs*")))
+				                         (if dashboard-buffer
+                                     ;; 如果dashboard buffer存在，切换到它
+                                     (switch-to-buffer dashboard-buffer)
+                                   ;; 否则创建并显示dashboard
+                                   (when (fboundp 'dashboard-open)
+                                     (dashboard-open))
+                                   ;; 如果dashboard-open不存在，尝试手动创建
+                                   (unless (get-buffer "*skemacs*")
+                                     (with-current-buffer (get-buffer-create "*skemacs*")
+                                       (dashboard-mode)
+                                       (dashboard-insert-startupify-lists)
+                                       (switch-to-buffer (current-buffer))))))))))))
 
 
 ;; 如果skemacs-startup-type不是with-file和with-new-file，则加载所有的配置文件
@@ -177,15 +177,15 @@
   (when (file-directory-p skemacs-config-dir)
     (let* ((config-files (directory-files skemacs-config-dir t "\\.el$" t)))
       (let* ((sorted-config-files (sort config-files 'string<)))
-      (dolist (file sorted-config-files)
-        (let ((time1 (current-time))
-              (file-name (file-name-nondirectory file)))
-          (skemacs/update-banner-status (format "Loading  %s..." file-name))
-          (load file nil t)
-          (let ((time2 (current-time)))
-            (skemacs/update-banner-status (format "Loaded   %s in %.6f seconds" 
-                                                  file-name
-                                                  (float-time (time-subtract time2 time1))))))))))
+	(dolist (file sorted-config-files)
+          (let ((time1 (current-time))
+		(file-name (file-name-nondirectory file)))
+            (skemacs/update-banner-status (format "Loading  %s..." file-name))
+            (load file nil t)
+            (let ((time2 (current-time)))
+              (skemacs/update-banner-status (format "Loaded   %s in %.6f seconds" 
+                                                    file-name
+                                                    (float-time (time-subtract time2 time1))))))))))
   )
 
 ;; 设置自定义配置文件位置
@@ -218,9 +218,9 @@
               (message "Emacs configuration loaded in %.6f seconds" elapsed-time))))
 ;; C-x a i R重新加载配置后hook
 (defadvice load-file (after skemacs/reload-config activate)
-    "Hook that runs after load-file completes"
-    (when (string-match-p "\\init.el$" (ad-get-arg 0))
-                (let ((elapsed-time (float-time (time-subtract (current-time) skemacs-start-time))))
-                  (skemacs/update-banner-status (format "Emacs configuration loaded in %.6f seconds" elapsed-time))
-                  (skemacs/update-banner-status "Ready!" t))))
+  "Hook that runs after load-file completes"
+  (when (string-match-p "\\init.el$" (ad-get-arg 0))
+    (let ((elapsed-time (float-time (time-subtract (current-time) skemacs-start-time))))
+      (skemacs/update-banner-status (format "Emacs configuration loaded in %.6f seconds" elapsed-time))
+      (skemacs/update-banner-status "Ready!" t))))
 (provide 'init)

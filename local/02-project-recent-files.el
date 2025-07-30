@@ -1,7 +1,4 @@
 ;; Project recent files tracking using recentf
-(require 'projectile)
-(require 'recentf)
-
 (defun skemacs/project-recent-files-get ()
   "Get recent files for current project from recentf."
   (when (and (fboundp 'projectile-project-p) (projectile-project-p))
@@ -22,8 +19,8 @@
       (let ((recent-files (skemacs/project-recent-files-get)))
         (if recent-files
             (let ((relative-files (mapcar (lambda (file)
-                                           (file-relative-name file (projectile-project-root)))
-                                         recent-files)))
+                                            (file-relative-name file (projectile-project-root)))
+                                          recent-files)))
               (let ((ivy-truncate-lines nil))  ; 允许换行显示长路径
                 (ivy-read "Recent files: " relative-files
                           :action (lambda (relative-path)

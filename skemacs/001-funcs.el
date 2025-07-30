@@ -30,39 +30,39 @@
 (defun skemacs/copy-to-clipboard ()
   (interactive)
   (cond
-    ((eq system-type 'gnu/linux)
-     (if (display-graphic-p)
-         (progn
-           (require 'xclip nil t)
-           (if (featurep 'xclip)
-               (progn
-                 (xclip-mode 1)
-                 (if (use-region-p)
-                     (progn
-                       (xclip-copy-region (region-beginning) (region-end))
-                       (message "Yanked region to clipboard!")
-                       (deactivate-mark))
-                   (message "No region active; can't yank to clipboard!")))
-             (message "xclip package not available")))
-       (message "Not in graphical display")))
-    
-    ((eq system-type 'darwin)
-     (if (use-region-p)
-         (progn
-           (shell-command-on-region (region-beginning) (region-end) "pbcopy")
-           (message "Yanked region to clipboard!")
-           (deactivate-mark))
-       (message "No region active; can't yank to clipboard!")))
-    
-    ((eq system-type 'windows-nt)
-     (if (use-region-p)
-         (progn
-           (shell-command-on-region (region-beginning) (region-end) "clip.exe")
-           (message "Yanked region to clipboard!")
-           (deactivate-mark))
-       (message "No region active; can't yank to clipboard!")))
-    
-    (t (message "Unsupported system type"))))
+   ((eq system-type 'gnu/linux)
+    (if (display-graphic-p)
+        (progn
+          (require 'xclip nil t)
+          (if (featurep 'xclip)
+              (progn
+                (xclip-mode 1)
+                (if (use-region-p)
+                    (progn
+                      (xclip-copy-region (region-beginning) (region-end))
+                      (message "Yanked region to clipboard!")
+                      (deactivate-mark))
+                  (message "No region active; can't yank to clipboard!")))
+            (message "xclip package not available")))
+      (message "Not in graphical display")))
+   
+   ((eq system-type 'darwin)
+    (if (use-region-p)
+        (progn
+          (shell-command-on-region (region-beginning) (region-end) "pbcopy")
+          (message "Yanked region to clipboard!")
+          (deactivate-mark))
+      (message "No region active; can't yank to clipboard!")))
+   
+   ((eq system-type 'windows-nt)
+    (if (use-region-p)
+        (progn
+          (shell-command-on-region (region-beginning) (region-end) "clip.exe")
+          (message "Yanked region to clipboard!")
+          (deactivate-mark))
+      (message "No region active; can't yank to clipboard!")))
+   
+   (t (message "Unsupported system type"))))
 
 ;; Linux xclip package setup
 (when (eq system-type 'gnu/linux)

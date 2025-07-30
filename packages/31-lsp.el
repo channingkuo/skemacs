@@ -3,10 +3,10 @@
   :init
   (setq lsp-keymap-prefix "C-c l" lsp-file-watch-threshold 2000)
   :hook (
-        ;;  (typescript-mode . lsp-deferred)
-        ;;  (js-mode . lsp-deferred)
-        ;;  (web-mode . lsp-deferred)
-        ;;  (vue-mode . lsp-deferred)
+         ;;  (typescript-mode . lsp-deferred)
+         ;;  (js-mode . lsp-deferred)
+         ;;  (web-mode . lsp-deferred)
+         ;;  (vue-mode . lsp-deferred)
          (lsp-mode . lsp-enable-which-key-integration))
   :commands (lsp lsp-deferred)
   :config

@@ -82,11 +82,11 @@
       "Format buffer with prettier."
       (interactive)
       (when (and buffer-file-name
-                (or (derived-mode-p 'js-mode)
-                    (derived-mode-p 'js2-mode) 
-                    (derived-mode-p 'typescript-mode)
-                    (derived-mode-p 'web-mode)
-                    (string-match-p "\\.vue\\'" buffer-file-name)))
+                 (or (derived-mode-p 'js-mode)
+                     (derived-mode-p 'js2-mode) 
+                     (derived-mode-p 'typescript-mode)
+                     (derived-mode-p 'web-mode)
+                     (string-match-p "\\.vue\\'" buffer-file-name)))
         (prettier-js)))
     
     ;; 重写 lsp-format-buffer 在前端文件中使用 Prettier

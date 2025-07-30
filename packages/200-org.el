@@ -4,14 +4,14 @@
   ;; dashboard中显示agenda异常 cache must be activated
   ;; :mode "\\.org\\'"
   :hook (
-    ;; Make the indentation look nicer
-    (org-mode . org-indent-mode)
-    ;; Wrap the lines in org mode so that things are easier to read
-    (org-mode . visual-line-mode)
-    ;; 恢复全局的C-j prefix设置，将org原有功能移到C-RET
-    (org-mode . (lambda () 
-                  (local-set-key (kbd "C-j") 'skemacs)
-                  (local-set-key (kbd "C-<return>") 'org-return-and-maybe-indent))))
+	 ;; Make the indentation look nicer
+	 (org-mode . org-indent-mode)
+	 ;; Wrap the lines in org mode so that things are easier to read
+	 (org-mode . visual-line-mode)
+	 ;; 恢复全局的C-j prefix设置，将org原有功能移到C-RET
+	 (org-mode . (lambda () 
+                       (local-set-key (kbd "C-j") 'skemacs)
+                       (local-set-key (kbd "C-<return>") 'org-return-and-maybe-indent))))
   :config
   (highlight-symbol-mode -1)
   ;; Must do this so the agenda knows where to look for my files
@@ -60,63 +60,63 @@
   (add-hook 'org-mode-hook 'skemacs/org-show-two-levels)
 
   (setq org-capture-templates
-      '(    
-        ("j" "Work Log Entry"
-         entry (file+datetree "~/org/work-log.org")
-         "* %?"
-         :empty-lines 0)
+	'(    
+          ("a" "App Codes"
+           entry (file+headline "~/org/notes.org" "App Codes")
+           "** %?"
+           :empty-lines 0)
 
-        ("n" "Note"
-         entry (file+headline "~/org/notes.org" "Random Notes")
-         "** %?"
-         :empty-lines 0)
+           ("n" "Note"
+           entry (file+headline "~/org/notes.org" "Random Notes")
+           "** %?"
+           :empty-lines 0)
 
-        ("d" "Door Codes"
-         entry (file+headline "~/org/notes.org" "Door Codes")
-         "** %?"
-         :empty-lines 0)
+          ("j" "Work Log Entry"
+           entry (file+datetree "~/org/work-log.org")
+           "* %?"
+           :empty-lines 0)
 
-        ("g" "General To-Do"
-         entry (file+headline "~/org/todos.org" "General Tasks")
-         "* TODO [#B] %?\n:Created: %T\n "
-         :empty-lines 0)
+          ("c" "Code To-Do"
+           entry (file+headline "~/org/todos.org" "Code Related Tasks")
+           "* TODO [#B] %? %^g\n:Created: %T\n%i\n%a\nProposed Solution: "
+           :empty-lines 0)
 
-        ("e" "Emacs Config To-Do"
-         entry (file+headline "~/org/emacs.org" "Emacs Config Tasks")
-         "* TODO [#B] %? %^g\n:Created: %T\n "
-         :empty-lines 0)
+          ("g" "General To-Do"
+           entry (file+headline "~/org/todos.org" "General Tasks")
+           "* TODO [#B] %?\n:Created: %T\n "
+           :empty-lines 0)
 
-        ("m" "Meeting"
-         entry (file+datetree "~/org/meetings.org")
-         "* %? :meeting:%^g \n:Created: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
-         :tree-type week
-         :clock-in t
-         :clock-resume t
-         :empty-lines 0)
+          ("e" "Emacs Config To-Do"
+           entry (file+headline "~/org/emacs.org" "Emacs Config Tasks")
+           "* TODO [#B] %? %^g\n:Created: %T\n "
+           :empty-lines 0)
 
-        ("c" "Code To-Do"
-         entry (file+headline "~/org/todos.org" "Code Related Tasks")
-         "* TODO [#B] %? %^g\n:Created: %T\n%i\n%a\nProposed Solution: "
-         :empty-lines 0)
+          ("m" "Meeting"
+           entry (file+datetree "~/org/meetings.org")
+           "* %? :meeting:%^g \n:Created: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
+           :tree-type week
+           :clock-in t
+           :clock-resume t
+           :empty-lines 0)
 
-      ))
+	  ))
 
   (setq org-todo-keywords
-      '((sequence "TODO(t)" "PLANNING(p)" "IN-PROGRESS(i@/!)" 
-                  "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" 
-                  "OBE(o@!)" "WONT-DO(w@/!)" )))
+	'((sequence "TODO(t)" "PLANNING(p)" "IN-PROGRESS(i@/!)" 
+                    "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" 
+                    "OBE(o@!)" "WONT-DO(w@/!)" )))
 
   (setq org-todo-keyword-faces
-      '(
-        ("TODO" . (:foreground "GoldenRod" :weight bold))
-        ("PLANNING" . (:foreground "DeepPink" :weight bold))
-        ("IN-PROGRESS" . (:foreground "Cyan" :weight bold))
-        ("VERIFYING" . (:foreground "DarkOrange" :weight bold))
-        ("BLOCKED" . (:foreground "Red" :weight bold))
-        ("DONE" . (:foreground "LimeGreen" :weight bold))
-        ("OBE" . (:foreground "LimeGreen" :weight bold))
-        ("WONT-DO" . (:foreground "LimeGreen" :weight bold))
-      ))
+	'(
+          ("TODO" . (:foreground "GoldenRod" :weight bold))
+          ("PLANNING" . (:foreground "DeepPink" :weight bold))
+          ("IN-PROGRESS" . (:foreground "Cyan" :weight bold))
+          ("VERIFYING" . (:foreground "DarkOrange" :weight bold))
+          ("BLOCKED" . (:foreground "Red" :weight bold))
+          ("DONE" . (:foreground "LimeGreen" :weight bold))
+          ("OBE" . (:foreground "LimeGreen" :weight bold))
+          ("WONT-DO" . (:foreground "LimeGreen" :weight bold))
+	  ))
 
   ;; 设置之后会覆盖tag标签的颜色， 只设置TODO关键字的颜色也很OK
   ;; 为不同 TODO 状态的 headline 设置颜色的 hook
@@ -143,6 +143,7 @@
                         ("@spike" . ?j)
                         ("@emergency" . ?e)
                         ("@research" . ?h)
+                        ("meeting" . ?g)
 
                         ("backend" . ?k)
                         ("broken_code" . ?c)
@@ -159,37 +160,37 @@
                         ("CRITICAL" . ?x)
                         ;; 阻碍 阻力
                         ("OBSTACLE" . ?o)
-                      ))
+			))
 
   ;; Tag colors organized by urgency hierarchy
   (setq org-tag-faces
-      '(
-        ;; HIGHEST URGENCY - Critical/Emergency items (bright reds, maximum visibility)
-        ("CRITICAL"       . (:foreground "red1"       :weight bold :box t))
-        ("@emergency"     . (:foreground "red"        :weight bold))
-        ("bug"            . (:foreground "red2"       :weight bold))
-        ("broken_code"    . (:foreground "DarkRed"    :weight bold))
-        ("OBSTACLE"       . (:foreground "DarkOrange" :weight bold))
+	'(
+          ;; HIGHEST URGENCY - Critical/Emergency items (bright reds, maximum visibility)
+          ("CRITICAL"       . (:foreground "red1"       :weight bold :box t))
+          ("@emergency"     . (:foreground "red"        :weight bold))
+          ("bug"            . (:foreground "red2"       :weight bold))
+          ("broken_code"    . (:foreground "DarkRed"    :weight bold))
+          ("OBSTACLE"       . (:foreground "DarkOrange" :weight bold))
 
-        ;; HIGH PRIORITY - Very visible (oranges, bright yellows)
-        ("@spike"         . (:foreground "DarkOrange" :weight bold))
-        ("@feature"       . (:foreground "OrangeRed"  :weight bold))
-        ("new_work"       . (:foreground "gold"       :weight bold))
+          ;; HIGH PRIORITY - Very visible (oranges, bright yellows)
+          ("@spike"         . (:foreground "DarkOrange" :weight bold))
+          ("@feature"       . (:foreground "OrangeRed"  :weight bold))
+          ("new_work"       . (:foreground "gold"       :weight bold))
 
-        ;; MEDIUM PRIORITY - Moderately visible (blues, purples, magentas)
-        ("backend"        . (:foreground "MediumBlue"   :weight bold))
-        ("frontend"       . (:foreground "purple"       :weight bold))
-        ("refactor"       . (:foreground "MediumOrchid" :weight bold))
-        ("@research"      . (:foreground "SteelBlue"    :weight bold))
+          ;; MEDIUM PRIORITY - Moderately visible (blues, purples, magentas)
+          ("backend"        . (:foreground "MediumBlue"   :weight bold))
+          ("frontend"       . (:foreground "purple"       :weight bold))
+          ("refactor"       . (:foreground "MediumOrchid" :weight bold))
+          ("@research"      . (:foreground "SteelBlue"    :weight bold))
 
-        ;; LOW PRIORITY - Subtle colors (greens, cyans)
-        ("@setup"         . (:foreground "ForestGreen" :weight bold))
-        ("accomplishment" . (:foreground "LimeGreen"   :weight bold))
+          ;; LOW PRIORITY - Subtle colors (greens, cyans)
+          ("@setup"         . (:foreground "ForestGreen" :weight bold))
+          ("accomplishment" . (:foreground "LimeGreen"   :weight bold))
 
-        ;; NEUTRAL/INFO - Muted colors (grays)
-        ("@test"          . (:foreground "DimGray"))
-        ("misc"           . (:foreground "gray60"))
-      ))
+          ;; NEUTRAL/INFO - Muted colors (grays)
+          ("@test"          . (:foreground "DimGray"))
+          ("misc"           . (:foreground "gray60"))
+	  ))
 
   ;; Agenda View "d"
   (defun air-org-skip-subtree-if-priority (priority)
@@ -209,41 +210,41 @@
           ;; Daily Agenda & TODOs
           ("d" "Daily agenda and all TODOs"
 
-          ;; Display items with priority A
-          ((tags "PRIORITY=\"A\""
+           ;; Display items with priority A
+           ((tags "PRIORITY=\"A\""
                   ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                  (org-agenda-overriding-header "High-priority unfinished tasks:")))
+                   (org-agenda-overriding-header "High-priority unfinished tasks:")))
 
             ;; View 7 days in the calendar view
             (agenda "" ((org-agenda-span 7)))
 
             ;; Display items with priority B (really it is view all items minus A & C)
             (alltodo ""
-                    ((org-agenda-skip-function '(or (air-org-skip-subtree-if-priority ?A)
-                                                    (air-org-skip-subtree-if-priority ?C)
-                                                    (org-agenda-skip-if nil '(scheduled deadline))))
+                     ((org-agenda-skip-function '(or (air-org-skip-subtree-if-priority ?A)
+                                                     (air-org-skip-subtree-if-priority ?C)
+                                                     (org-agenda-skip-if nil '(scheduled deadline))))
                       (org-agenda-overriding-header "ALL normal priority tasks:")))
 
             ;; Display items with priority C
             (tags "PRIORITY=\"C\""
                   ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                  (org-agenda-overriding-header "Low-priority Unfinished tasks:")))
+                   (org-agenda-overriding-header "Low-priority Unfinished tasks:")))
             )
 
-          ;; Don't compress things (change to suite your tastes)
-          ((org-agenda-compact-blocks nil)))
+           ;; Don't compress things (change to suite your tastes)
+           ((org-agenda-compact-blocks nil)))
           
           ("j" "TODO and Tags View"
-          (
+           (
             (agenda ""
                     (
-                    (org-agenda-remove-tags t)                                       
-                    (org-agenda-span 7)
-                    )
+                     (org-agenda-remove-tags t)                                       
+                     (org-agenda-span 7)
+                     )
                     )
 
             (alltodo ""
-                    (
+                     (
                       ;; Remove tags to make the view cleaner
                       (org-agenda-remove-tags t)
                       (org-agenda-prefix-format "  %t  %s")                    
@@ -251,59 +252,59 @@
 
                       ;; Define the super agenda groups (sorts by order)
                       (org-super-agenda-groups
-                      '(
-                        ;; Filter where tag is CRITICAL emergency broken_code bug
-                        (:name "Emergency Tasks"
+                       '(
+                         ;; Filter where tag is CRITICAL emergency broken_code bug
+                         (:name "Emergency Tasks"
                                 :tag ("CRITICAL" "@emergency" "broken_code" "bug")
                                 :order 0
                                 )
-                        ;; Filter where TODO state is IN-PROGRESS
-                        (:name "Currently Working"
+                         ;; Filter where TODO state is IN-PROGRESS
+                         (:name "Currently Working"
                                 :todo "IN-PROGRESS"
                                 :order 10
                                 )
-                        ;; Filter where TODO state is PLANNING
-                        (:name "Planning Next Steps"
+                         ;; Filter where TODO state is PLANNING
+                         (:name "Planning Next Steps"
                                 :todo "PLANNING"
                                 :order 20
                                 )
-                        ;; Filter where TODO state is BLOCKED or where the tag is OBSTACLE
-                        (:name "Problems & Blockers"
+                         ;; Filter where TODO state is BLOCKED or where the tag is OBSTACLE
+                         (:name "Problems & Blockers"
                                 :todo "BLOCKED"
                                 :tag "OBSTACLE"
                                 :order 30
                                 )
-                        ;; Filter where tag is @spike @feature
-                        (:name "Features & Spikes"
+                         ;; Filter where tag is @spike @feature
+                         (:name "Features & Spikes"
                                 :tag ("@spike" "@feature")
                                 :order 40
                                 )
-                        ;; Filter where tag is @research
-                        (:name "Research Required"
+                         ;; Filter where tag is @research
+                         (:name "Research Required"
                                 :tag "@research"
                                 :order 70
                                 )
-                        ;; Filter where state is TODO and the priority is A
-                        (:name "Other Important Items"
+                         ;; Filter where state is TODO and the priority is A
+                         (:name "Other Important Items"
                                 :and (:todo "TODO" :priority "A")
                                 :order 90
                                 )
-                        ;; Filter where state is TODO and priority is B
-                        (:name "General Backlog"
+                         ;; Filter where state is TODO and priority is B
+                         (:name "General Backlog"
                                 :and (:todo "TODO" :priority "B")
                                 :order 100
                                 )
-                        ;; Filter where the priority is C or less (supports future lower priorities)
-                        (:name "Non Critical"
+                         ;; Filter where the priority is C or less (supports future lower priorities)
+                         (:name "Non Critical"
                                 :priority<= "C"
                                 :order 110
                                 )
-                        ;; Filter where TODO state is VERIFYING
-                        (:name "Currently Being Verified"
+                         ;; Filter where TODO state is VERIFYING
+                         (:name "Currently Being Verified"
                                 :todo "VERIFYING"
                                 :order 200
                                 )
-                      ))))))))
+			 ))))))))
   )
 
 (use-package org-super-agenda

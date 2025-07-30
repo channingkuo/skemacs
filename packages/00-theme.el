@@ -230,8 +230,8 @@ time."
 (defun auto-dark--register-change-listener ()
   "Register a listener to listen for the system theme to change."
   (cond
-  ;;  ((auto-dark--use-ns-system-appearance)
-  ;;   (add-hook 'ns-system-appearance-change-functions #'auto-dark--set-theme))
+   ;;  ((auto-dark--use-ns-system-appearance)
+   ;;   (add-hook 'ns-system-appearance-change-functions #'auto-dark--set-theme))
    ((auto-dark--use-mac-system-appearance)
     (add-hook 'mac-effective-appearance-change-hook
               #'auto-dark--check-and-set-dark-mode))
@@ -240,8 +240,8 @@ time."
 (defun auto-dark--unregister-change-listener ()
   "Remove an existing listener for the system theme."
   (cond
-  ;;  ((auto-dark--use-ns-system-appearance)
-  ;;   (remove-hook 'ns-system-appearance-change-functions #'auto-dark--set-theme))
+   ;;  ((auto-dark--use-ns-system-appearance)
+   ;;   (remove-hook 'ns-system-appearance-change-functions #'auto-dark--set-theme))
    ((auto-dark--use-mac-system-appearance)
     (remove-hook 'mac-effective-appearance-change-hook
                  #'auto-dark--check-and-set-dark-mode))
@@ -268,11 +268,11 @@ time."
    ((and (eq system-type 'darwin)
          auto-dark-allow-osascript)
     'osascript)
-;;    ((and (eq system-type 'gnu/linux)
-;;          (member 'dbus features)
-;;          (cl-search "termux-fix-shebang"
-;;                     (shell-command-to-string "command -v termux-fix-shebang")))
-;;     'termux)
+   ;;    ((and (eq system-type 'gnu/linux)
+   ;;          (member 'dbus features)
+   ;;          (cl-search "termux-fix-shebang"
+   ;;                     (shell-command-to-string "command -v termux-fix-shebang")))
+   ;;     'termux)
    ((and (eq system-type 'windows-nt)
          auto-dark-allow-powershell)
     'powershell)

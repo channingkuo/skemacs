@@ -26,32 +26,32 @@
 (when (file-directory-p packages-config-dir)
   (let* ((config-files (directory-files packages-config-dir t "\\.el$" t)))
     (let* ((sorted-config-files (sort config-files 'string<)))
-    (dolist (file sorted-config-files)
-      (let ((time1 (current-time))
-            (file-name (file-name-nondirectory file)))
-        (skemacs/update-banner-status (format "Loading  %s..." file-name))
-        (load file nil t)
-        (let ((time2 (current-time))
-              (time-delta (float-time (time-subtract (current-time) time1))))
-          (when (> time-delta 0.5)
-            (message "Loaded %s in %.6f seconds" file-name time-delta))
-          (skemacs/update-banner-status (format "Loaded   %s in %.6f seconds" 
-                                                file-name
-                                                time-delta))))))))
+      (dolist (file sorted-config-files)
+	(let ((time1 (current-time))
+              (file-name (file-name-nondirectory file)))
+          (skemacs/update-banner-status (format "Loading  %s..." file-name))
+          (load file nil t)
+          (let ((time2 (current-time))
+		(time-delta (float-time (time-subtract (current-time) time1))))
+            (when (> time-delta 0.5)
+              (message "Loaded %s in %.6f seconds" file-name time-delta))
+            (skemacs/update-banner-status (format "Loaded   %s in %.6f seconds" 
+                                                  file-name
+                                                  time-delta))))))))
 
 ;; 加载 local 对应的配置文件
 (when (file-directory-p local-packages-config-dir)
   (let* ((config-files (directory-files local-packages-config-dir t "\\.el$" t)))
     (let* ((sorted-config-files (sort config-files 'string<)))
-    (dolist (file sorted-config-files)
-      (let ((time1 (current-time))
-            (file-name (file-name-nondirectory file)))
-        (skemacs/update-banner-status (format "Loading  %s..." file-name))
-        (load file nil t)
-        (let ((time2 (current-time))
-              (time-delta (float-time (time-subtract (current-time) time1))))
-          (when (> time-delta 0.5)
-            (message "Loaded %s in %.6f seconds" file-name time-delta))
-          (skemacs/update-banner-status (format "Loaded   %s in %.6f seconds" 
-                                                file-name
-                                                time-delta))))))))
+      (dolist (file sorted-config-files)
+	(let ((time1 (current-time))
+              (file-name (file-name-nondirectory file)))
+          (skemacs/update-banner-status (format "Loading  %s..." file-name))
+          (load file nil t)
+          (let ((time2 (current-time))
+		(time-delta (float-time (time-subtract (current-time) time1))))
+            (when (> time-delta 0.5)
+              (message "Loaded %s in %.6f seconds" file-name time-delta))
+            (skemacs/update-banner-status (format "Loaded   %s in %.6f seconds" 
+                                                  file-name
+                                                  time-delta))))))))

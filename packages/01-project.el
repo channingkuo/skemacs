@@ -31,4 +31,4 @@
                           (bookmarks . 5)
                           (agenda    . 5)))
   ;; (dashboard-setup-startup-hook)  ; 禁用原始启动hook，使用自定义启动逻辑
-)
+  )
