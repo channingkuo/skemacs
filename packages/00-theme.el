@@ -352,6 +352,6 @@ theme list."
 
 
 (setq auto-dark-allow-osascript t)
-(setq auto-dark-polling-interval-seconds 3600)
+(setq auto-dark-polling-interval-seconds 600)
 (setq auto-dark-themes '((modus-vivendi-tritanopia) (modus-operandi-tinted)))
 (auto-dark-mode)

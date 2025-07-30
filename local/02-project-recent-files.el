@@ -6,16 +6,7 @@
   "Get recent files for current project from recentf."
   (when (and (fboundp 'projectile-project-p) (projectile-project-p))
     (let ((project-root (projectile-project-root)))
-      ;; (message "recentf-mode enabled: %s" recentf-mode)
-      ;; (message "recentf-save-file: %s" recentf-save-file)
-      ;; (message "recentf file exists: %s" (file-exists-p recentf-save-file))
-      (when (not recentf-mode)
-        ;; (message "Enabling recentf-mode...")
-        (recentf-mode 1)
-        ;; (message "Loading recentf data...")
-        (recentf-load-list))
-      ;; (message "recentf-list length: %d" (length recentf-list))
-      ;; (message "recentf-list: %s" recentf-list)
+      ;; recentf-mode 现在在核心配置中启用，不需要条件性启用
       (let ((filtered-files (seq-filter (lambda (file)
                                           (and (file-exists-p file)
                                                (string-prefix-p project-root (expand-file-name file))))

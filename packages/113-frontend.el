@@ -1,7 +1,14 @@
 ;; Frontend development configuration
-
 (with-eval-after-load 'warnings
   (add-to-list 'warning-suppress-types '(native-compiler)))
+
+(use-package vue-mode
+  :ensure t
+  :defer t
+  :mode "\\.vue\\'"
+  :config
+  (add-hook 'vue-mode-hook #'lsp-deferred))
+
 ;; TypeScript mode
 (use-package typescript-mode
   :ensure t
@@ -67,7 +74,6 @@
                            "--trailing-comma" "none"
                            "--html-whitespace-sensitivity" "ignore"
                            "--semi"))
-  
   
   ;; 绑定到 LSP 格式化快捷键
   (with-eval-after-load 'lsp-mode

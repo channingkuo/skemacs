@@ -1,7 +1,13 @@
 ;; macOS specific params
 (defconst *is-a-mac* (eq system-type 'darwin))
 
+;; recentf configuration - 最近文件记录
 (setq recentf-max-saved-items 100)
+(setq recentf-auto-cleanup 'never)  ; 防止在启动时清理不存在的文件
+(setq recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))  ; 每30秒自动保存
+(recentf-mode 1)  ; 启用 recentf-mode
+;; 确保退出时保存 recentf 列表
+(add-hook 'kill-emacs-hook 'recentf-save-list)
 ;; 在关闭 Emacs 前询问是否确认关闭，防止误触
 (setq confirm-kill-emacs #'yes-or-no-p)
 ;; 自动补全括号

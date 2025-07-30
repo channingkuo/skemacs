@@ -9,11 +9,8 @@
 (defvar skemacs-start-time (current-time)
   "Time when Emacs started loading the configuration.")
 
-(let ((minver "25.1"))
-  (when (version< emacs-version minver)
-    (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
-(when (version< emacs-version "26.1")
-  (message "Your Emacs is old, and some functionality in this config will be disabled. Please upgrade if possible."))
+(when (version< emacs-version "29.1")
+  (message "Your Emacs is old, this config maybe broken. Please upgrade if possible."))
 
 ;; Adjust garbage collection thresholds during startup, and thereafter
 (let ((normal-gc-cons-threshold (* 400 1024 1024))
