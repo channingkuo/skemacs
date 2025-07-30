@@ -1,5 +1,6 @@
 (use-package lsp-java
   :ensure t
+  :mode ("\\.java\\'")
   ;; :hook (java-mode . lsp)
   :config
 	;; 禁用缩进制表符模式
