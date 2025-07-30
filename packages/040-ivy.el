@@ -56,4 +56,4 @@
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
   :hook (after-init . ivy-rich-mode))
 
-;;; 02-ivy.el ends here
+;;; 040-ivy.el ends here

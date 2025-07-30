@@ -12,4 +12,4 @@
   :ensure t
   :bind (("C-x o" . 'ace-window)))
 
-;;; 07-ace-window.el ends here
+;;; 100-ace-window.el ends here

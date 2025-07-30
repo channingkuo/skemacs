@@ -13,4 +13,4 @@
   :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
-;;; 52-rainbow-delimiters.el ends here
+;;; 170-rainbow-delimiters.el ends here

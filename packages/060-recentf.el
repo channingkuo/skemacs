@@ -3,7 +3,7 @@
 
 ;; This configuration sets up the built-in recentf package for tracking
 ;; recently opened files with enhanced filtering to exclude temporary files,
-;; auto-generated content, and package directories. Includes automatic
+;; auto-generated content, and package directories.. Includes automatic
 ;; cleanup and immediate saving of new files.
 
 ;;; Code:
@@ -31,4 +31,4 @@
   ;; 定期清理失效文件
   (run-at-time nil (* 5 60) 'recentf-cleanup))
 
-;;; 03-recentf.el ends here
+;;; 060-recentf.el ends here

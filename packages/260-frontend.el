@@ -167,4 +167,4 @@
     (which-key-add-key-based-replacements "C-c l = t" "toggle prettier on save")
     (which-key-add-key-based-replacements "C-c l = R" "format region with prettier")))
 
-;;; 113-frontend.el ends here
+;;; 260-frontend.el ends here

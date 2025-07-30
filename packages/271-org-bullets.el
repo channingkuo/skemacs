@@ -15,7 +15,7 @@
   :config
   (setq org-bullets-bullet-list
         '("◉"    ; 1级 - 实心圆，突出重要性
-          "○"    ; 2级 - 空心圆，清晰易读  
+          "○"    ; 2级 - 空心圆，清晰易读
           "✸"    ; 3级 - 星花，醒目
           "✿"    ; 4级 - 花朵，优雅
           "◎"    ; 5级 - 同心圆
@@ -23,4 +23,4 @@
           "◦"))  ; 7级+ - 小圆
   )
 
-;;; 201-org-bullets.el ends here
+;;; 271-org-bullets.el ends here

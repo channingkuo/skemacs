@@ -11,4 +11,4 @@
   :ensure t
   :init (which-key-mode))
 
-;;; 01-which-key.el ends here
+;;; 020-which-key.el ends here

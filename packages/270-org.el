@@ -2,7 +2,7 @@
 ;;; Commentary:
 
 ;; This configuration provides a comprehensive Org-mode setup for
-;; task management, note-taking, and project organization. Includes
+;; task management, note-taking, and project organization.  Includes
 ;; custom TODO workflows, agenda views, capture templates, and
 ;; super-agenda for advanced task organization and prioritization.
 
@@ -10,7 +10,8 @@
 
 (use-package org
   :ensure t
-  ;; Associate all org files with org mode
+  :custom
+  (org-html-export-org-files-as-html t)
   ;; dashboard中显示agenda异常 cache must be activated
   ;; :mode "\\.org\\'"
   :hook (
@@ -19,7 +20,7 @@
 	 ;; Wrap the lines in org mode so that things are easier to read
 	 (org-mode . visual-line-mode)
 	 ;; 恢复全局的C-j prefix设置，将org原有功能移到C-RET
-	 (org-mode . (lambda () 
+	 (org-mode . (lambda ()
                        (local-set-key (kbd "C-j") 'skemacs)
                        (local-set-key (kbd "C-<return>") 'org-return-and-maybe-indent))))
   :config
@@ -48,7 +49,6 @@
   ;; 代码块语法高亮
   (setq org-src-fontify-natively t)
 
-  (setq font-lock-ensure t)
   (setq org-pretty-entities t)
   (setq org-pretty-entities-include-sub-superscripts t)
   ;; (setq org-agenda-block-separator "")
@@ -57,7 +57,6 @@
   (setq org-fontify-quote-and-verse-blocks t)
 
   (setq org-edit-src-content-indentation 0)
-  (setq org-html-link-org-files-as-html t)
   (setq org-confirm-babel-evaluate t)
   (setq org-src-tab-acts-natively t)
   (setq org-src-preserve-indentation t)
@@ -70,7 +69,7 @@
   (add-hook 'org-mode-hook 'skemacs/org-show-two-levels)
 
   (setq org-capture-templates
-	'(    
+	'(
           ("a" "App Codes"
            entry (file+headline "~/org/notes.org" "App Codes")
            "** %?"
@@ -112,8 +111,8 @@
 	  ))
 
   (setq org-todo-keywords
-	'((sequence "TODO(t)" "PLANNING(p)" "IN-PROGRESS(i@/!)" 
-                    "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" 
+	'((sequence "TODO(t)" "PLANNING(p)" "IN-PROGRESS(i@/!)"
+                    "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)"
                     "OBE(o@!)" "WONT-DO(w@/!)" )))
 
   (setq org-todo-keyword-faces
@@ -127,22 +126,6 @@
           ("OBE" . (:foreground "LimeGreen" :weight bold))
           ("WONT-DO" . (:foreground "LimeGreen" :weight bold))
 	  ))
-
-  ;; 设置之后会覆盖tag标签的颜色， 只设置TODO关键字的颜色也很OK
-  ;; 为不同 TODO 状态的 headline 设置颜色的 hook
-  ;; (defun skemacs/org-set-todo-headline-colors ()
-  ;;   "为不同 TODO 状态设置 headline 颜色"
-  ;;   (font-lock-add-keywords nil
-  ;;     '(("^\\*+ TODO \\(.*\\)$" 1 '(:foreground "GoldenRod" :weight bold) t)
-  ;;       ("^\\*+ PLANNING \\(.*\\)$" 1 '(:foreground "DeepPink" :weight bold) t)
-  ;;       ("^\\*+ IN-PROGRESS \\(.*\\)$" 1 '(:foreground "Cyan" :weight bold) t)
-  ;;       ("^\\*+ VERIFYING \\(.*\\)$" 1 '(:foreground "DarkOrange" :weight bold) t)
-  ;;       ("^\\*+ BLOCKED \\(.*\\)$" 1 '(:foreground "Red" :weight bold) t)
-  ;;       ("^\\*+ DONE \\(.*\\)$" 1 '(:foreground "LimeGreen") t)
-  ;;       ("^\\*+ OBE \\(.*\\)$" 1 '(:foreground "LimeGreen") t)
-  ;;       ("^\\*+ WONT-DO \\(.*\\)$" 1 '(:foreground "LimeGreen") t))
-  ;;     'append))
-  ;; (add-hook 'org-mode-hook 'skemacs/org-set-todo-headline-colors)
 
   ;; Tags
   (setq org-tag-alist '(
@@ -202,7 +185,37 @@
           ("misc"           . (:foreground "gray60"))
 	  ))
 
-  ;; Agenda View "d"
+   ;; 自定义TODO状态排序函数，支持优先级二级排序
+  (defun skemacs/org-sort-todo-keywords ()
+    "按照预定义的TODO关键词顺序排序org条目, 同一TODO状态内按优先级排序."
+    (interactive)
+    (let ((todo-order '("IN-PROGRESS" "PLANNING" "TODO" "VERIFYING" "BLOCKED" "DONE" "OBE" "WONT-DO")))
+       (org-sort-entries nil ?f
+			(lambda ()
+                          (save-excursion
+                            (org-back-to-heading t)
+                            (let* ((todo-state (org-get-todo-state))
+                                   (todo-index (if todo-state
+                                                   (or (cl-position todo-state todo-order :test 'string=) 999)
+                                                        1000))
+                                   ;; 直接获取当前行的优先级
+                                   (priority-char (save-excursion
+                                                    (beginning-of-line)
+                                                    (if (re-search-forward "\\[#\\([ABCD]\\)\\]" (line-end-position) t)
+							       (string-to-char (match-string 1))
+                                                        nil)))
+                                   ;; 将优先级字符转换为数字
+                                   (priority-value (cond
+                                                    ((eq priority-char ?A) 1)
+                                                    ((eq priority-char ?B) 2)
+                                                    ((eq priority-char ?C) 3)
+                                                    ((eq priority-char ?D) 4)
+                                                    (t 5))))
+                              ;; 组合排序键：TODO状态索引*10 + 优先级值
+                              (+ (* todo-index 10) priority-value))))
+			'<)))
+
+   ;; Agenda View "d"
   (defun air-org-skip-subtree-if-priority (priority)
     "Skip an agenda subtree if it has a priority of PRIORITY.
     PRIORITY may be one of the characters ?A, ?B, or ?C."
@@ -248,7 +261,7 @@
            (
             (agenda ""
                     (
-                     (org-agenda-remove-tags t)                                       
+                     (org-agenda-remove-tags nil)
                      (org-agenda-span 7)
                      )
                     )
@@ -257,7 +270,7 @@
                      (
                       ;; Remove tags to make the view cleaner
                       (org-agenda-remove-tags t)
-                      (org-agenda-prefix-format "  %t  %s")                    
+                      (org-agenda-prefix-format "  %t  %s")
                       (org-agenda-overriding-header "CURRENT STATUS")
 
                       ;; Define the super agenda groups (sorts by order)
@@ -323,45 +336,6 @@
   :config
   (org-super-agenda-mode 1))
 
-;; 已配置
-;; M-<up>	将当前 headline 及其内容作为整体向上移动	 
-;; M-<down>	将当前 headline 及其内容作为整体向下移动
-;; M-<return>	在当前 headline 前建立一个同级 headline
 
-;; 未配置
-;; C-<return>	在当前 headline 所属的内容后建立一个同级 headline	无 headline 时创建一个一级 headline
 
-;; M-<right>	降低当前 headline 的层级	 
-;; M-<left>	提高当前 headline 的层级	 
-
-;; 自定义TODO状态排序函数，支持优先级二级排序
-(defun skemacs/org-sort-todo-keywords ()
-  "按照预定义的TODO关键词顺序排序org条目, 同一TODO状态内按优先级排序"
-  (interactive)
-  (let ((todo-order '("IN-PROGRESS" "PLANNING" "TODO" "VERIFYING" "BLOCKED" "DONE" "OBE" "WONT-DO")))
-    (org-sort-entries nil ?f
-                      (lambda ()
-                        (save-excursion
-                          (org-back-to-heading t)
-                          (let* ((todo-state (org-get-todo-state))
-                                 (todo-index (if todo-state
-                                                 (or (cl-position todo-state todo-order :test 'string=) 999)
-                                               1000))
-                                 ;; 直接获取当前行的优先级
-                                 (priority-char (save-excursion
-                                                  (beginning-of-line)
-                                                  (if (re-search-forward "\\[#\\([ABCD]\\)\\]" (line-end-position) t)
-                                                      (string-to-char (match-string 1))
-                                                    nil)))
-                                 ;; 将优先级字符转换为数字
-                                 (priority-value (cond
-                                                  ((eq priority-char ?A) 1)
-                                                  ((eq priority-char ?B) 2)
-                                                  ((eq priority-char ?C) 3)
-                                                  ((eq priority-char ?D) 4)
-                                                  (t 5))))
-                            ;; 组合排序键：TODO状态索引*10 + 优先级值
-                            (+ (* todo-index 10) priority-value))))
-                      '<)))
-
-;;; 200-org.el ends here
+;;; 270-org.el ends here

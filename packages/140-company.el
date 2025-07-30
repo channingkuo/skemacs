@@ -2,7 +2,7 @@
 ;;; Commentary:
 
 ;; This configuration sets up the Company completion framework with
-;; yasnippet integration for comprehensive auto-completion. Includes
+;; yasnippet integration for comprehensive auto-completion.. Includes
 ;; optimized settings for responsive completion and snippet expansion
 ;; in all programming modes.
 ;; company: https://github.com/company-mode/company-mode
@@ -39,4 +39,4 @@
   ;; 根据选择的频率进行排序
   (setq company-transformers '(company-sort-by-occurrence)))
 
-;;; 30-company.el ends here
+;;; 140-company.el ends here

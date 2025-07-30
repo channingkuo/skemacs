@@ -2,7 +2,7 @@
 ;;; Commentary:
 
 ;; This configuration sets up vterm, a fully-featured terminal emulator
-;; for Emacs. Includes custom functions for opening terminals in project
+;; for Emacs.. Includes custom functions for opening terminals in project
 ;; root directories automatically, making it convenient for development
 ;; workflows.
 
@@ -32,4 +32,4 @@
   
   (advice-add 'vterm :around #'skemacs/vterm-project-advice))
 
-;;; 10-vterm.el ends here
+;;; 130-vterm.el ends here

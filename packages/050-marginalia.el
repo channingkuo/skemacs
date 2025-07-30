@@ -2,7 +2,7 @@
 ;;; Commentary:
 
 ;; This configuration enables Marginalia, which adds helpful annotations
-;; to minibuffer completions. It provides context-aware information
+;; to minibuffer completions.. It provides context-aware information
 ;; about commands, variables, files, and other completion candidates.
 
 ;;; Code:
@@ -14,4 +14,4 @@
   :bind (:map minibuffer-local-map
 	      ("M-A" . marginalia-cycle)))
 
-;;; 03-marginalia.el ends here
+;;; 050-marginalia.el ends here

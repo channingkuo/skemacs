@@ -2,7 +2,7 @@
 ;;; Commentary:
 
 ;; This configuration enables multiple-cursors for editing multiple
-;; locations simultaneously. Includes a comprehensive Hydra interface
+;; locations simultaneously.. Includes a comprehensive Hydra interface
 ;; that provides easy access to all multiple cursor operations like
 ;; marking next/previous, editing lines, and cursor management.
 ;; multiple-cursors: https://github.com/magnars/multiple-cursors.el
@@ -41,4 +41,4 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 	  ("<drag-mouse-1>" ignore)
 	  ("q" nil)))
 
-;;; 08-multiple-cursors.el ends here
+;;; 110-multiple-cursors.el ends here

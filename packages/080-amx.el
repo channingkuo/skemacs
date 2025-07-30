@@ -3,7 +3,7 @@
 
 ;; This configuration enables AMX, which enhances M-x by tracking
 ;; command usage frequency and displaying the most frequently used
-;; commands first. This makes command discovery and execution more
+;; commands first.. This makes command discovery and execution more
 ;; efficient over time.
 
 ;;; Code:
@@ -13,4 +13,4 @@
   :ensure t
   :init (amx-mode))
 
-;;; 05-amx.el ends here
+;;; 080-amx.el ends here

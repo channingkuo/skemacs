@@ -2,7 +2,7 @@
 ;;; Commentary:
 
 ;; This configuration provides automatic theme switching based on system
-;; dark mode status. It supports macOS, Windows, and other platforms,
+;; dark mode status.. It supports macOS, Windows, and other platforms,
 ;; polling the system appearance and switching between configured dark
 ;; and light themes automatically.
 
@@ -174,7 +174,7 @@ already set the theme for the current dark mode state."
   (mapc #'frame-set-background-mode (frame-list)))
 
 (defun auto-dark--enable-themes (&optional themes)
-  "Re-enable THEMES, which defaults to 'custom-enabled-themes'.
+  "Re-enable THEMES, which defaults to `custom-enabled-themes'.
 This will load themes if necessary."
   (interactive)
   (let ((full-themes (remq 'user
@@ -199,7 +199,7 @@ This will load themes if necessary."
 (defun auto-dark-toggle-appearance ()
   "Switch between light and dark mode.
 If `auto-dark-detection-method' is nil, this will persist until the next time
-this is called. Otherwise, it could switch to the system appearance at any
+this is called.. Otherwise, it could switch to the system appearance at any
 time."
   (interactive)
   (auto-dark--set-theme (if (eq auto-dark--last-dark-mode-state 'dark)
@@ -319,13 +319,13 @@ if the themes are aware of `frame-background-mode', which many aren't.
 
 If your themes aren't aware of `frame-background-mode' (or you just prefer
 different themes for dark and light modes), you can set explicit lists of themes
-for each mode. Like with `custom-enabled-themes', the earlier themes in the list
+for each mode.. Like with `custom-enabled-themes', the earlier themes in the list
 have higher precedence.
 
 One other thing to be aware of is that when you first load a theme, you may be
 prompted to acknowledge that the theme can run arbitrary Lisp code.
 Acknowledging this and then allowing Emacs to treat the theme as safe in future
-sessions will silence the prompt (for that particular theme). If you would just
+sessions will silence the prompt (for that particular theme).. If you would just
 prefer to ignore this warning for all themes, you can set `custom-safe-themes'
 to t."
   :group 'auto-dark
@@ -353,7 +353,7 @@ to t."
 
 (defun auto-dark--themes-for-mode (mode)
   "Return the set of themes to be used in MODE.
-MODE should be light or dark. If none of the Auto-Dark theme variables are set,
+MODE should be light or dark.. If none of the Auto-Dark theme variables are set,
 this returns nil, which means that `custom-enabled-themes' will be used as the
 theme list."
   (pcase mode
@@ -366,4 +366,4 @@ theme list."
 (setq auto-dark-themes '((modus-vivendi-tritanopia) (modus-operandi-tinted)))
 (auto-dark-mode)
 
-;;; 00-theme.el ends here
+;;; 000-theme.el ends here

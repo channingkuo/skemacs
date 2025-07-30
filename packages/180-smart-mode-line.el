@@ -2,7 +2,7 @@
 ;;; Commentary:
 
 ;; This configuration sets up smart-mode-line for a cleaner, more
-;; informative mode line display. Includes path abbreviations for
+;; informative mode line display.. Includes path abbreviations for
 ;; common directories and mode name filtering to reduce clutter
 ;; while maintaining essential information.
 ;; ;; smart-mode-line: https://github.com/Malabarba/smart-mode-line
@@ -29,5 +29,6 @@
    '(("^~/\\.emacs\\.d/"           ":Emacs:")
      ("^~/Documents/YSW/Source/*"  ":YSW:")
      ("^~/Documents/ChanningKuo/*" ":Kuo:")))
+  )
 
-;;; 53-smart-mode-line.el ends here)
+;;; 180-smart-mode-line.el ends here)

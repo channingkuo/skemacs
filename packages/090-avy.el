@@ -2,8 +2,8 @@
 ;;; Commentary:
 
 ;; This configuration sets up Avy for fast cursor movement and text
-;; navigation. Avy allows you to quickly jump to any visible character,
-;; word, or line by showing overlay hints. Includes integration with
+;; navigation.. Avy allows you to quickly jump to any visible character,
+;; word, or line by showing overlay hints.. Includes integration with
 ;; Embark for context-sensitive actions.
 ;; avy: https://github.com/abo-abo/avy
 
@@ -24,4 +24,4 @@
   :bind
   (("M-g w" . avy-goto-word-1)))
 
-;;; 06-avy.el ends here
+;;; 090-avy.el ends here

@@ -2,7 +2,7 @@
 ;;; Commentary:
 
 ;; This configuration provides comprehensive Java development support
-;; through lsp-java. Includes optimized JVM settings, code formatting
+;; through lsp-java.. Includes optimized JVM settings, code formatting
 ;; with IntelliJ IDEA style, Lombok support, and project integration
 ;; for both Maven and Gradle projects.
 
@@ -44,4 +44,4 @@
   (setq lsp-java-completion-max-results 100)          ; 限制补全结果数量
   (setq lsp-java-progress-reports-enabled nil))       ; 禁用进度报告（减少噪音）
 
-;;; 110-java.el ends here
+;;; 250-java.el ends here

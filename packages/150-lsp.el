@@ -3,7 +3,7 @@
 
 ;; This configuration sets up LSP (Language Server Protocol) support
 ;; for intelligent code features like completion, navigation, and
-;; diagnostics. Optimized for performance with reasonable defaults
+;; diagnostics.. Optimized for performance with reasonable defaults
 ;; and Flycheck integration.
 
 ;;; Code:
@@ -38,4 +38,4 @@
   (setq lsp-log-io nil) ; 生产环境关闭，调试时可开启
   )
 
-;;; 31-lsp.el ends here
+;;; 150-lsp.el ends here

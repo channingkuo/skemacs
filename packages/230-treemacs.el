@@ -2,7 +2,7 @@
 ;;; Commentary:
 
 ;; This configuration sets up Treemacs, a tree layout file explorer
-;; for Emacs. Integrates with Projectile for project-aware navigation
+;; for Emacs.. Integrates with Projectile for project-aware navigation
 ;; and provides a familiar sidebar interface for browsing project
 ;; structure and files.
 ;; treemacs: https://github.com/Alexander-Miller/treemacs
@@ -41,4 +41,4 @@
 ;;   :ensure t
 ;;   :after (treemacs lsp))
 
-;;; 102-treemacs.el ends here
+;;; 230-treemacs.el ends here

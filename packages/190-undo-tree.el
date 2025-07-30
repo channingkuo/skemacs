@@ -3,7 +3,7 @@
 
 ;; This configuration replaces the default undo system with undo-tree,
 ;; which provides a branching undo history that preserves all edit
-;; history. Includes a Hydra interface for easy navigation and
+;; history.. Includes a Hydra interface for easy navigation and
 ;; visualization of the undo tree structure.
 
 ;;; Code:
@@ -24,4 +24,4 @@
 			  ("v"   undo-tree-visualize "Visualize" :color blue)
 			  ("q"   nil "Quit hydra" :color blue)))
 
-;;; 54-undo-tree.el ends here
+;;; 190-undo-tree.el ends here

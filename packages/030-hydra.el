@@ -2,7 +2,7 @@
 ;;; Commentary:
 
 ;; This configuration sets up Hydra, a package for creating transient
-;; key binding menus. Hydras provide a convenient way to group related
+;; key binding menus.. Hydras provide a convenient way to group related
 ;; commands and create modal interfaces for complex operations.
 ;; hydra: https://github.com/abo-abo/hydra
 
@@ -15,4 +15,4 @@
   :ensure t
   :after hydra)
 
-;;; 02-hydra.el ends here
+;;; 030-hydra.el ends here

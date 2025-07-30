@@ -43,4 +43,4 @@
   ;; (dashboard-setup-startup-hook)  ; 禁用原始启动hook，使用自定义启动逻辑
   )
 
-;;; 01-project.el ends here
+;;; 010-project.el ends here

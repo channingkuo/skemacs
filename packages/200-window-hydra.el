@@ -20,4 +20,4 @@
 	    ("]"   skemacs/enlarge-window-horizontally)
 	    ("q"   nil :exit t :color blue)))
 
-;;; 99-window-hydra.el ends here
+;;; 200-window-hydra.el ends here

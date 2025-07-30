@@ -2,7 +2,7 @@
 ;;; Commentary:
 
 ;; This file contains DAP (Debug Adapter Protocol) configuration for
-;; debugging support. Currently commented out but available for
+;; debugging support.. Currently commented out but available for
 ;; enabling debugging capabilities with LSP integration when needed.
 ;; dap-mode: https://emacs-lsp.github.io/dap-mode/page/configuration/
 
@@ -15,4 +15,4 @@
 ;;   :config
 ;;   (dap-ui-mode 1))
 
-;;; 105-dap.el ends here
+;;; 240-dap.el ends here

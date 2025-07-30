@@ -2,7 +2,7 @@
 ;;; Commentary:
 
 ;; This configuration enables Flycheck for real-time syntax checking
-;; and error highlighting in programming modes. Provides immediate
+;; and error highlighting in programming modes.. Provides immediate
 ;; feedback on syntax errors, warnings, and style issues across
 ;; many programming languages.
 ;; flycheck: https://www.flycheck.org/en/latest/
@@ -18,5 +18,4 @@
   :hook
   (prog-mode . flycheck-mode))
 
-;;; 100-flycheck.el ends here
-  
+;;; 210-flycheck.el ends here
