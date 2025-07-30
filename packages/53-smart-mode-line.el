@@ -1,4 +1,14 @@
-;; https://github.com/Malabarba/smart-mode-line
+;;; 53-smart-mode-line.el --- Enhanced mode line with path abbreviation -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration sets up smart-mode-line for a cleaner, more
+;; informative mode line display. Includes path abbreviations for
+;; common directories and mode name filtering to reduce clutter
+;; while maintaining essential information.
+;; ;; smart-mode-line: https://github.com/Malabarba/smart-mode-line
+
+;;; Code:
+
 (use-package smart-mode-line
   :ensure t
   :defer 2
@@ -18,4 +28,6 @@
   (sml/replacer-regexp-list
    '(("^~/\\.emacs\\.d/"           ":Emacs:")
      ("^~/Documents/YSW/Source/*"  ":YSW:")
-     ("^~/Documents/ChanningKuo/*" ":Kuo:"))))
+     ("^~/Documents/ChanningKuo/*" ":Kuo:")))
+
+;;; 53-smart-mode-line.el ends here)

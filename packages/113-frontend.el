@@ -1,3 +1,13 @@
+;;; 113-frontend.el --- Frontend development configuration -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration provides comprehensive frontend development support
+;; including TypeScript, JavaScript, Vue, HTML, CSS/SCSS, JSON, and YAML.
+;; Features Prettier integration for consistent code formatting and
+;; LSP integration for intelligent code assistance.
+
+;;; Code:
+
 ;; Frontend development configuration
 (with-eval-after-load 'warnings
   (add-to-list 'warning-suppress-types '(native-compiler)))
@@ -156,3 +166,5 @@
     (which-key-add-key-based-replacements "C-c l = -" "format buffer with prettier")
     (which-key-add-key-based-replacements "C-c l = t" "toggle prettier on save")
     (which-key-add-key-based-replacements "C-c l = R" "format region with prettier")))
+
+;;; 113-frontend.el ends here

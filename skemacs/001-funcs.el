@@ -1,3 +1,12 @@
+;;; 001-funcs.el --- Custom utility functions -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This file contains custom utility functions for navigation, window management,
+;; clipboard operations, and other interactive commands. All functions use the
+;; skemacs/ namespace prefix following the configuration conventions.
+
+;;; Code:
+
 (defun skemacs/next-ten-lines()
   "Move cursor to next 10 lines."
   (interactive)
@@ -100,3 +109,5 @@
     (if (file-directory-p org-dir)
         (dired org-dir)
       (message "Directory %s does not exist." org-dir))))
+
+;;; 001-funcs.el ends here

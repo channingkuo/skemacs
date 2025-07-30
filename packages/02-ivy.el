@@ -1,4 +1,15 @@
-;; https://github.com/abo-abo/swiper
+;;; 02-ivy.el --- Completion framework with Ivy, Counsel, and Swiper -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration sets up the Ivy completion framework including:
+;; - Ivy: generic completion mechanism
+;; - Counsel: enhanced versions of common Emacs commands
+;; - Swiper: Ivy-enhanced search
+;; - ivy-rich: enhanced descriptions in completion buffers
+;; counsel: https://github.com/abo-abo/swiper
+
+;;; Code:
+
 (use-package counsel
   :ensure t)
 
@@ -44,3 +55,5 @@
   :config
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
   :hook (after-init . ivy-rich-mode))
+
+;;; 02-ivy.el ends here

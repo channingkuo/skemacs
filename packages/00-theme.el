@@ -1,3 +1,13 @@
+;;; 00-theme.el --- Automatic dark/light theme switching based on system appearance -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration provides automatic theme switching based on system
+;; dark mode status. It supports macOS, Windows, and other platforms,
+;; polling the system appearance and switching between configured dark
+;; and light themes automatically.
+
+;;; Code:
+
 (defgroup auto-dark nil
   "Automatically changes Emacs theme acording to MacOS/Windows dark-mode status."
   :group 'tools
@@ -355,3 +365,5 @@ theme list."
 (setq auto-dark-polling-interval-seconds 600)
 (setq auto-dark-themes '((modus-vivendi-tritanopia) (modus-operandi-tinted)))
 (auto-dark-mode)
+
+;;; 00-theme.el ends here

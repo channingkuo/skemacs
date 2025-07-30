@@ -1,3 +1,14 @@
+;;; 01-project.el --- Project management with Projectile and Dashboard -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration sets up project management using Projectile for
+;; project discovery and navigation, counsel-projectile for enhanced
+;; completion, and dashboard for a welcoming startup screen with
+;; recent files and projects.
+;; dashboard: https://github.com/emacs-dashboard/emacs-dashboard
+
+;;; Code:
+
 (use-package projectile
   :ensure t
   :init
@@ -13,7 +24,6 @@
   :after (projectile)
   :init (counsel-projectile-mode))
 
-;; https://github.com/emacs-dashboard/emacs-dashboard
 (use-package dashboard
   :ensure t
   :after (projectile)
@@ -32,3 +42,5 @@
                           (agenda    . 5)))
   ;; (dashboard-setup-startup-hook)  ; 禁用原始启动hook，使用自定义启动逻辑
   )
+
+;;; 01-project.el ends here

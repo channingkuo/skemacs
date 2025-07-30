@@ -1,4 +1,14 @@
-;; https://github.com/magnars/multiple-cursors.el
+;;; 08-multiple-cursors.el --- Multiple cursor editing with Hydra interface -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration enables multiple-cursors for editing multiple
+;; locations simultaneously. Includes a comprehensive Hydra interface
+;; that provides easy access to all multiple cursor operations like
+;; marking next/previous, editing lines, and cursor management.
+;; multiple-cursors: https://github.com/magnars/multiple-cursors.el
+
+;;; Code:
+
 (use-package multiple-cursors
   :ensure t
   :after hydra
@@ -30,3 +40,5 @@ Up^^             Down^^           Miscellaneous           % 2(mc/num-cursors) cu
 	  ("<down-mouse-1>" ignore)
 	  ("<drag-mouse-1>" ignore)
 	  ("q" nil)))
+
+;;; 08-multiple-cursors.el ends here

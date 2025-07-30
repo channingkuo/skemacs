@@ -1,3 +1,12 @@
+;;; 003-keybindings.el --- Global key bindings and prefix commands -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This file defines all global key bindings including custom prefix commands
+;; (C-j, C-x w, C-x b, C-j o). Organizes keybindings by functional area with
+;; which-key integration for discoverability.
+
+;;; Code:
+
 ;; 向下移动10行
 (global-set-key (kbd "M-n") 'skemacs/next-ten-lines)
 ;; 向上移动10行
@@ -99,3 +108,5 @@
 ;; C-x r b（bookmark-jump，counsel-bookmark） ：跳转到书签。
 ;; C-x r l （bookmark-bmenu-list）：列出已有书签。
 ;; M-x bookmark-delete ：删除书签。
+
+;;; 003-keybindings.el ends here

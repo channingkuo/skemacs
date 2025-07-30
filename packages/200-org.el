@@ -1,3 +1,13 @@
+;;; 200-org.el --- Comprehensive Org-mode configuration -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration provides a comprehensive Org-mode setup for
+;; task management, note-taking, and project organization. Includes
+;; custom TODO workflows, agenda views, capture templates, and
+;; super-agenda for advanced task organization and prioritization.
+
+;;; Code:
+
 (use-package org
   :ensure t
   ;; Associate all org files with org mode
@@ -353,3 +363,5 @@
                             ;; 组合排序键：TODO状态索引*10 + 优先级值
                             (+ (* todo-index 10) priority-value))))
                       '<)))
+
+;;; 200-org.el ends here

@@ -1,4 +1,14 @@
-;; https://github.com/company-mode/company-mode
+;;; 30-company.el --- Auto-completion with Company and YASnippet -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration sets up the Company completion framework with
+;; yasnippet integration for comprehensive auto-completion. Includes
+;; optimized settings for responsive completion and snippet expansion
+;; in all programming modes.
+;; company: https://github.com/company-mode/company-mode
+
+;;; Code:
+
 (use-package yasnippet
   :ensure t
   :config
@@ -28,3 +38,5 @@
   (setq company-selection-wrap-around t)
   ;; 根据选择的频率进行排序
   (setq company-transformers '(company-sort-by-occurrence)))
+
+;;; 30-company.el ends here

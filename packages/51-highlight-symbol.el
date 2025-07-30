@@ -1,5 +1,16 @@
-;; https://github.com/nschum/highlight-symbol.el
+;;; 51-highlight-symbol.el --- Symbol highlighting and navigation -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration enables highlight-symbol for highlighting all
+;; occurrences of the symbol at point throughout the buffer. Useful
+;; for quickly identifying variable usage and code structure.
+;; Bound to F3 for quick access.
+;; highlight-symbol: https://github.com/nschum/highlight-symbol.el
+
+;;; Code:
+
 (use-package highlight-symbol
   :ensure t
-  :init (highlight-symbol-mode)
-  :bind ("<f3>" . highlight-symbol)) ;; 按下 F3 键就可高亮当前符号
+  :init (highlight-symbol-mode))
+
+;;; 51-highlight-symbol.el ends here

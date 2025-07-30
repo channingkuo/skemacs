@@ -1,3 +1,12 @@
+;;; 000-packages.el --- Package management and configuration loading -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This file sets up the package management system with use-package,
+;; configures package repositories, proxy settings, and handles loading
+;; of all packages and local configurations with timing instrumentation.
+
+;;; Code:
+
 (require 'package)
 (setq package-archives '(("gnu"    . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
@@ -15,7 +24,7 @@
 ;; (setq use-package-always-defer t)
 (setq use-package-expand-minimally t)
 ;; 不加这一句可能有问题，建议读者尝试一下
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 ;; 设置 HTTP/HTTPS/SOCKS5 代理
 (setq url-proxy-services
       '(("http.*" . "127.0.0.1:7892")
@@ -31,8 +40,7 @@
               (file-name (file-name-nondirectory file)))
           (skemacs/update-banner-status (format "Loading  %s..." file-name))
           (load file nil t)
-          (let ((time2 (current-time))
-		(time-delta (float-time (time-subtract (current-time) time1))))
+          (let ((time-delta (float-time (time-subtract (current-time) time1))))
             (when (> time-delta 0.5)
               (message "Loaded %s in %.6f seconds" file-name time-delta))
             (skemacs/update-banner-status (format "Loaded   %s in %.6f seconds" 
@@ -48,10 +56,11 @@
               (file-name (file-name-nondirectory file)))
           (skemacs/update-banner-status (format "Loading  %s..." file-name))
           (load file nil t)
-          (let ((time2 (current-time))
-		(time-delta (float-time (time-subtract (current-time) time1))))
+          (let ((time-delta (float-time (time-subtract (current-time) time1))))
             (when (> time-delta 0.5)
               (message "Loaded %s in %.6f seconds" file-name time-delta))
             (skemacs/update-banner-status (format "Loaded   %s in %.6f seconds" 
                                                   file-name
                                                   time-delta))))))))
+
+;;; 000-packages.el ends here

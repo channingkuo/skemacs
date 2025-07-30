@@ -1,3 +1,12 @@
+;;; 002-config.el --- Basic Emacs behavior and UI configuration -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This file contains basic Emacs configuration including UI settings,
+;; behavior modifications, backup configuration, and platform-specific
+;; adjustments. Sets up fundamental editing preferences and appearance.
+
+;;; Code:
+
 ;; macOS specific params
 (defconst *is-a-mac* (eq system-type 'darwin))
 
@@ -20,7 +29,7 @@
 (global-auto-revert-mode t)
 ;; (setq debug-on-error t)
 (setq max-lisp-eval-depth 10000)
-(setq max-specpdl-size 20000)
+;; (setq max-specpdl-size 20000)
 ;; 选中文本后输入文本会替换文本（更符合我们习惯了的其它编辑器的逻辑）
 (delete-selection-mode t)
 ;; Emacs 禁用启动的欢迎界面
@@ -51,3 +60,5 @@
 ;; 静音铃声
 (setq visible-bell nil)
 (setq ring-bell-function 'ignore)
+
+;;; 002-config.el ends here

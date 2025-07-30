@@ -1,4 +1,13 @@
-;; Project recent files tracking using recentf
+;;; 02-project-recent-files.el --- Project-aware recent files with ivy interface -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This file provides enhanced project recent file functionality that filters
+;; recent files by current project context. Integrates with Projectile and
+;; recentf to provide a better recent files experience within projects.
+;; Overrides the default projectile-recentf command for improved usability.
+
+;;; Code:
+
 (defun skemacs/project-recent-files-get ()
   "Get recent files for current project from recentf."
   (when (and (fboundp 'projectile-project-p) (projectile-project-p))
@@ -35,3 +44,5 @@
 ;; Override projectile-recentf to use my implementation
 (with-eval-after-load 'projectile
   (define-key projectile-command-map (kbd "e") #'skemacs/project-recent-files-restore))
+
+;;; 002-project-recent-files.el ends here

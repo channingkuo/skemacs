@@ -1,4 +1,14 @@
-;; https://github.com/Alexander-Miller/treemacs
+;;; 102-treemacs.el --- Tree-style file explorer with project integration -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration sets up Treemacs, a tree layout file explorer
+;; for Emacs. Integrates with Projectile for project-aware navigation
+;; and provides a familiar sidebar interface for browsing project
+;; structure and files.
+;; treemacs: https://github.com/Alexander-Miller/treemacs
+
+;;; Code:
+
 (use-package treemacs
   :ensure t
   :defer t
@@ -30,3 +40,5 @@
 ;; (use-package lsp-treemacs
 ;;   :ensure t
 ;;   :after (treemacs lsp))
+
+;;; 102-treemacs.el ends here

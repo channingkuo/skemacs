@@ -1,3 +1,13 @@
+;;; 110-java.el --- Java development environment with LSP -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration provides comprehensive Java development support
+;; through lsp-java. Includes optimized JVM settings, code formatting
+;; with IntelliJ IDEA style, Lombok support, and project integration
+;; for both Maven and Gradle projects.
+
+;;; Code:
+
 (use-package lsp-java
   :ensure t
   :mode ("\\.java\\'")
@@ -33,3 +43,5 @@
   (setq lsp-java-save-actions-organize-imports nil)   ; 保存时整理imports
   (setq lsp-java-completion-max-results 100)          ; 限制补全结果数量
   (setq lsp-java-progress-reports-enabled nil))       ; 禁用进度报告（减少噪音）
+
+;;; 110-java.el ends here

@@ -1,3 +1,13 @@
+;;; 31-lsp.el --- Language Server Protocol configuration -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration sets up LSP (Language Server Protocol) support
+;; for intelligent code features like completion, navigation, and
+;; diagnostics. Optimized for performance with reasonable defaults
+;; and Flycheck integration.
+
+;;; Code:
+
 (use-package lsp-mode
   :ensure t
   :init
@@ -27,3 +37,5 @@
   ;; 日志控制
   (setq lsp-log-io nil) ; 生产环境关闭，调试时可开启
   )
+
+;;; 31-lsp.el ends here

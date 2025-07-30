@@ -1,5 +1,12 @@
-;; recentf package configuration
-;; Built-in package for tracking recently opened files
+;;; 03-recentf.el --- Recent files tracking with enhanced filtering -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration sets up the built-in recentf package for tracking
+;; recently opened files with enhanced filtering to exclude temporary files,
+;; auto-generated content, and package directories. Includes automatic
+;; cleanup and immediate saving of new files.
+
+;;; Code:
 
 (use-package recentf
   :ensure nil  ; Built-in package
@@ -23,3 +30,5 @@
   
   ;; 定期清理失效文件
   (run-at-time nil (* 5 60) 'recentf-cleanup))
+
+;;; 03-recentf.el ends here

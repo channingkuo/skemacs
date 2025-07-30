@@ -1,3 +1,13 @@
+;;; 10-vterm.el --- Terminal emulator with project integration -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This configuration sets up vterm, a fully-featured terminal emulator
+;; for Emacs. Includes custom functions for opening terminals in project
+;; root directories automatically, making it convenient for development
+;; workflows.
+
+;;; Code:
+
 (use-package vterm
   :ensure t
   :defer t
@@ -21,3 +31,5 @@
       (apply orig-fun args)))
   
   (advice-add 'vterm :around #'skemacs/vterm-project-advice))
+
+;;; 10-vterm.el ends here

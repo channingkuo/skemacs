@@ -5,7 +5,7 @@
 ;; a number of other files.
 
 ;;; Code:
-;; 记录启动时间
+
 (defvar skemacs-start-time (current-time)
   "Time when Emacs started loading the configuration.")
 
@@ -224,3 +224,5 @@
       (skemacs/update-banner-status (format "Emacs configuration loaded in %.6f seconds" elapsed-time))
       (skemacs/update-banner-status "Ready!" t))))
 (provide 'init)
+
+;;; init.el ends here
