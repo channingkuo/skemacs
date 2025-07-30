@@ -8,11 +8,13 @@
 
 ;;; Code:
 
-;; (use-package dap-mode
-;;   :ensure t
-;;   :after hydra lsp-mode
-;;   :defer t
-;;   :config
-;;   (dap-ui-mode 1))
+(use-package dap-mode
+  :ensure t
+  :after hydra lsp-mode
+  :defer t
+  :config
+  (dap-ui-mode 1)
+;;   (setq dap-auto-configure-features '(sessions locals breakpoints expressions controls tooltip))
+)
 
 ;;; 240-dap.el ends here
