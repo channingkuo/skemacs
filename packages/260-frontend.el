@@ -8,7 +8,7 @@
 
 ;;; Code:
 
-;; Frontend development configuration
+;; TODO 前端项目文件mode hook异常
 (with-eval-after-load 'warnings
   (add-to-list 'warning-suppress-types '(native-compiler)))
 

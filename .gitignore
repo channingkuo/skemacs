@@ -111,6 +111,4 @@ CLAUDE.md
 .gemini/
 GEMINI.md
 
-core/banners/111-banner.txt
-core/banners/112-banner.txt
-core/banners/113-banner.txt
+backups/

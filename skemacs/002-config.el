@@ -9,14 +9,8 @@
 
 ;; macOS specific params
 (defconst *is-a-mac* (eq system-type 'darwin))
-
-;; recentf configuration - 最近文件记录
-(setq recentf-max-saved-items 100)
-(setq recentf-auto-cleanup 'never)  ; 防止在启动时清理不存在的文件
-(setq recentf-auto-save-timer (run-with-idle-timer 30 t 'recentf-save-list))  ; 每30秒自动保存
-(recentf-mode 1)  ; 启用 recentf-mode
-;; 确保退出时保存 recentf 列表
-(add-hook 'kill-emacs-hook 'recentf-save-list)
+;; Emacs 禁用启动的欢迎界面
+(setq inhibit-startup-message t)
 ;; 在关闭 Emacs 前询问是否确认关闭，防止误触
 (setq confirm-kill-emacs #'yes-or-no-p)
 ;; 自动补全括号
@@ -32,23 +26,10 @@
 ;; (setq max-specpdl-size 20000)
 ;; 选中文本后输入文本会替换文本（更符合我们习惯了的其它编辑器的逻辑）
 (delete-selection-mode t)
-;; Emacs 禁用启动的欢迎界面
-(setq inhibit-startup-message t)
-;; 关闭文件自动备份
-(setq make-backup-files nil)
-;; 配置自动保存文件位置
-(let ((auto-save-dir (concat user-emacs-directory "auto-save/")))
-  ;; 确保目录存在
-  (unless (file-directory-p auto-save-dir)
-    (make-directory auto-save-dir t))
-  ;; 设置自动保存文件转换规则
-  (setq auto-save-file-name-transforms
-        `((".*" ,auto-save-dir t))))
 ;; 编程模式下，可以折叠代码块
 (add-hook 'prog-mode-hook #'hs-minor-mode)
-;; Window 行号设定
+;; 行号设定
 ;; (global-display-line-numbers-mode -1)
-(setq display-line-numbers-type t)
 ;; 关闭 Tool bar
 (tool-bar-mode -1)
 ;; 隐藏菜单栏
