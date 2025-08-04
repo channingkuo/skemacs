@@ -366,4 +366,17 @@ theme list."
 (setq auto-dark-themes '((modus-vivendi-tritanopia) (modus-operandi-tinted)))
 (auto-dark-mode)
 
+
+;; TODO 精简，只保留切换的逻辑，其余代码都不要
+
+(progn
+        (unless auto-dark-detection-method
+          (setq auto-dark-detection-method
+                (auto-dark--determine-detection-method)))
+        (auto-dark--check-and-set-dark-mode)
+        (auto-dark--register-change-listener))
+
+
+
+
 ;;; 000-theme.el ends here
