@@ -84,6 +84,8 @@
                 (insert (skemacs--center-string line win-width) "\n")))
             (insert "\n")))
 
+        (insert (skemacs--center-string "[ Press Enter to continue ]" win-width) "\n\n")
+
         ;; ── 欢迎信息 ──
         (insert (skemacs--center-string
                  (format "Emacs %s  |  Skemacs Configuration" emacs-version)
@@ -93,7 +95,6 @@
         (let* ((table-width 56)
                (left-pad (max 0 (/ (- win-width table-width) 2)))
                (pad (make-string left-pad ?\s)))
-          (insert (skemacs--center-string "Startup Timing Report" win-width) "\n")
           (insert pad (make-string table-width ?─) "\n")
           (insert pad (format "  %-32s %10s  %s\n" "Module" "Time" "Status"))
           (insert pad (make-string table-width ?─) "\n"))))
@@ -158,14 +159,17 @@ TOTAL-ELAPSED 为总启动耗时（秒）。
                      (format "%s: %s" (car err) (cdr err))
                      win-width) "\n")))
 
-        ;; ── 耗时信息 ──
-        (insert "\n")
-        (insert (skemacs--center-string
-                 (format "Startup time: %.3fs" total-elapsed)
-                 win-width) "\n\n")
-
-        ;; ── 提示 ──
-        (insert (skemacs--center-string "[ Press Enter to continue ]" win-width) "\n")
+        ;; ── 将启动时间写入欢迎信息行（居中显示）──
+        (goto-char (point-min))
+        (when (search-forward "Skemacs Configuration" nil t)
+          (beginning-of-line)
+          (let ((beg (point)))
+            (end-of-line)
+            (delete-region beg (point))
+            (insert (skemacs--center-string
+                     (format "Emacs %s  |  Skemacs Configuration  |  Starting time: %.3fs"
+                             emacs-version total-elapsed)
+                     win-width))))
 
         ;; 滚到顶部显示 banner
         (goto-char (point-min))
