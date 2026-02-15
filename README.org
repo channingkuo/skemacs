@@ -1,0 +1,491 @@
+#+TITLE: Skemacs Configuration
+#+AUTHOR: Kuo
+#+DATE: 2025-07-29
+#+STARTUP: overview
+
+* Table of Contents :TOC:
+:PROPERTIES:
+:TOC:      :include all :depth 3
+:END:
+:CONTENTS:
+- [[#overview][Overview]]
+- [[#architecture][Architecture]]
+  - [[#directory-structure][Directory Structure]]
+  - [[#startup-flow][Startup Flow]]
+  - [[#module-system][Module System]]
+- [[#key-bindings-reference][Key Bindings Reference]]
+  - [[#prefix-keys][Prefix Keys]]
+  - [[#global-key-bindings][Global Key Bindings]]
+  - [[#org-mode-bindings][Org Mode Bindings]]
+- [[#core-files][Core Files]]
+  - [[#early-init-el][early-init.el]]
+  - [[#init-el][init.el]]
+  - [[#core-load-paths-el][core-load-paths.el]]
+  - [[#core-module-el][core-module.el]]
+  - [[#core-packages-el][core-packages.el]]
+  - [[#core-ui-el][core-ui.el]]
+  - [[#core-editor-el][core-editor.el]]
+  - [[#core-funcs-el][core-funcs.el]]
+  - [[#core-keybindings-el][core-keybindings.el]]
+- [[#adding-new-modules][Adding New Modules]]
+  - [[#module-template][Module Template]]
+  - [[#module-management][Module Management]]
+- [[#migration-roadmap][Migration Roadmap]]
+- [[#usage-guide][Usage Guide]]
+  - [[#first-time-setup][First Time Setup]]
+  - [[#daily-workflow][Daily Workflow]]
+  - [[#performance-monitoring][Performance Monitoring]]
+- [[#troubleshooting][Troubleshooting]]
+:END:
+
+* Overview
+:PROPERTIES:
+:CUSTOM_ID: overview
+:END:
+
+Skemacs is a modular, high-performance Emacs configuration framework. Key features:
+
+- *Independent modules*: Each module is fully self-contained (package declaration + config + keybindings)
+- *Startup timing*: Every module's load time is recorded; view with =M-x skemacs/show-load-times=
+- *Error isolation*: A single module failure won't break others (=condition-case= wrapped)
+- *Flexible management*: Enable/disable modules via config lists, no need to delete files
+- *Dynamic splash screen*: Real-time loading progress displayed at startup, press Enter to continue
+- *Deferred package init*: =package-initialize= is deferred until first package install for fast startup
+- *Centralized prefix keys*: Prefix keys defined in =core-keybindings.el=, modules bind under them
+- *use-package :bind*: All custom bindings viewable via =M-x describe-personal-keybindings=
+
+* Architecture
+:PROPERTIES:
+:CUSTOM_ID: architecture
+:END:
+
+** Directory Structure
+:PROPERTIES:
+:CUSTOM_ID: directory-structure
+:END:
+
+#+BEGIN_SRC
+~/.emacs.d/
+├── early-init.el            # GC optimization + native-comp + disable package autoload
+├── init.el                  # Entry point (load core → splash → modules → Enter → dired)
+├── core/                    # Core infrastructure (no third-party dependencies)
+│   ├── core-load-paths.el   # Path constants + load-path setup
+│   ├── core-module.el       # Module loading system (timing + error isolation + splash)
+│   ├── core-packages.el     # use-package + package.el (deferred initialization)
+│   ├── core-ui.el           # Basic UI (toolbar/menubar/scrollbar etc.)
+│   ├── core-editor.el       # Editing behavior (parens, selection, folding etc.)
+│   ├── core-funcs.el        # Utility functions (navigation, window, clipboard)
+│   └── core-keybindings.el  # Prefix key definitions + global keybindings
+├── modules/                 # Feature modules (each file is self-contained)
+│   └── init-xxx.el          # Module example
+├── local/                   # Local custom configs (not tracked by Git)
+├── banners/                 # Startup banner files
+├── themes/                  # Custom themes
+└── custom.el                # Emacs custom-file (auto-generated, not tracked)
+#+END_SRC
+
+** Startup Flow
+:PROPERTIES:
+:CUSTOM_ID: startup-flow
+:END:
+
+#+BEGIN_SRC
+early-init.el → init.el → splash screen → core/*.el → modules/*.el → Press Enter → dired
+#+END_SRC
+
+1. =early-init.el= — Set GC threshold to 800MB, disable package autoload, hide UI elements
+2. =init.el= — Bootstrap =core/= into =load-path=, require core-load-paths and core-module
+3. =skemacs--splash-init= — Display banner and table header in =*skemacs*= buffer
+4. =skemacs-load-core-module= — Load remaining core files (each line appears in real-time)
+5. =skemacs-load-all-modules= — Scan =modules/= directory, load each (real-time display)
+6. =emacs-startup-hook= — Restore GC to 16MB, show summary, wait for Enter
+7. Press Enter — Dismiss splash, open =dired= on current directory
+
+** Module System
+:PROPERTIES:
+:CUSTOM_ID: module-system
+:END:
+
+The module system is provided by =core/core-module.el=:
+
+| Variable / Function          | Description                                     |
+|------------------------------+-------------------------------------------------|
+| =skemacs-module-list=        | Module list to load; nil = auto-scan modules/   |
+| =skemacs-disabled-modules=   | Disabled module list (highest priority)          |
+| =skemacs-load-times=         | Timing data =(("name" . seconds) ...)=          |
+| =skemacs-module-errors=      | Error records =(("name" . "message") ...)=      |
+| =skemacs-load-module=        | Load a single module (condition-case isolation)  |
+| =skemacs-load-all-modules=   | Load all enabled modules                        |
+| =skemacs/show-load-times=    | Interactive command: show formatted timing report|
+
+Timing report example (=M-x skemacs/show-load-times=):
+
+#+BEGIN_SRC
+Startup Timing Report
+────────────────────────────────────────────────────────
+  Module                             Time  Status
+────────────────────────────────────────────────────────
+  core-packages                       59ms  OK
+  core-ui                              6ms  OK
+  core-editor                          4ms  OK
+  core-funcs                         589us  OK
+  core-keybindings                   839us  OK
+────────────────────────────────────────────────────────
+  Total: 71ms    | 5 loaded | 0 disabled | 0 errors
+#+END_SRC
+
+* Key Bindings Reference
+:PROPERTIES:
+:CUSTOM_ID: key-bindings-reference
+:END:
+
+** Prefix Keys
+:PROPERTIES:
+:CUSTOM_ID: prefix-keys
+:END:
+
+Prefix keys are defined in =core-keybindings.el=. Modules bind commands under these prefixes:
+
+| Prefix    | Keymap Name              | Purpose        |
+|-----------+--------------------------+----------------|
+| =C-j=     | =skemacs-prefix=         | Main prefix    |
+| =C-j o=   | =skemacs-org-prefix=     | Org-related    |
+| =C-x w=   | =skemacs-window-prefix=  | Window ops     |
+| =C-x b=   | =skemacs-buffer-prefix=  | Buffer ops     |
+
+** Global Key Bindings
+:PROPERTIES:
+:CUSTOM_ID: global-key-bindings
+:END:
+
+These keybindings depend on no third-party packages, defined in =core-keybindings.el=:
+
+*** Navigation
+| Key     | Function                     | Description             |
+|---------+------------------------------+-------------------------|
+| =M-n=   | =skemacs/next-ten-lines=     | Move 10 lines down      |
+| =M-p=   | =skemacs/previous-ten-lines= | Move 10 lines up        |
+| =C-o=   | =pop-global-mark=            | Jump back to prev mark  |
+| =M-/=   | =dabbrev-expand=             | Text completion         |
+
+*** Editing
+| Key       | Function                          | Description          |
+|-----------+-----------------------------------+----------------------|
+| =C-j C-k= | =kill-whole-line=                 | Kill entire line     |
+| =C-c C-y= | =skemacs/copy-to-clipboard=       | Copy to clipboard    |
+
+*** Window Management (=C-x w= prefix)
+| Key       | Function                              | Description          |
+|-----------+---------------------------------------+----------------------|
+| =C-x w h= | =windmove-left=                       | Move to left window  |
+| =C-x w j= | =windmove-down=                       | Move to below window |
+| =C-x w k= | =windmove-up=                         | Move to above window |
+| =C-x w l= | =windmove-right=                      | Move to right window |
+| =C-x w s= | =split-window-below=                  | Split horizontally   |
+| =C-x w v= | =split-window-right=                  | Split vertically     |
+| =C-x w S= | =skemacs/split-window-horizontally=   | Split & switch down  |
+| =C-x w V= | =skemacs/split-window-vertically=     | Split & switch right |
+
+*** Buffer Management (=C-x b= prefix)
+| Key       | Function           | Description        |
+|-----------+--------------------+--------------------|
+| =C-x b b= | =switch-to-buffer=  | Switch buffer      |
+| =C-x b n= | =next-buffer=       | Next buffer        |
+| =C-x b p= | =previous-buffer=   | Previous buffer    |
+| =C-x b k= | =kill-buffer=       | Kill buffer        |
+
+*** Config & Tools
+| Key         | Function                  | Description          |
+|-------------+---------------------------+----------------------|
+| =C-x a i R= | =skemacs/reload-config=   | Reload config        |
+| =C-j t=     | =skemacs/show-load-times= | Show load times      |
+
+** Org Mode Bindings
+:PROPERTIES:
+:CUSTOM_ID: org-mode-bindings
+:END:
+
+| Key             | Function                     | Description        |
+|-----------------+------------------------------+--------------------|
+| =C-j o o=       | =skemacs/open-org-directory= | Open ~/org dir     |
+| =C-j o a=       | =org-agenda=                 | Org Agenda         |
+| =C-j o c=       | =org-capture=                | Org Capture        |
+| =C-j o l=       | =org-store-link=             | Store link         |
+| =C-j o i=       | =org-insert-link=            | Insert link        |
+| =C-j o C-p=     | =iimage-mode=                | Image preview      |
+| =C-j o <up>=    | =org-priority-up=            | Increase priority  |
+| =C-j o <down>=  | =org-priority-down=          | Decrease priority  |
+
+* Core Files
+:PROPERTIES:
+:CUSTOM_ID: core-files
+:END:
+
+** early-init.el
+:PROPERTIES:
+:CUSTOM_ID: early-init-el
+:END:
+
+Loaded by Emacs 27+ before =init.el= and before GUI initialization:
+- Set GC threshold to 800MB (reduce pauses during startup)
+- Disable =package.el= automatic loading
+- Native compilation optimization (Emacs 28+)
+- Disable toolbar/menubar/scrollbar early (avoid GUI flicker)
+
+** init.el
+:PROPERTIES:
+:CUSTOM_ID: init-el
+:END:
+
+Entry point:
+1. Record startup time
+2. Bootstrap =core/= into =load-path=
+3. Initialize splash screen with banner
+4. Load core modules (real-time display in splash)
+5. Load feature modules (real-time display in splash)
+6. On =emacs-startup-hook=: restore GC, show summary, wait for Enter, open dired
+
+** core-load-paths.el
+:PROPERTIES:
+:CUSTOM_ID: core-load-paths-el
+:END:
+
+Defines path constants (=skemacs-dir=, =skemacs-core-dir=, =skemacs-modules-dir=, =skemacs-local-dir=, =skemacs-cache-dir=), ensures directories exist, adds them to =load-path=.
+
+** core-module.el
+:PROPERTIES:
+:CUSTOM_ID: core-module-el
+:END:
+
+Module loading system with dynamic splash screen. See [[#module-system][Module System]] section.
+
+** core-packages.el
+:PROPERTIES:
+:CUSTOM_ID: core-packages-el
+:END:
+
+Package manager configuration:
+- Tsinghua mirror sources (GNU + NonGNU + MELPA)
+- MELPA official as fallback
+- =use-package= initialization (=always-ensure=, =expand-minimally=)
+- *Deferred* =package-initialize=: only runs when first package install is needed
+- Network proxy (commented out by default, enable as needed)
+
+** core-ui.el
+:PROPERTIES:
+:CUSTOM_ID: core-ui-el
+:END:
+
+Basic UI configuration:
+- Platform detection (=skemacs-is-mac=, =skemacs-is-linux=, =skemacs-is-windows=)
+- Disable startup welcome screen
+- Confirm before quit
+- Disable toolbar / menubar / scrollbar
+- Column number display, pixel scroll, silent bell
+
+** core-editor.el
+:PROPERTIES:
+:CUSTOM_ID: core-editor-el
+:END:
+
+Editing behavior:
+- Auto-pair brackets (=electric-pair-mode=)
+- Paren highlighting (=show-paren-mode=)
+- Selection replacement (=delete-selection-mode=)
+- Code folding (=hs-minor-mode=)
+- Auto-revert files (=global-auto-revert-mode=)
+
+** core-funcs.el
+:PROPERTIES:
+:CUSTOM_ID: core-funcs-el
+:END:
+
+Utility functions (=skemacs/= namespace):
+- Navigation: =next-ten-lines=, =previous-ten-lines=
+- Window: =split-window-vertically=, =split-window-horizontally=, =shrink/enlarge-window=
+- Clipboard: =copy-to-clipboard= (cross-platform macOS/Linux/Windows)
+- Config: =reload-config=
+- Org: =open-org-directory=
+
+** core-keybindings.el
+:PROPERTIES:
+:CUSTOM_ID: core-keybindings-el
+:END:
+
+Defines prefix keys and global keybindings independent of packages. See [[#key-bindings-reference][Key Bindings Reference]].
+
+* Adding New Modules
+:PROPERTIES:
+:CUSTOM_ID: adding-new-modules
+:END:
+
+** Module Template
+:PROPERTIES:
+:CUSTOM_ID: module-template
+:END:
+
+Create a new file in =modules/= following this template:
+
+#+BEGIN_SRC elisp
+;;; init-xxx.el --- Short description -*- lexical-binding: t -*-
+;;; Commentary:
+;; Describe the module's purpose and included packages.
+
+;;; Code:
+
+(use-package some-package
+  :ensure t
+  :defer t                              ; Lazy load when possible
+  :hook (some-mode . some-package-mode) ; Or use :commands
+  :bind
+  (("C-j x" . some-command)            ; Keybindings defined in module
+   :map some-mode-map
+   ("C-c x" . another-command))
+  :init
+  ;; which-key description (if which-key is loaded)
+  (with-eval-after-load 'which-key
+    (which-key-add-key-based-replacements "C-j x" "description"))
+  :config
+  (setq some-option t))
+
+(provide 'init-xxx)
+;;; init-xxx.el ends here
+#+END_SRC
+
+** Module Management
+:PROPERTIES:
+:CUSTOM_ID: module-management
+:END:
+
+*** Auto-scan Mode (default)
+
+All =.el= files in =modules/= are loaded in alphabetical order.
+
+*** Manual Module List
+
+Add before =skemacs-load-all-modules= in =init.el=:
+
+#+BEGIN_SRC elisp
+(setq skemacs-module-list
+      '("init-theme"
+        "init-which-key"
+        "init-completion"
+        "init-navigation"))
+#+END_SRC
+
+*** Disable Specific Modules
+
+#+BEGIN_SRC elisp
+(setq skemacs-disabled-modules
+      '("init-vterm"
+        "init-treemacs"))
+#+END_SRC
+
+* Migration Roadmap
+:PROPERTIES:
+:CUSTOM_ID: migration-roadmap
+:END:
+
+Incrementally migrate features from the old config, by priority:
+
+| Priority | Module File           | Feature                             |
+|----------+-----------------------+-------------------------------------|
+|        1 | =init-theme.el=       | Theme setup                         |
+|        2 | =init-which-key.el=   | Key discovery (useful for all)      |
+|        3 | =init-completion.el=  | Ivy / Counsel / Swiper              |
+|        4 | =init-navigation.el=  | Avy + Ace-window                    |
+|        5 | =init-editing.el=     | Multiple-cursors + Undo-tree + Mwim |
+|        6 | =init-project.el=     | Projectile + Dashboard              |
+|        7 | =init-git.el=         | Magit                               |
+|        8 | =init-lsp.el=         | lsp-bridge + Company + YASnippet    |
+|        9 | =init-terminal.el=    | Vterm                               |
+|       10 | =init-ui.el=          | Modeline + Treemacs + Rainbow       |
+|       11 | =init-flycheck.el=    | Syntax checking                     |
+|       12 | =init-org.el=         | Org-mode full config                |
+
+* Usage Guide
+:PROPERTIES:
+:CUSTOM_ID: usage-guide
+:END:
+
+** First Time Setup
+:PROPERTIES:
+:CUSTOM_ID: first-time-setup
+:END:
+
+1. Install *Emacs 29.1+*
+
+2. Clone/copy this config to =~/.emacs.d/=
+
+3. Start Emacs — packages install automatically when modules need them
+
+4. Add feature modules in =modules/= as needed
+
+5. Set up Org directory:
+   #+BEGIN_SRC bash
+   mkdir -p ~/org
+   #+END_SRC
+
+** Daily Workflow
+:PROPERTIES:
+:CUSTOM_ID: daily-workflow
+:END:
+
+*** Window Management
+1. =C-x w v/s= — Split windows
+2. =C-x w h/j/k/l= — Navigate between windows
+3. =C-x b b= — Switch buffer
+
+*** Org Mode Workflow
+1. =C-j o a= — View agenda
+2. =C-j o c= — Quick capture
+3. =C-j o o= — Open org directory
+
+*** Config Management
+1. =C-x a i R= — Reload config
+2. =C-j t= — View module load times
+
+** Performance Monitoring
+:PROPERTIES:
+:CUSTOM_ID: performance-monitoring
+:END:
+
+*** View Load Report
+
+- Automatically printed to =*Messages*= after startup
+- =M-x skemacs/show-load-times= — Open dedicated report buffer
+- =C-j t= — Shortcut access
+
+*** GC Strategy
+
+| Phase          | gc-cons-threshold | Notes                          |
+|----------------+-------------------+--------------------------------|
+| During startup | 800MB             | Reduce GC pauses, fast startup |
+| After startup  | 16MB              | Normal operation, free memory  |
+
+* Troubleshooting
+:PROPERTIES:
+:CUSTOM_ID: troubleshooting
+:END:
+
+*** Startup Errors
+1. =emacs --debug-init= — View full error backtrace
+2. =emacs -Q= — Test with vanilla Emacs
+3. Check =*Messages*= and =*Warnings*= buffers
+4. Module errors won't break startup; they're recorded in =skemacs-module-errors=
+
+*** View Keybindings
+1. =C-h k= — Describe what a key does
+2. =C-h b= — List all current bindings
+3. =M-x describe-personal-keybindings= — View all =:bind= custom bindings
+
+*** Slow Startup
+1. =M-x skemacs/show-load-times= — Find the slowest module
+2. Modules marked =SLOW= (>0.5s) need optimization
+3. Try adding =:defer t= to slow modules for lazy loading
+
+*** Package Install Failures
+1. Check network connection and proxy settings
+2. =M-x package-refresh-contents= — Refresh package index
+3. Delete =~/.emacs.d/elpa/= and restart
+4. Uncomment proxy settings in =core-packages.el=
