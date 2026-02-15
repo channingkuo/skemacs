@@ -41,6 +41,74 @@
 ;; lsp-bridge (via git clone at ~/.emacs.d/lsp-bridge/)
 ;; ============================================================================
 
+;; ============================================================================
+;; 按键
+;; 按键	命令	备注
+;; Alt + n	acm-select-next	选择下一个候选词
+;; Down	acm-select-next	选择下一个候选词
+;; Alt + p	acm-select-prev	选择上一个候选词
+;; Up	acm-select-prev	选择上一个候选词
+;; Alt + ,	acm-select-last	选择最后一个候选词
+;; Alt + .	acm-select-first	选择第一个候选词
+;; Ctrl + v	acm-select-next-page	向下滚动候选菜单
+;; Alt + v	acm-select-prev-page	向上滚动候选菜单
+;; Ctrl + m	acm-complete	完成补全
+;; Return	acm-complete	完成补全
+;; Tab	acm-complete	完成补全
+;; Alt + h	acm-complete	完成补全
+;; Alt + H	acm-insert-common	插入候选词共有部分
+;; Alt + u	acm-filter	对候选词做二次过滤， 类似其他补全前端的模糊搜索
+;; Alt + d	acm-doc-toggle	开启或关闭候选词文档
+;; Alt + j	acm-doc-scroll-up	向下滚动候选词文档
+;; Alt + k	acm-doc-scroll-down	向上滚动候选词文档
+;; Alt + l	acm-hide	隐藏补全窗口
+;; Ctrl + g	acm-hide	隐藏补全窗口
+;; Alt + 数字键	acm-complete-quick-access	快速选择候选词， 需要开启 acm-enable-quick-access 选项
+;; 数字键	acm-complete-quick-access	(更加)快速选择候选词， 需要同时开启 acm-enable-quick-access 和 acm-quick-access-use-number-select
+;; 命令
+;; lsp-bridge-find-def: 跳转到定义位置
+;; lsp-bridge-find-def-other-window: 在其他窗口跳转到定义位置
+;; lsp-bridge-find-def-return: 返回跳转之前的位置
+;; lsp-bridge-find-impl: 跳转到接口实现位置
+;; lsp-bridge-find-impl-other-window: 在其他窗口跳转到接口实现位置
+;; lsp-bridge-find-type-def: 跳转到类型定义位置
+;; lsp-bridge-find-type-def-other-window: 在其他窗口跳转到类型定义位置
+;; lsp-bridge-find-references: 查看代码引用
+;; lsp-bridge-popup-documentation: 查看光标处的文档
+;; lsp-bridge-popup-documentation-scroll-up: 文档窗口向上滚动
+;; lsp-bridge-popup-documentation-scroll-down: 文档窗口向下滚动
+;; lsp-bridge-show-documentation: 查看光标处的文档, 但是是用 Buffer 来显示
+;; lsp-bridge-rename: 重命名
+;; lsp-bridge-diagnostic-jump-next: 跳转到下一个诊断位置
+;; lsp-bridge-diagnostic-jump-prev: 跳转到上一个诊断位置
+;; lsp-bridge-diagnostic-list: 列出所有诊断信息
+;; lsp-bridge-diagnostic-copy: 拷贝当前诊断信息到剪切板
+;; lsp-bridge-code-action: 弹出代码修复菜单, 也可以指需要修复的代码动作类型: "quickfix", "refactor", "refactor.extract", "refactor.inline", "refactor.rewrite", "source", "source.organizeImports", "source.fixAll"
+;; lsp-bridge-workspace-list-symbol-at-point: 查找光标下符号的定义
+;; lsp-bridge-workspace-list-symbols: 列出工作区所有符号， 并跳转到符号定义
+;; lsp-bridge-signature-help-fetch: 在 minibuffer 显示参数信息
+;; lsp-bridge-popup-complete-menu: 手动弹出补全菜单， 只有当打开 lsp-bridge-complete-manually 选项才需要使用这个命令
+;; lsp-bridge-restart-process: 重启 lsp-bridge 进程 (一般只有开发者才需要这个功能)
+;; lsp-bridge-toggle-sdcv-helper: 切换字典助手补全
+;; lsp-bridge-peek: 在 peek window 中展示光标处的定义和引用
+;; lsp-bridge-peek-abort: 关闭 peek window (默认绑定到 C-g)
+;; lsp-bridge-peek-list-next-line: 选择下一个定义或引用 (默认绑定到 M-S-n )
+;; lsp-bridge-peek-list-prev-line: 选择上一个定义或引用 (默认绑定到 M-S-p )
+;; lsp-bridge-peek-file-content-next-line: 将 peek window 中的文件内容向下滚动一行 (默认绑定到 M-n )
+;; lsp-bridge-peek-file-content-prev-line: 将 peek window 中的文件内容向上滚动一行 (默认绑定到 M-p )
+;; lsp-bridge-peek-jump: 跳转到定义或引用所在处 (默认绑定到 M-l j )
+;; lsp-bridge-peek-jump-back: 跳转到原来的位置 (默认绑定到 M-l b )
+;; lsp-bridge-peek-through: 选择 peek window 中的一个符号进行查看
+;; lsp-bridge-peek-tree-previous-branch: 选择上一个浏览历史上同级的分支 (默认绑定到 <up> )
+;; lsp-bridge-peek-tree-next-branch: 选择下一个浏览历史上同级的分支 (默认绑定到 <down> )
+;; lsp-bridge-peek-tree-previous-node: 选择浏览历史上一级节点 (默认绑定到 <left> )
+;; lsp-bridge-peek-tree-next-node: 选择浏览历史上下一级节点 (默认绑定到 <right> )
+;; lsp-bridge-indent-left: 根据 lsp-bridge-formatting-indent-alist 定义的缩进值, 向左缩进刚刚粘贴的文本
+;; lsp-bridge-indent-right: 根据 lsp-bridge-formatting-indent-alist 定义的缩进值, 向右缩进刚刚粘贴的文本
+;; lsp-bridge-semantic-tokens-mode: 开启或者关闭语义符号高亮， 自定义请参考 Semantic Tokens Wiki
+;; lsp-bridge-breadcrumb-mode: 开启顶部 breadcrumb 栏
+;; ============================================================================
+
 (message "[init-lsp] >>> 加载 lsp-bridge... (目录存在: %s)"
          (file-directory-p (expand-file-name "lsp-bridge" user-emacs-directory)))
 (use-package lsp-bridge
@@ -54,15 +122,55 @@
    ("M-," . lsp-bridge-find-def-return)
    ("M-?" . lsp-bridge-find-references)
    :map lsp-bridge-mode-map
+   ;; --- 跳转导航 ---
+   ("C-j l f" . lsp-bridge-find-def)
+   ("C-j l F" . lsp-bridge-find-def-other-window)
+   ("C-j l i" . lsp-bridge-find-impl)
+   ("C-j l I" . lsp-bridge-find-impl-other-window)
+   ("C-j l t" . lsp-bridge-find-type-def)
+   ("C-j l T" . lsp-bridge-find-type-def-other-window)
+   ;; --- 重构 ---
    ("C-j l r" . lsp-bridge-rename)
    ("C-j l a" . lsp-bridge-code-action)
+   ;; --- 文档 ---
    ("C-j l d" . lsp-bridge-show-documentation)
-   ("C-j l f" . lsp-bridge-find-def)
-   ("C-j l i" . lsp-bridge-find-impl)
-   ("C-j l e" . lsp-bridge-diagnostic-list))
+   ("C-j l h" . lsp-bridge-popup-documentation)
+   ("C-j l s" . lsp-bridge-signature-help-fetch)
+   ;; --- 诊断 ---
+   ("C-j l e" . lsp-bridge-diagnostic-list)
+   ("C-j l n" . lsp-bridge-diagnostic-jump-next)
+   ("C-j l p" . lsp-bridge-diagnostic-jump-prev)
+   ("C-j l c" . lsp-bridge-diagnostic-copy)
+   ;; --- 符号 ---
+   ("C-j l S" . lsp-bridge-workspace-list-symbols)
+   ("C-j l o" . lsp-bridge-workspace-list-symbol-at-point)
+   ;; --- Peek ---
+   ("C-j l k" . lsp-bridge-peek)
+   ;; --- 其他 ---
+   ("C-j l R" . lsp-bridge-restart-process))
   :init
   (with-eval-after-load 'which-key
-    (which-key-add-key-based-replacements "C-j l" "lsp"))
+    (which-key-add-key-based-replacements
+      "C-j l"   "lsp"
+      "C-j l f" "find def"
+      "C-j l F" "find def ↗"
+      "C-j l i" "find impl"
+      "C-j l I" "find impl ↗"
+      "C-j l t" "find type def"
+      "C-j l T" "find type def ↗"
+      "C-j l r" "rename"
+      "C-j l a" "code action"
+      "C-j l d" "doc (buffer)"
+      "C-j l h" "doc (popup)"
+      "C-j l s" "signature help"
+      "C-j l e" "diagnostic list"
+      "C-j l n" "diag next"
+      "C-j l p" "diag prev"
+      "C-j l c" "diag copy"
+      "C-j l S" "list symbols"
+      "C-j l o" "symbol at point"
+      "C-j l k" "peek"
+      "C-j l R" "restart lsp"))
   :config
   ;; Python: 使用内置 venv
   (setq lsp-bridge-python-command
