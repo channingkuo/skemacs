@@ -35,6 +35,7 @@
   - [[#init-dired-el][init-dired.el]]
   - [[#init-lsp-el][init-lsp.el]]
   - [[#init-web-el][init-web.el]]
+  - [[#init-hydra-el][init-hydra.el]]
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
   - [[#module-management][Module Management]]
@@ -89,6 +90,7 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── init-dired.el        # Dired enhancements (omit mode)
 │   ├── init-lsp.el          # LSP configuration (lsp-bridge)
 │   ├── init-recentf.el      # Recent files + ibuffer
+│   ├── init-hydra.el        # Operation panels (hydra)
 │   ├── init-web.el          # Web development (web-mode)
 │   └── init-which-key.el    # Key discovery (which-key)
 ├── local/                   # Local custom configs (not tracked by Git)
@@ -199,6 +201,17 @@ These keybindings depend on no third-party packages, defined in =core-keybinding
 | =C-x w v= | =split-window-right=                  | Split vertically     |
 | =C-x w S= | =skemacs/split-window-horizontally=   | Split & switch down  |
 | =C-x w V= | =skemacs/split-window-vertically=     | Split & switch right |
+| =C-x w r= | =hydra-window-resize/body=            | Window resize panel  |
+
+In the resize panel (=C-x w r=), press keys repeatedly to adjust window size:
+
+| Key | Function                               | Description          |
+|-----+----------------------------------------+----------------------|
+| =h= | =skemacs/shrink-window-horizontally=   | Shrink horizontally  |
+| =l= | =skemacs/enlarge-window-horizontally=  | Enlarge horizontally |
+| =j= | =skemacs/shrink-window=                | Shrink vertically    |
+| =k= | =skemacs/enlarge-window=               | Enlarge vertically   |
+| =q= | quit                                   | Exit resize panel    |
 
 *** Buffer Management (=C-x b= prefix)
 | Key       | Function            | Description                              |
@@ -461,6 +474,25 @@ LSP integration via =lsp-bridge= for code intelligence (completion, diagnostics,
 
 Web development support via =web-mode= for HTML, CSS, JSX, Vue, and template files.
 
+** init-hydra.el
+:PROPERTIES:
+:CUSTOM_ID: init-hydra-el
+:END:
+
+Provides repeatable operation panels via the [[https://github.com/abo-abo/hydra][hydra]] package. Currently includes:
+
+*** Window Resize Panel (=C-x w r=)
+
+A sticky panel for adjusting window size. Press =C-x w r= to enter, then use =h/j/k/l= repeatedly to resize, =q= to quit.
+
+| Key | Function                               | Description          |
+|-----+----------------------------------------+----------------------|
+| =h= | =skemacs/shrink-window-horizontally=   | Shrink horizontally  |
+| =l= | =skemacs/enlarge-window-horizontally=  | Enlarge horizontally |
+| =j= | =skemacs/shrink-window=                | Shrink vertically    |
+| =k= | =skemacs/enlarge-window=               | Enlarge vertically   |
+| =q= | quit                                   | Exit resize panel    |
+
 * Adding New Modules
 :PROPERTIES:
 :CUSTOM_ID: adding-new-modules
@@ -591,7 +623,8 @@ Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.
 *** Window Management
 1. =C-x w v/s= — Split windows
 2. =C-x w h/j/k/l= — Navigate between windows
-3. =C-x b b= — Switch buffer (Consult: includes recentf + bookmarks)
+3. =C-x w r= — Resize panel (h/j/k/l to adjust, q to quit)
+4. =C-x b b= — Switch buffer (Consult: includes recentf + bookmarks)
 
 *** Org Mode Workflow
 1. =C-j o a= — View agenda

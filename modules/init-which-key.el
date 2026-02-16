@@ -49,6 +49,7 @@
     "C-x w S"   "Split Below (focus)"
     "C-x w v"   "Split Right"
     "C-x w V"   "Split Right (focus)"
+    "C-x w r"   "Resize Window"
     "C-j s"     "Search"
     "C-x b"     "Buffer"
     "C-x b b"   "Switch Buffer"
