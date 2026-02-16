@@ -30,35 +30,35 @@
 
   ;; ── 为已定义的前缀键添加描述 ──────────────────────────────
   (which-key-add-key-based-replacements
-    "C-j"       "Skemacs"
-    "C-j o"     "Org"
-    "C-j o o"   "Open Org Dir"
-    "C-j o a"   "Agenda"
-    "C-j o c"   "Capture"
-    "C-j o l"   "Store Link"
-    "C-j o i"   "Insert Link"
-    "C-j o C-p" "iimage-mode"
-    "C-j C-k"   "Kill Line"
-    "C-j t"     "Load Times"
-    "C-x w"     "Window"
-    "C-x w h"   "Move Cursor Left"
-    "C-x w j"   "Move Cursor Down"
-    "C-x w k"   "Move Cursor Up"
-    "C-x w l"   "Move Cursor Right"
-    "C-x w s"   "Split Below"
-    "C-x w S"   "Split Below (focus)"
-    "C-x w v"   "Split Right"
-    "C-x w V"   "Split Right (focus)"
-    "C-x w r"   "Resize Window"
-    "C-j s"     "Search"
-    "C-x b"     "Buffer"
-    "C-x b b"   "Switch Buffer"
-    "C-x b n"   "Next Buffer"
-    "C-x b p"   "Previous Buffer"
-    "C-x b k"   "Kill Buffer"
-    "C-x b r"   "Recent Files"
-    "C-x b R"   "Recent Files (list)"
-    "C-x b l"   "Buffer List (ibuffer)"))
+    "C-j"       "Skemacs"                   ;; Skemacs 主前缀
+    "C-j o"     "Org"                       ;; Org 相关
+    "C-j o o"   "Open Org Dir"              ;; 打开 Org 目录
+    "C-j o a"   "Agenda"                    ;; 日程
+    "C-j o c"   "Capture"                   ;; 快速捕获
+    "C-j o l"   "Store Link"                ;; 存储链接
+    "C-j o i"   "Insert Link"               ;; 插入链接
+    "C-j o C-p" "iimage-mode"               ;; 内联图片模式
+    "C-j C-k"   "Kill Line"                 ;; 删除行
+    "C-j t"     "Load Times"                ;; 加载耗时
+    "C-x w"     "Window"                    ;; 窗口操作
+    "C-x w h"   "Move Cursor Left"          ;; 光标左移
+    "C-x w j"   "Move Cursor Down"          ;; 光标下移
+    "C-x w k"   "Move Cursor Up"            ;; 光标上移
+    "C-x w l"   "Move Cursor Right"         ;; 光标右移
+    "C-x w s"   "Split Below"               ;; 水平分割
+    "C-x w S"   "Split Below (focus)"       ;; 水平分割并聚焦
+    "C-x w v"   "Split Right"               ;; 垂直分割
+    "C-x w V"   "Split Right (focus)"       ;; 垂直分割并聚焦
+    "C-x w r"   "Resize Window"             ;; 调整窗口大小
+    "C-j s"     "Search"                    ;; 搜索
+    "C-x b"     "Buffer"                    ;; 缓冲区操作
+    "C-x b b"   "Switch Buffer"             ;; 切换缓冲区
+    "C-x b n"   "Next Buffer"               ;; 下一个缓冲区
+    "C-x b p"   "Previous Buffer"           ;; 上一个缓冲区
+    "C-x b k"   "Kill Buffer"               ;; 关闭缓冲区
+    "C-x b r"   "Recent Files"              ;; 最近文件
+    "C-x b R"   "Recent Files (list)"       ;; 最近文件（列表）
+    "C-x b l"   "Buffer List (ibuffer)"))   ;; 缓冲区列表
 
 (provide 'init-which-key)
 ;;; init-which-key.el ends here

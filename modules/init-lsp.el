@@ -154,26 +154,26 @@
   :init
   (with-eval-after-load 'which-key
     (which-key-add-key-based-replacements
-      "C-j l"   "lsp"
-      "C-j l f" "find def"
-      "C-j l F" "find def ↗"
-      "C-j l i" "find impl"
-      "C-j l I" "find impl ↗"
-      "C-j l t" "find type def"
-      "C-j l T" "find type def ↗"
-      "C-j l r" "rename"
-      "C-j l a" "code action"
-      "C-j l d" "doc (buffer)"
-      "C-j l h" "doc (popup)"
-      "C-j l s" "signature help"
-      "C-j l e" "diagnostic list"
-      "C-j l n" "diag next"
-      "C-j l p" "diag prev"
-      "C-j l c" "diag copy"
-      "C-j l S" "list symbols"
-      "C-j l o" "symbol at point"
-      "C-j l k" "peek"
-      "C-j l R" "restart lsp"))
+      "C-j l"   "LSP"                ;; 语言服务协议
+      "C-j l f" "Find Def"           ;; 跳转到定义
+      "C-j l F" "Find Def ↗"         ;; 跳转到定义（新窗口）
+      "C-j l i" "Find Impl"          ;; 跳转到实现
+      "C-j l I" "Find Impl ↗"        ;; 跳转到实现（新窗口）
+      "C-j l t" "Find Type Def"      ;; 跳转到类型定义
+      "C-j l T" "Find Type Def ↗"    ;; 跳转到类型定义（新窗口）
+      "C-j l r" "Rename"             ;; 重命名
+      "C-j l a" "Code Action"        ;; 代码操作
+      "C-j l d" "Doc (buffer)"       ;; 文档（缓冲区）
+      "C-j l h" "Doc (popup)"        ;; 文档（弹窗）
+      "C-j l s" "Signature Help"     ;; 签名帮助
+      "C-j l e" "Diagnostic List"    ;; 诊断列表
+      "C-j l n" "Diag Next"          ;; 下一个诊断
+      "C-j l p" "Diag Prev"          ;; 上一个诊断
+      "C-j l c" "Diag Copy"          ;; 复制诊断信息
+      "C-j l S" "List Symbols"       ;; 列出符号
+      "C-j l o" "Symbol at Point"    ;; 光标处符号
+      "C-j l k" "Peek"               ;; 预览
+      "C-j l R" "Restart LSP"))      ;; 重启 LSP
   :config
   ;; Python: 使用内置 venv
   (setq lsp-bridge-python-command

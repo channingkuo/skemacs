@@ -15,7 +15,7 @@
   :init
   (with-eval-after-load 'which-key
     (which-key-add-key-based-replacements
-      "C-x w r" "Resize Window"))
+      "C-x w r" "Resize Window"))   ;; 调整窗口大小
   :config
   (defhydra hydra-window-resize (:hint nil :color amaranth)
     "

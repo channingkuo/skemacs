@@ -29,11 +29,11 @@
   :init
   (with-eval-after-load 'which-key
     (which-key-add-key-based-replacements
-      "C-j h"   "Highlight"
-      "C-j h h" "Toggle symbol"
-      "C-j h n" "Next symbol"
-      "C-j h p" "Prev symbol"
-      "C-j h r" "Rename symbol"))
+      "C-j h"   "Highlight"        ;; 符号高亮
+      "C-j h h" "Toggle Symbol"    ;; 切换高亮当前符号
+      "C-j h n" "Next Symbol"      ;; 下一个同名符号
+      "C-j h p" "Prev Symbol"      ;; 上一个同名符号
+      "C-j h r" "Rename Symbol"))   ;; 重命名符号
   :config
   ;; 空闲 0.3 秒后自动高亮
   (setq highlight-symbol-idle-delay 0.3)

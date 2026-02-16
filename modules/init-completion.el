@@ -127,15 +127,15 @@
   ;; which-key 描述
   (with-eval-after-load 'which-key
     (which-key-add-key-based-replacements
-      "C-j s"   "Search"
-      "C-j s s" "Line (buffer)"
-      "C-j s r" "Ripgrep (project)"
-      "C-j s f" "Find File"
-      "C-j s g" "Grep"
-      "C-j s o" "Outline"
-      "C-j s i" "Imenu"
-      "C-j s I" "Imenu (multi)"
-      "C-j s b" "Bookmark"))
+      "C-j s"   "Search"            ;; 搜索
+      "C-j s s" "Line (buffer)"     ;; 按行搜索（当前缓冲区）
+      "C-j s r" "Ripgrep (project)" ;; Ripgrep 搜索（项目）
+      "C-j s f" "Find File"         ;; 查找文件
+      "C-j s g" "Grep"              ;; Grep 搜索
+      "C-j s o" "Outline"           ;; 大纲
+      "C-j s i" "Imenu"             ;; Imenu 索引
+      "C-j s I" "Imenu (multi)"     ;; Imenu（多缓冲区）
+      "C-j s b" "Bookmark"))        ;; 书签
 
   ;; 优化 register 预览
   (setq register-preview-delay 0.5
