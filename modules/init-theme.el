@@ -20,8 +20,28 @@
 ;; 主题配置变量
 ;; ============================================================================
 
-(defvar skemacs-default-theme 'modus-vivendi-tritanopia
-  "启动时默认加载的主题。")
+(defvar skemacs-dark-theme 'modus-vivendi-tritanopia
+  "Dark mode theme, used when system appearance is dark.")
+
+(defvar skemacs-light-theme 'modus-operandi-tinted
+  "Light mode theme, used when system appearance is light.")
+
+(defun skemacs--system-dark-mode-p ()
+  "Return non-nil if the system is currently in dark mode.
+On macOS, detect via `defaults read -g AppleInterfaceStyle'.
+On other systems, default to dark mode."
+  (cond
+   ((eq system-type 'darwin)
+    (string= "Dark\n"
+             (shell-command-to-string
+              "defaults read -g AppleInterfaceStyle 2>/dev/null")))
+   (t t)))
+
+(defvar skemacs-default-theme
+  (if (skemacs--system-dark-mode-p)
+      skemacs-dark-theme
+    skemacs-light-theme)
+  "Theme to load at startup, auto-detected from system appearance.")
 
 (defvar skemacs-theme-list
   '(;; ---- 本地 Modus 主题 ----
@@ -120,9 +140,9 @@ THEME 是一个 symbol，例如 'doom-one 或 'modus-vivendi-tritanopia。"
       (progn
         (load-theme theme t)
         (setq skemacs--current-theme theme)
-        (message "[skemacs] 主题已切换: %s" theme))
+        (message "[skemacs] Theme switched: %s" theme))
     (error
-     (message "[skemacs] 加载主题失败 %s: %s" theme (error-message-string err)))))
+     (message "[skemacs] Failed to load theme %s: %s" theme (error-message-string err)))))
 
 (defun skemacs/switch-theme ()
   "交互式选择并切换主题。
@@ -132,8 +152,8 @@ THEME 是一个 symbol，例如 'doom-one 或 'modus-vivendi-tritanopia。"
          (current (when skemacs--current-theme
                     (symbol-name skemacs--current-theme)))
          (prompt (if current
-                     (format "切换主题 (当前: %s): " current)
-                   "选择主题: "))
+                     (format "Switch theme (current: %s): " current)
+                   "Select theme: "))
          (selected (completing-read prompt theme-names nil t nil nil current)))
     (when (and selected (not (string-empty-p selected)))
       (skemacs/load-theme (intern selected)))))
@@ -149,15 +169,11 @@ THEME 是一个 symbol，例如 'doom-one 或 'modus-vivendi-tritanopia。"
     (skemacs/load-theme next-theme)))
 
 (defun skemacs/toggle-light-dark ()
-  "在浅色和深色主题之间快速切换。
-浅色默认: modus-operandi-tinted
-深色默认: modus-vivendi-tritanopia"
+  "Toggle between `skemacs-light-theme' and `skemacs-dark-theme'."
   (interactive)
-  (let ((light-theme 'modus-operandi-tinted)
-        (dark-theme 'modus-vivendi-tritanopia))
-    (if (eq skemacs--current-theme light-theme)
-        (skemacs/load-theme dark-theme)
-      (skemacs/load-theme light-theme))))
+  (if (eq skemacs--current-theme skemacs-light-theme)
+      (skemacs/load-theme skemacs-dark-theme)
+    (skemacs/load-theme skemacs-light-theme)))
 
 ;; ============================================================================
 ;; which-key 描述
@@ -165,10 +181,10 @@ THEME 是一个 symbol，例如 'doom-one 或 'modus-vivendi-tritanopia。"
 
 (with-eval-after-load 'which-key
   (which-key-add-key-based-replacements
-    "C-j T"   "切换主题"
-    "C-j T T" "选择主题"
-    "C-j T n" "下一个主题"
-    "C-j T t" "明暗切换"))
+    "C-j T"   "Theme"              ;; 切换主题
+    "C-j T T" "Choose Theme"       ;; 选择主题
+    "C-j T n" "Next Theme"         ;; 下一个主题
+    "C-j T t" "Toggle Light/Dark")) ;; 明暗切换
 
 ;; ============================================================================
 ;; 快捷键
