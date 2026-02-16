@@ -35,6 +35,14 @@
 (define-prefix-command 'skemacs-search-prefix)
 (global-set-key (kbd "C-j s") 'skemacs-search-prefix)
 
+;; C-j f — 文件树（Treemacs）
+(define-prefix-command 'skemacs-filetree-prefix)
+(global-set-key (kbd "C-j f") 'skemacs-filetree-prefix)
+
+;; C-j g — Git 相关（Magit）
+(define-prefix-command 'skemacs-git-prefix)
+(global-set-key (kbd "C-j g") 'skemacs-git-prefix)
+
 ;; ============================================================================
 ;; 全局快捷键（不依赖任何第三方包）
 ;; ============================================================================

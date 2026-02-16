@@ -22,6 +22,8 @@
   - [[#theme-bindings][Theme Bindings]]
   - [[#undo-tree-bindings][Undo Tree Bindings]]
   - [[#project-management-bindings][Project Management Bindings]]
+  - [[#treemacs-bindings][Treemacs Bindings]]
+  - [[#git-bindings][Git Bindings]]
   - [[#org-mode-bindings][Org Mode Bindings]]
 - [[#core-files][Core Files]]
   - [[#early-init-el][early-init.el]]
@@ -47,6 +49,8 @@
   - [[#init-mwim-el][init-mwim.el]]
   - [[#init-undo-tree-el][init-undo-tree.el]]
   - [[#init-project-el][init-project.el]]
+  - [[#init-treemacs-el][init-treemacs.el]]
+  - [[#init-git-el][init-git.el]]
   - [[#init-rainbow-delimiters-el][init-rainbow-delimiters.el]]
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
@@ -108,6 +112,8 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── init-ace-window.el   # Window quick-jump (ace-window)
 │   ├── init-mwim.el         # Smart line beginning/end (mwim)
 │   ├── init-project.el      # Project management (built-in project.el)
+│   ├── init-treemacs.el     # File tree sidebar (treemacs)
+│   ├── init-git.el          # Git integration (magit + diff-hl)
 │   ├── init-undo-tree.el    # Undo/redo tree with hydra panel
 │   ├── init-rainbow-delimiters.el # Rainbow parentheses
 │   ├── init-web.el          # Web development (web-mode)
@@ -189,6 +195,8 @@ Prefix keys are defined in =core-keybindings.el=. Modules bind commands under th
 | =C-j o=   | =skemacs-org-prefix=     | Org-related      |
 | =C-j p=   | =skemacs-project-prefix= | Project mgmt     |
 | =C-j s=   | =skemacs-search-prefix=  | Search (Consult) |
+| =C-j f=   | =skemacs-filetree-prefix= | File tree (Treemacs) |
+| =C-j g=   | =skemacs-git-prefix=     | Git (Magit)      |
 | =C-j T=   | =skemacs-theme-prefix=   | Theme management |
 | =C-j l=   | (lsp-bridge bindings)    | LSP commands     |
 | =C-j u=   | (hydra-undo-tree)        | Undo tree panel  |
@@ -398,6 +406,37 @@ Provided by =init-project.el=. Uses Emacs built-in =project.el= (28+) for projec
 | =C-j p k= | =project-kill-buffers=          | Kill all project buffers      |
 | =C-j p != | =project-shell-command=         | Shell command at project root |
 | =C-j p &= | =project-async-shell-command=   | Async shell command           |
+
+** Treemacs Bindings
+:PROPERTIES:
+:CUSTOM_ID: treemacs-bindings
+:END:
+
+Provided by =init-treemacs.el=. File tree sidebar for project navigation.
+
+| Key       | Function                              | Description                    |
+|-----------+---------------------------------------+--------------------------------|
+| =C-j f t= | =treemacs=                            | Toggle treemacs sidebar        |
+| =C-j f s= | =treemacs-find-file=                  | Locate current file in tree    |
+| =C-j f d= | =treemacs-select-directory=           | Select directory               |
+| =C-j f a= | =treemacs-add-project-to-workspace=   | Add project to workspace       |
+
+** Git Bindings
+:PROPERTIES:
+:CUSTOM_ID: git-bindings
+:END:
+
+Provided by =init-git.el=. Full Git integration via Magit.
+
+| Key       | Function                    | Description                    |
+|-----------+-----------------------------+--------------------------------|
+| =C-j g g= | =magit-status=              | Open Magit status panel        |
+| =C-j g l= | =magit-log-current=         | Current branch log             |
+| =C-j g b= | =magit-blame-addition=      | File blame (line-by-line)      |
+| =C-j g d= | =magit-diff-buffer-file=    | Diff current file              |
+| =C-j g f= | =magit-log-buffer-file=     | Log for current file           |
+| =C-j g s= | =magit-stage-file=          | Stage current file             |
+| =C-j g u= | =magit-unstage-file=        | Unstage current file           |
 
 ** Org Mode Bindings
 :PROPERTIES:
@@ -714,6 +753,55 @@ When switching projects (=C-j p p=), a menu is displayed with available actions:
 
 See [[#project-management-bindings][Project Management Bindings]] for all keybindings.
 
+** init-treemacs.el
+:PROPERTIES:
+:CUSTOM_ID: init-treemacs-el
+:END:
+
+File tree sidebar via [[https://github.com/Alexander-Miller/treemacs][treemacs]]. Provides a project-aware file explorer with Git status integration, file watching, and directory collapsing.
+
+| Package              | Role                                              |
+|----------------------+---------------------------------------------------|
+| *treemacs*           | File tree sidebar (main package)                  |
+| *treemacs-magit*     | Git status integration (after magit operations)   |
+| *treemacs-icons-dired* | Treemacs icons in dired buffers (GUI only)      |
+
+*** Configuration
+
+| Setting                           | Value    | Description                            |
+|-----------------------------------+----------+----------------------------------------|
+| =treemacs-width=                  | 35       | Sidebar width in characters            |
+| =treemacs-is-never-other-window=  | t        | =C-x o= skips treemacs window         |
+| =treemacs-collapse-dirs=          | 3        | Collapse up to 3 consecutive single-child dirs |
+| =treemacs-follow-mode=            | t        | Auto-follow current buffer             |
+| =treemacs-filewatch-mode=         | t        | Auto-refresh on filesystem changes     |
+| =treemacs-indent-guide-style=     | ='line=  | Show indentation guide lines           |
+
+Note: =treemacs-icons-dired= only activates in GUI Emacs (=display-graphic-p=). In terminal Emacs it is skipped to avoid garbled icons without Nerd Font.
+
+See [[#treemacs-bindings][Treemacs Bindings]] for keybindings.
+
+** init-git.el
+:PROPERTIES:
+:CUSTOM_ID: init-git-el
+:END:
+
+Git integration via [[https://magit.vc/][Magit]] (full Git client) and [[https://github.com/dgutov/diff-hl][diff-hl]] (gutter modification markers).
+
+| Package    | Role                                                    |
+|------------+---------------------------------------------------------|
+| *magit*    | Complete Git porcelain: stage, commit, push, pull, rebase, blame, log |
+| *diff-hl*  | Fringe/margin markers showing added/changed/deleted lines |
+
+*** Configuration
+
+- Magit status opens in the same window (no split)
+- Commit message editor sets =fill-column= to 72 with indicator line
+- =diff-hl= enabled globally; auto-refreshes after magit operations
+- In terminal Emacs, =diff-hl= uses margin mode (no fringe available)
+
+See [[#git-bindings][Git Bindings]] for keybindings.
+
 ** init-rainbow-delimiters.el
 :PROPERTIES:
 :CUSTOM_ID: init-rainbow-delimiters-el
@@ -828,14 +916,15 @@ Incrementally migrate features from the old config, by priority:
 |          | =init-undo-tree.el=   | Undo-tree (tree-based undo/redo)                      | ✓ Done |
 |        5 | =init-editing.el=     | Multiple-cursors                                      | —      |
 |        6 | =init-project.el=     | Project management (built-in project.el)              | ✓ Done |
-|        7 | =init-git.el=         | Magit                                                 | —      |
+|        7 | =init-git.el=         | Magit + diff-hl                                       | ✓ Done |
 |        8 | =init-lsp.el=         | lsp-bridge + Company + YASnippet                      | ✓ Done |
 |        9 | =init-terminal.el=    | Vterm                                                 | —      |
-|       10 | =init-ui.el=          | Modeline + Treemacs + Rainbow                         | —      |
+|       10 | =init-treemacs.el=    | Treemacs file tree sidebar                            | ✓ Done |
+|          | =init-ui.el=          | Modeline + other UI enhancements                      | —      |
 |       11 | =init-flycheck.el=    | Syntax checking                                       | —      |
 |       12 | =init-org.el=         | Org-mode full config                                  | —      |
 
-Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-mwim.el=, =init-undo-tree.el=.
+Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-mwim.el=, =init-undo-tree.el=, =init-treemacs.el=, =init-git.el=.
 
 * Usage Guide
 :PROPERTIES:
@@ -887,6 +976,18 @@ Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.
 3. =C-x w h/j/k/l= — Navigate between windows
 4. =C-x w r= — Resize panel (h/j/k/l to adjust, q to quit)
 5. =C-x b b= — Switch buffer (Consult: includes recentf + bookmarks)
+
+*** File Tree (Treemacs)
+1. =C-j f t= — Toggle treemacs sidebar
+2. =C-j f s= — Locate current file in tree
+3. =C-j f a= — Add project to workspace
+
+*** Git (Magit)
+1. =C-j g g= — Open Magit status panel
+2. =C-j g l= — View current branch log
+3. =C-j g b= — Blame current file
+4. =C-j g d= — Diff current file
+5. =C-j g s= / =C-j g u= — Stage / unstage current file
 
 *** Org Mode Workflow
 1. =C-j o a= — View agenda
