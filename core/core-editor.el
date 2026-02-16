@@ -29,6 +29,13 @@
 
 ;; 编程模式下启用代码折叠
 (add-hook 'prog-mode-hook #'hs-minor-mode)
+;; C-c C-f	web-mode-fold-or-unfold	折叠/展开当前 HTML 标签或代码块
+
+;; 更方便的折叠快捷键
+(with-eval-after-load 'hideshow
+  (define-key hs-minor-mode-map (kbd "C-c h") #'hs-toggle-hiding)
+  (define-key hs-minor-mode-map (kbd "C-c H") #'hs-hide-all)
+  (define-key hs-minor-mode-map (kbd "C-c S") #'hs-show-all))
 
 ;; ============================================================================
 ;; 文件自动刷新
