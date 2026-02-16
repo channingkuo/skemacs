@@ -83,7 +83,7 @@ setup_nodejs() {
 
     # 安装 LSP 服务器
     info "安装 LSP 服务器..."
-    "${NODE_DIR}/bin/npm" install -g \
+    "${NODE_DIR}/bin/node ${NODE_DIR}/bin/npm" install -g \
         @vue/language-server \
         typescript \
         @vtsls/language-server
