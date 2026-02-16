@@ -17,8 +17,10 @@
   - [[#prefix-keys][Prefix Keys]]
   - [[#global-key-bindings][Global Key Bindings]]
   - [[#completion--search-bindings][Completion & Search Bindings]]
+  - [[#mwim-bindings][Mwim Bindings]]
   - [[#highlight-symbol-bindings][Highlight Symbol Bindings]]
   - [[#theme-bindings][Theme Bindings]]
+  - [[#undo-tree-bindings][Undo Tree Bindings]]
   - [[#org-mode-bindings][Org Mode Bindings]]
 - [[#core-files][Core Files]]
   - [[#early-init-el][early-init.el]]
@@ -41,6 +43,8 @@
   - [[#init-hydra-el][init-hydra.el]]
   - [[#init-highlight-symbol-el][init-highlight-symbol.el]]
   - [[#init-ace-window-el][init-ace-window.el]]
+  - [[#init-mwim-el][init-mwim.el]]
+  - [[#init-undo-tree-el][init-undo-tree.el]]
   - [[#init-rainbow-delimiters-el][init-rainbow-delimiters.el]]
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
@@ -100,6 +104,8 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── init-highlight-symbol.el # Symbol highlighting
 │   ├── init-hydra.el        # Operation panels (hydra)
 │   ├── init-ace-window.el   # Window quick-jump (ace-window)
+│   ├── init-mwim.el         # Smart line beginning/end (mwim)
+│   ├── init-undo-tree.el    # Undo/redo tree with hydra panel
 │   ├── init-rainbow-delimiters.el # Rainbow parentheses
 │   ├── init-web.el          # Web development (web-mode)
 │   └── init-which-key.el    # Key discovery (which-key)
@@ -181,6 +187,7 @@ Prefix keys are defined in =core-keybindings.el=. Modules bind commands under th
 | =C-j s=   | =skemacs-search-prefix=  | Search (Consult) |
 | =C-j T=   | =skemacs-theme-prefix=   | Theme management |
 | =C-j l=   | (lsp-bridge bindings)    | LSP commands     |
+| =C-j u=   | (hydra-undo-tree)        | Undo tree panel  |
 | =C-j h=   | (highlight-symbol)       | Symbol highlight |
 | =C-x w=   | =skemacs-window-prefix=  | Window ops       |
 | =C-x b=   | =skemacs-buffer-prefix=  | Buffer ops       |
@@ -309,6 +316,18 @@ The same commands are also available under Emacs standard prefixes:
 | =DEL=   | =vertico-directory-delete-char= | Delete path component          |
 | =M-DEL= | =vertico-directory-delete-word= | Delete word in path            |
 
+** Mwim Bindings
+:PROPERTIES:
+:CUSTOM_ID: mwim-bindings
+:END:
+
+Provided by =init-mwim.el=. Smart =C-a= / =C-e= that cycles between code boundaries and line boundaries.
+
+| Key   | Function         | Description                                          |
+|-------+------------------+------------------------------------------------------|
+| =C-a= | =mwim-beginning= | 1st press: beginning of code; 2nd press: line start |
+| =C-e= | =mwim-end=       | 1st press: end of code (before comments); 2nd press: line end |
+
 ** Highlight Symbol Bindings
 :PROPERTIES:
 :CUSTOM_ID: highlight-symbol-bindings
@@ -335,6 +354,26 @@ Provided by =init-theme.el=. Manages themes with system dark/light mode auto-det
 | =C-j T T= | =skemacs/switch-theme=      | Choose theme (completing-read)       |
 | =C-j T n= | =skemacs/cycle-theme=       | Cycle to next theme in list          |
 | =C-j T t= | =skemacs/toggle-light-dark= | Toggle between light and dark theme  |
+
+** Undo Tree Bindings
+:PROPERTIES:
+:CUSTOM_ID: undo-tree-bindings
+:END:
+
+Provided by =init-undo-tree.el=. Replaces Emacs default linear undo with a tree-based undo system. Uses hydra panel for quick undo/redo operations.
+
+| Key     | Function                | Description               |
+|---------+-------------------------+---------------------------|
+| =C-j u= | =hydra-undo-tree/body= | Open undo tree hydra panel |
+
+In the undo tree panel (=C-j u=):
+
+| Key | Function                | Description           |
+|-----+-------------------------+-----------------------|
+| =p= | =undo-tree-undo=       | Undo                  |
+| =n= | =undo-tree-redo=       | Redo                  |
+| =v= | =undo-tree-visualize=  | Visualize undo tree   |
+| =q= | quit                   | Exit panel            |
 
 ** Org Mode Bindings
 :PROPERTIES:
@@ -589,6 +628,31 @@ Quick window jumping via [[https://github.com/abo-abo/ace-window][ace-window]]. 
 |---------+----------------+----------------------------------|
 | =C-x o= | =ace-window=   | Jump to window (replaces default) |
 
+** init-mwim.el
+:PROPERTIES:
+:CUSTOM_ID: init-mwim-el
+:END:
+
+Smart line beginning/end navigation via [[https://github.com/alezost/mwim.el][mwim]] (Move Where I Mean). Enhances the default =C-a= and =C-e= behavior:
+
+- =C-a= (=mwim-beginning=): first press moves to beginning of code (skipping indentation), second press moves to actual line start (column 0)
+- =C-e= (=mwim-end=): first press moves to end of code (before trailing comments), second press moves to actual line end
+
+See [[#mwim-bindings][Mwim Bindings]] for keybindings.
+
+** init-undo-tree.el
+:PROPERTIES:
+:CUSTOM_ID: init-undo-tree-el
+:END:
+
+Tree-based undo/redo via [[https://www.emacswiki.org/emacs/UndoTree][undo-tree]], replacing Emacs default linear undo. Provides a hydra panel (=C-j u=) for quick undo/redo operations and a visual undo tree browser.
+
+- =global-undo-tree-mode= enabled globally
+- Auto-save undo history disabled (=undo-tree-auto-save-history nil=)
+- Depends on =hydra= (=:after hydra=)
+
+See [[#undo-tree-bindings][Undo Tree Bindings]] for keybindings.
+
 ** init-rainbow-delimiters.el
 :PROPERTIES:
 :CUSTOM_ID: init-rainbow-delimiters-el
@@ -699,7 +763,9 @@ Incrementally migrate features from the old config, by priority:
 |        3 | =init-completion.el=  | Vertico + Orderless + Marginalia + Consult + Embark   | ✓ Done |
 |        4 | =init-ace-window.el=  | Ace-window (window quick-jump)                        | ✓ Done |
 |          | =init-navigation.el=  | Avy (char/line jump)                                  | —      |
-|        5 | =init-editing.el=     | Multiple-cursors + Undo-tree + Mwim                   | —      |
+|          | =init-mwim.el=        | Smart line beginning/end (mwim)                       | ✓ Done |
+|          | =init-undo-tree.el=   | Undo-tree (tree-based undo/redo)                      | ✓ Done |
+|        5 | =init-editing.el=     | Multiple-cursors                                      | —      |
 |        6 | =init-project.el=     | Projectile + Dashboard                                | —      |
 |        7 | =init-git.el=         | Magit                                                 | —      |
 |        8 | =init-lsp.el=         | lsp-bridge + Company + YASnippet                      | ✓ Done |
@@ -708,7 +774,7 @@ Incrementally migrate features from the old config, by priority:
 |       11 | =init-flycheck.el=    | Syntax checking                                       | —      |
 |       12 | =init-org.el=         | Org-mode full config                                  | —      |
 
-Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=.
+Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-mwim.el=, =init-undo-tree.el=.
 
 * Usage Guide
 :PROPERTIES:
