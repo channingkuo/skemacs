@@ -22,6 +22,9 @@
 (defconst skemacs-local-dir (expand-file-name "local" skemacs-dir)
   "本地自定义配置目录（不纳入版本控制）。")
 
+(defconst skemacs-themes-dir (expand-file-name "themes" skemacs-dir)
+  "本地主题文件目录。")
+
 (defconst skemacs-cache-dir (expand-file-name ".cache" skemacs-dir)
   "缓存文件目录（自动生成的数据文件）。")
 
@@ -29,7 +32,7 @@
 ;; 确保目录存在
 ;; ============================================================================
 
-(dolist (dir (list skemacs-modules-dir skemacs-local-dir skemacs-cache-dir))
+(dolist (dir (list skemacs-modules-dir skemacs-local-dir skemacs-cache-dir skemacs-themes-dir))
   (unless (file-directory-p dir)
     (make-directory dir t)))
 
@@ -37,9 +40,12 @@
 ;; 设置 load-path
 ;; ============================================================================
 
-(dolist (dir (list skemacs-core-dir skemacs-modules-dir skemacs-local-dir))
+(dolist (dir (list skemacs-core-dir skemacs-modules-dir skemacs-local-dir skemacs-themes-dir))
   (unless (member dir load-path)
     (add-to-list 'load-path dir)))
+
+;; 将 themes/ 加入主题搜索路径
+(add-to-list 'custom-theme-load-path skemacs-themes-dir)
 
 (provide 'core-load-paths)
 ;;; core-load-paths.el ends here
