@@ -1,6 +1,6 @@
 #+TITLE: Skemacs Configuration
 #+AUTHOR: Kuo
-#+DATE: 2025-07-29
+#+DATE: 2026-02-16
 #+STARTUP: overview
 
 * Table of Contents :TOC:
@@ -18,6 +18,7 @@
   - [[#global-key-bindings][Global Key Bindings]]
   - [[#completion--search-bindings][Completion & Search Bindings]]
   - [[#highlight-symbol-bindings][Highlight Symbol Bindings]]
+  - [[#theme-bindings][Theme Bindings]]
   - [[#org-mode-bindings][Org Mode Bindings]]
 - [[#core-files][Core Files]]
   - [[#early-init-el][early-init.el]]
@@ -30,6 +31,7 @@
   - [[#core-funcs-el][core-funcs.el]]
   - [[#core-keybindings-el][core-keybindings.el]]
 - [[#feature-modules][Feature Modules]]
+  - [[#init-theme-el][init-theme.el]]
   - [[#init-completion-el][init-completion.el]]
   - [[#init-which-key-el][init-which-key.el]]
   - [[#init-recentf-el][init-recentf.el]]
@@ -38,6 +40,7 @@
   - [[#init-web-el][init-web.el]]
   - [[#init-hydra-el][init-hydra.el]]
   - [[#init-highlight-symbol-el][init-highlight-symbol.el]]
+  - [[#init-ace-window-el][init-ace-window.el]]
   - [[#init-rainbow-delimiters-el][init-rainbow-delimiters.el]]
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
@@ -89,18 +92,23 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── core-funcs.el        # Utility functions (navigation, window, clipboard)
 │   └── core-keybindings.el  # Prefix key definitions + global keybindings
 ├── modules/                 # Feature modules (each file is self-contained)
+│   ├── init-theme.el        # Theme management (modus + doom + ef + catppuccin)
 │   ├── init-completion.el   # Minibuffer completion (Vertico + Orderless + Marginalia + Consult + Embark)
 │   ├── init-dired.el        # Dired enhancements (omit mode)
 │   ├── init-lsp.el          # LSP configuration (lsp-bridge)
 │   ├── init-recentf.el      # Recent files + ibuffer
 │   ├── init-highlight-symbol.el # Symbol highlighting
 │   ├── init-hydra.el        # Operation panels (hydra)
+│   ├── init-ace-window.el   # Window quick-jump (ace-window)
 │   ├── init-rainbow-delimiters.el # Rainbow parentheses
 │   ├── init-web.el          # Web development (web-mode)
 │   └── init-which-key.el    # Key discovery (which-key)
-├── local/                   # Local custom configs (not tracked by Git)
+├── themes/                  # Local theme files (modus-themes, loaded via custom-theme-load-path)
+│   ├── modus-themes.el      # Modus themes core library
+│   ├── modus-operandi-tinted-theme.el  # Light theme (warm tinted background)
+│   └── modus-vivendi-tritanopia-theme.el # Dark theme (black background)
+├── lsp-bridge-langserver/   # LSP server override configs (vtsls replaces typescript-language-server)
 ├── banners/                 # Startup banner files
-├── themes/                  # Custom themes
 └── custom.el                # Emacs custom-file (auto-generated, not tracked)
 #+END_SRC
 
@@ -166,11 +174,14 @@ Startup Timing Report
 
 Prefix keys are defined in =core-keybindings.el=. Modules bind commands under these prefixes:
 
-| Prefix    | Keymap Name              | Purpose        |
-|-----------+--------------------------+----------------|
+| Prefix    | Keymap Name              | Purpose          |
+|-----------+--------------------------+------------------|
 | =C-j=     | =skemacs-prefix=         | Main prefix      |
 | =C-j o=   | =skemacs-org-prefix=     | Org-related      |
 | =C-j s=   | =skemacs-search-prefix=  | Search (Consult) |
+| =C-j T=   | =skemacs-theme-prefix=   | Theme management |
+| =C-j l=   | (lsp-bridge bindings)    | LSP commands     |
+| =C-j h=   | (highlight-symbol)       | Symbol highlight |
 | =C-x w=   | =skemacs-window-prefix=  | Window ops       |
 | =C-x b=   | =skemacs-buffer-prefix=  | Buffer ops       |
 
@@ -195,9 +206,10 @@ These keybindings depend on no third-party packages, defined in =core-keybinding
 | =C-j C-k= | =kill-whole-line=                 | Kill entire line     |
 | =C-c C-y= | =skemacs/copy-to-clipboard=       | Copy to clipboard    |
 
-*** Window Management (=C-x w= prefix)
+*** Window Management
 | Key       | Function                              | Description          |
 |-----------+---------------------------------------+----------------------|
+| =C-x o=   | =ace-window=                          | Quick jump window    |
 | =C-x w h= | =windmove-left=                       | Move to left window  |
 | =C-x w j= | =windmove-down=                       | Move to below window |
 | =C-x w k= | =windmove-up=                         | Move to above window |
@@ -311,6 +323,19 @@ Provided by =init-highlight-symbol.el=. Automatically highlights all occurrences
 | =C-j h h= | =highlight-symbol-at-point=        | Toggle highlight current symbol |
 | =C-j h r= | =highlight-symbol-query-replace=   | Rename symbol in buffer         |
 
+** Theme Bindings
+:PROPERTIES:
+:CUSTOM_ID: theme-bindings
+:END:
+
+Provided by =init-theme.el=. Manages themes with system dark/light mode auto-detection.
+
+| Key       | Function                    | Description                          |
+|-----------+-----------------------------+--------------------------------------|
+| =C-j T T= | =skemacs/switch-theme=      | Choose theme (completing-read)       |
+| =C-j T n= | =skemacs/cycle-theme=       | Cycle to next theme in list          |
+| =C-j T t= | =skemacs/toggle-light-dark= | Toggle between light and dark theme  |
+
 ** Org Mode Bindings
 :PROPERTIES:
 :CUSTOM_ID: org-mode-bindings
@@ -361,7 +386,7 @@ Entry point:
 :CUSTOM_ID: core-load-paths-el
 :END:
 
-Defines path constants (=skemacs-dir=, =skemacs-core-dir=, =skemacs-modules-dir=, =skemacs-local-dir=, =skemacs-cache-dir=), ensures directories exist, adds them to =load-path=.
+Defines path constants (=skemacs-dir=, =skemacs-core-dir=, =skemacs-modules-dir=, =skemacs-local-dir=, =skemacs-themes-dir=, =skemacs-cache-dir=), ensures directories exist, adds them to =load-path=. Also registers =themes/= in =custom-theme-load-path= for local theme discovery.
 
 ** core-module.el
 :PROPERTIES:
@@ -432,6 +457,44 @@ Defines prefix keys and global keybindings independent of packages. See [[#key-b
 
 All modules reside in =modules/= and are loaded alphabetically. Each is self-contained with package declarations, configuration, and keybindings.
 
+** init-theme.el
+:PROPERTIES:
+:CUSTOM_ID: init-theme-el
+:END:
+
+Theme management with system appearance auto-detection. Supports both local themes (bundled in =themes/=) and third-party theme packages (auto-installed via =use-package=).
+
+*** System Auto-Detection
+
+On macOS, automatically detects system dark/light mode at startup via =AppleInterfaceStyle=. Configurable via:
+
+| Variable                | Default                      | Description                         |
+|-------------------------+------------------------------+-------------------------------------|
+| =skemacs-dark-theme=    | =modus-vivendi-tritanopia=   | Theme used when system is dark      |
+| =skemacs-light-theme=   | =modus-operandi-tinted=      | Theme used when system is light     |
+| =skemacs-default-theme= | (auto-detected)              | Startup theme based on system mode  |
+| =skemacs-theme-list=    | (all available themes)       | Candidate list for theme switching  |
+
+*** Included Themes
+
+| Source         | Themes                                                            |
+|----------------+-------------------------------------------------------------------|
+| *Local (Modus)* | =modus-operandi-tinted= (light), =modus-vivendi-tritanopia= (dark) |
+| *doom-themes*  | doom-one, doom-vibrant, doom-dracula, doom-gruvbox, doom-nord, etc. |
+| *ef-themes*    | ef-autumn, ef-spring, ef-summer, ef-winter, ef-dark, ef-light, etc. |
+| *catppuccin*   | catppuccin (mocha flavor)                                         |
+
+*** Key Functions
+
+| Function                       | Description                                  |
+|--------------------------------+----------------------------------------------|
+| =skemacs/switch-theme=         | Interactive theme selection (completing-read) |
+| =skemacs/cycle-theme=          | Cycle to next theme in =skemacs-theme-list=  |
+| =skemacs/toggle-light-dark=    | Toggle between light and dark theme           |
+| =skemacs/load-theme=           | Load a specific theme by symbol name          |
+
+See [[#theme-bindings][Theme Bindings]] for keybindings.
+
 ** init-completion.el
 :PROPERTIES:
 :CUSTOM_ID: init-completion-el
@@ -484,7 +547,12 @@ Dired enhancements: auto-enable =dired-omit-mode= to hide clutter files (.DS_Sto
 :CUSTOM_ID: init-lsp-el
 :END:
 
-LSP integration via =lsp-bridge= for code intelligence (completion, diagnostics, navigation). Includes language server setup script (=setup-lsp.sh=).
+LSP integration via =lsp-bridge= for code intelligence (completion, diagnostics, navigation). Includes language server setup script (=setup-lsp.sh=) which:
+
+- Installs Node.js, Volar, vtsls, and TypeScript
+- Creates Python virtual environment for lsp-bridge dependencies
+- Clones lsp-bridge source code
+- Generates langserver override configs (=lsp-bridge-langserver/=) to use vtsls instead of =typescript-language-server= for TypeScript, JavaScript, TSX, and JSX files
 
 ** init-web.el
 :PROPERTIES:
@@ -505,6 +573,21 @@ Highlights all occurrences of the symbol under cursor in =prog-mode= buffers via
 - Query-replace symbol in buffer with =C-j h r=
 
 See [[#highlight-symbol-bindings][Highlight Symbol Bindings]] for all keybindings.
+
+** init-ace-window.el
+:PROPERTIES:
+:CUSTOM_ID: init-ace-window-el
+:END:
+
+Quick window jumping via [[https://github.com/abo-abo/ace-window][ace-window]]. Replaces the built-in =other-window= on =C-x o=:
+
+- When 2 windows: jumps directly to the other window
+- When 3+ windows: displays a numbered label on each window for quick selection
+- Uses home row keys (=a s d f g h j k l=) for window labels
+
+| Key     | Function       | Description                      |
+|---------+----------------+----------------------------------|
+| =C-x o= | =ace-window=   | Jump to window (replaces default) |
 
 ** init-rainbow-delimiters.el
 :PROPERTIES:
@@ -611,10 +694,11 @@ Incrementally migrate features from the old config, by priority:
 
 | Priority | Module File           | Feature                                               | Status |
 |----------+-----------------------+-------------------------------------------------------+--------|
-|        1 | =init-theme.el=       | Theme setup                                           | —      |
+|        1 | =init-theme.el=       | Theme setup (modus + doom + ef + catppuccin)           | ✓ Done |
 |        2 | =init-which-key.el=   | Key discovery (useful for all)                        | ✓ Done |
 |        3 | =init-completion.el=  | Vertico + Orderless + Marginalia + Consult + Embark   | ✓ Done |
-|        4 | =init-navigation.el=  | Avy + Ace-window                                      | —      |
+|        4 | =init-ace-window.el=  | Ace-window (window quick-jump)                        | ✓ Done |
+|          | =init-navigation.el=  | Avy (char/line jump)                                  | —      |
 |        5 | =init-editing.el=     | Multiple-cursors + Undo-tree + Mwim                   | —      |
 |        6 | =init-project.el=     | Projectile + Dashboard                                | —      |
 |        7 | =init-git.el=         | Magit                                                 | —      |
@@ -624,7 +708,7 @@ Incrementally migrate features from the old config, by priority:
 |       11 | =init-flycheck.el=    | Syntax checking                                       | —      |
 |       12 | =init-org.el=         | Org-mode full config                                  | —      |
 
-Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=.
+Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=.
 
 * Usage Guide
 :PROPERTIES:
@@ -663,10 +747,11 @@ Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.
 6. =C-.= — Context actions on any candidate (Embark)
 
 *** Window Management
-1. =C-x w v/s= — Split windows
-2. =C-x w h/j/k/l= — Navigate between windows
-3. =C-x w r= — Resize panel (h/j/k/l to adjust, q to quit)
-4. =C-x b b= — Switch buffer (Consult: includes recentf + bookmarks)
+1. =C-x o= — Quick jump to window (ace-window)
+2. =C-x w v/s= — Split windows
+3. =C-x w h/j/k/l= — Navigate between windows
+4. =C-x w r= — Resize panel (h/j/k/l to adjust, q to quit)
+5. =C-x b b= — Switch buffer (Consult: includes recentf + bookmarks)
 
 *** Org Mode Workflow
 1. =C-j o a= — View agenda
