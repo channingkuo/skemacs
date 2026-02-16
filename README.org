@@ -24,6 +24,7 @@
   - [[#project-management-bindings][Project Management Bindings]]
   - [[#treemacs-bindings][Treemacs Bindings]]
   - [[#git-bindings][Git Bindings]]
+  - [[#multiple-cursors-bindings][Multiple Cursors Bindings]]
   - [[#org-mode-bindings][Org Mode Bindings]]
 - [[#core-files][Core Files]]
   - [[#early-init-el][early-init.el]]
@@ -51,6 +52,7 @@
   - [[#init-project-el][init-project.el]]
   - [[#init-treemacs-el][init-treemacs.el]]
   - [[#init-git-el][init-git.el]]
+  - [[#init-multiple-cursors-el][init-multiple-cursors.el]]
   - [[#init-rainbow-delimiters-el][init-rainbow-delimiters.el]]
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
@@ -115,6 +117,7 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── init-treemacs.el     # File tree sidebar (treemacs)
 │   ├── init-git.el          # Git integration (magit + diff-hl)
 │   ├── init-undo-tree.el    # Undo/redo tree with hydra panel
+│   ├── init-multiple-cursors.el # Multi-cursor editing with hydra panel
 │   ├── init-rainbow-delimiters.el # Rainbow parentheses
 │   ├── init-web.el          # Web development (web-mode)
 │   └── init-which-key.el    # Key discovery (which-key)
@@ -200,6 +203,7 @@ Prefix keys are defined in =core-keybindings.el=. Modules bind commands under th
 | =C-j T=   | =skemacs-theme-prefix=   | Theme management |
 | =C-j l=   | (lsp-bridge bindings)    | LSP commands     |
 | =C-j u=   | (hydra-undo-tree)        | Undo tree panel  |
+| =C-j m=   | (hydra-multiple-cursors) | Multi-cursor panel |
 | =C-j h=   | (highlight-symbol)       | Symbol highlight |
 | =C-x w=   | =skemacs-window-prefix=  | Window ops       |
 | =C-x b=   | =skemacs-buffer-prefix=  | Buffer ops       |
@@ -437,6 +441,43 @@ Provided by =init-git.el=. Full Git integration via Magit.
 | =C-j g f= | =magit-log-buffer-file=     | Log for current file           |
 | =C-j g s= | =magit-stage-file=          | Stage current file             |
 | =C-j g u= | =magit-unstage-file=        | Unstage current file           |
+
+** Multiple Cursors Bindings
+:PROPERTIES:
+:CUSTOM_ID: multiple-cursors-bindings
+:END:
+
+Provided by =init-multiple-cursors.el=. Multi-cursor editing with a hydra operation panel.
+
+| Key              | Function                       | Description                    |
+|------------------+--------------------------------+--------------------------------|
+| =C-j m=          | =hydra-multiple-cursors/body=  | Open multiple cursors panel    |
+| =C-S-<mouse-1>= | =mc/toggle-cursor-on-click=    | Toggle cursor at click point   |
+
+In the multiple cursors panel (=C-j m=):
+
+*** Cursor Navigation
+
+| Key   | Function                       | Description                     |
+|-------+--------------------------------+---------------------------------|
+| =n=   | =mc/mark-next-like-this=       | Mark next occurrence            |
+| =p=   | =mc/mark-previous-like-this=   | Mark previous occurrence        |
+| =N=   | =mc/skip-to-next-like-this=    | Skip current, mark next         |
+| =P=   | =mc/skip-to-previous-like-this= | Skip current, mark previous    |
+| =M-n= | =mc/unmark-next-like-this=     | Unmark last next                |
+| =M-p= | =mc/unmark-previous-like-this= | Unmark last previous            |
+
+*** Batch Operations
+
+| Key | Function                     | Description                            |
+|-----+------------------------------+----------------------------------------|
+| =l= | =mc/edit-lines=              | Place cursor on each selected line     |
+| =a= | =mc/mark-all-like-this=      | Mark all occurrences in buffer         |
+| =s= | =mc/mark-all-in-region-regexp= | Mark by regexp in region             |
+| =\vert= | =mc/vertical-align=      | Align cursors by input character       |
+| =0= | =mc/insert-numbers=          | Insert incremental numbers             |
+| =A= | =mc/insert-letters=          | Insert incremental letters             |
+| =q= | quit                         | Exit panel                             |
 
 ** Org Mode Bindings
 :PROPERTIES:
@@ -802,6 +843,31 @@ Git integration via [[https://magit.vc/][Magit]] (full Git client) and [[https:/
 
 See [[#git-bindings][Git Bindings]] for keybindings.
 
+** init-multiple-cursors.el
+:PROPERTIES:
+:CUSTOM_ID: init-multiple-cursors-el
+:END:
+
+Multi-cursor editing via [[https://github.com/magnars/multiple-cursors.el][multiple-cursors]], with a hydra operation panel for visual command selection. Depends on =hydra= (=:after hydra=).
+
+| Package              | Role                                                |
+|----------------------+-----------------------------------------------------|
+| *multiple-cursors*   | Create and manage multiple cursors simultaneously   |
+
+*** Usage
+
+1. Select a word or region, then press =C-j m= to open the hydra panel
+2. Use =n= / =p= to incrementally add cursors on matching occurrences
+3. Use =N= / =P= to skip unwanted matches
+4. Use =a= to mark all matches at once
+5. Use =l= to place a cursor on each line of a selected region
+6. Type normally — all cursors edit simultaneously
+7. Press =C-g= to exit multi-cursor mode, or =q= to close the panel
+
+Additional entry point: =C-S-<mouse-1>= toggles a cursor at click position.
+
+See [[#multiple-cursors-bindings][Multiple Cursors Bindings]] for all keybindings.
+
 ** init-rainbow-delimiters.el
 :PROPERTIES:
 :CUSTOM_ID: init-rainbow-delimiters-el
@@ -914,7 +980,7 @@ Incrementally migrate features from the old config, by priority:
 |          | =init-navigation.el=  | Avy (char/line jump)                                  | —      |
 |          | =init-mwim.el=        | Smart line beginning/end (mwim)                       | ✓ Done |
 |          | =init-undo-tree.el=   | Undo-tree (tree-based undo/redo)                      | ✓ Done |
-|        5 | =init-editing.el=     | Multiple-cursors                                      | —      |
+|        5 | =init-multiple-cursors.el= | Multiple-cursors with hydra panel                | ✓ Done |
 |        6 | =init-project.el=     | Project management (built-in project.el)              | ✓ Done |
 |        7 | =init-git.el=         | Magit + diff-hl                                       | ✓ Done |
 |        8 | =init-lsp.el=         | lsp-bridge + Company + YASnippet                      | ✓ Done |
@@ -924,7 +990,7 @@ Incrementally migrate features from the old config, by priority:
 |       11 | =init-flycheck.el=    | Syntax checking                                       | —      |
 |       12 | =init-org.el=         | Org-mode full config                                  | —      |
 
-Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-mwim.el=, =init-undo-tree.el=, =init-treemacs.el=, =init-git.el=.
+Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-mwim.el=, =init-undo-tree.el=, =init-treemacs.el=, =init-git.el=, =init-multiple-cursors.el=.
 
 * Usage Guide
 :PROPERTIES:
@@ -981,6 +1047,13 @@ Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.
 1. =C-j f t= — Toggle treemacs sidebar
 2. =C-j f s= — Locate current file in tree
 3. =C-j f a= — Add project to workspace
+
+*** Multi-Cursor Editing
+1. =C-j m= — Open multiple cursors panel
+2. Select word → =n= / =p= — Add cursors on next/previous match
+3. Select word → =a= — Mark all same occurrences
+4. Select lines → =l= — One cursor per line
+5. =C-S-click= — Toggle cursor at mouse position
 
 *** Git (Magit)
 1. =C-j g g= — Open Magit status panel
