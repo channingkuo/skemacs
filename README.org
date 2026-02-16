@@ -16,6 +16,7 @@
 - [[#key-bindings-reference][Key Bindings Reference]]
   - [[#prefix-keys][Prefix Keys]]
   - [[#global-key-bindings][Global Key Bindings]]
+  - [[#completion--search-bindings][Completion & Search Bindings]]
   - [[#org-mode-bindings][Org Mode Bindings]]
 - [[#core-files][Core Files]]
   - [[#early-init-el][early-init.el]]
@@ -27,6 +28,13 @@
   - [[#core-editor-el][core-editor.el]]
   - [[#core-funcs-el][core-funcs.el]]
   - [[#core-keybindings-el][core-keybindings.el]]
+- [[#feature-modules][Feature Modules]]
+  - [[#init-completion-el][init-completion.el]]
+  - [[#init-which-key-el][init-which-key.el]]
+  - [[#init-recentf-el][init-recentf.el]]
+  - [[#init-dired-el][init-dired.el]]
+  - [[#init-lsp-el][init-lsp.el]]
+  - [[#init-web-el][init-web.el]]
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
   - [[#module-management][Module Management]]
@@ -77,7 +85,12 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── core-funcs.el        # Utility functions (navigation, window, clipboard)
 │   └── core-keybindings.el  # Prefix key definitions + global keybindings
 ├── modules/                 # Feature modules (each file is self-contained)
-│   └── init-xxx.el          # Module example
+│   ├── init-completion.el   # Minibuffer completion (Vertico + Orderless + Marginalia + Consult + Embark)
+│   ├── init-dired.el        # Dired enhancements (omit mode)
+│   ├── init-lsp.el          # LSP configuration (lsp-bridge)
+│   ├── init-recentf.el      # Recent files + ibuffer
+│   ├── init-web.el          # Web development (web-mode)
+│   └── init-which-key.el    # Key discovery (which-key)
 ├── local/                   # Local custom configs (not tracked by Git)
 ├── banners/                 # Startup banner files
 ├── themes/                  # Custom themes
@@ -148,10 +161,11 @@ Prefix keys are defined in =core-keybindings.el=. Modules bind commands under th
 
 | Prefix    | Keymap Name              | Purpose        |
 |-----------+--------------------------+----------------|
-| =C-j=     | =skemacs-prefix=         | Main prefix    |
-| =C-j o=   | =skemacs-org-prefix=     | Org-related    |
-| =C-x w=   | =skemacs-window-prefix=  | Window ops     |
-| =C-x b=   | =skemacs-buffer-prefix=  | Buffer ops     |
+| =C-j=     | =skemacs-prefix=         | Main prefix      |
+| =C-j o=   | =skemacs-org-prefix=     | Org-related      |
+| =C-j s=   | =skemacs-search-prefix=  | Search (Consult) |
+| =C-x w=   | =skemacs-window-prefix=  | Window ops       |
+| =C-x b=   | =skemacs-buffer-prefix=  | Buffer ops       |
 
 ** Global Key Bindings
 :PROPERTIES:
@@ -187,18 +201,83 @@ These keybindings depend on no third-party packages, defined in =core-keybinding
 | =C-x w V= | =skemacs/split-window-vertically=     | Split & switch right |
 
 *** Buffer Management (=C-x b= prefix)
-| Key       | Function           | Description        |
-|-----------+--------------------+--------------------|
-| =C-x b b= | =switch-to-buffer=  | Switch buffer      |
-| =C-x b n= | =next-buffer=       | Next buffer        |
-| =C-x b p= | =previous-buffer=   | Previous buffer    |
-| =C-x b k= | =kill-buffer=       | Kill buffer        |
+| Key       | Function            | Description                              |
+|-----------+---------------------+------------------------------------------|
+| =C-x b b= | =consult-buffer= ¹  | Switch buffer (+ recentf + bookmark)     |
+| =C-x b n= | =next-buffer=       | Next buffer                              |
+| =C-x b p= | =previous-buffer=   | Previous buffer                          |
+| =C-x b k= | =kill-buffer=       | Kill buffer                              |
+| =C-x b r= | =recentf-open=      | Recent files (completing-read)           |
+| =C-x b R= | =recentf-open-files= | Recent files (list window)              |
+| =C-x b l= | =ibuffer=           | Buffer list (ibuffer)                    |
+
+¹ Enhanced by =init-completion.el=; falls back to =switch-to-buffer= if module disabled.
 
 *** Config & Tools
 | Key         | Function                  | Description          |
 |-------------+---------------------------+----------------------|
 | =C-x a i R= | =skemacs/reload-config=   | Reload config        |
 | =C-j t=     | =skemacs/show-load-times= | Show load times      |
+
+** Completion & Search Bindings
+:PROPERTIES:
+:CUSTOM_ID: completion--search-bindings
+:END:
+
+Provided by =init-completion.el= (Vertico + Orderless + Marginalia + Consult + Embark).
+
+*** Minibuffer Completion
+
+M-x and all =completing-read= prompts are automatically enhanced:
+
+| Component    | Effect                                                    |
+|--------------+-----------------------------------------------------------|
+| *Vertico*    | Vertical candidate list in minibuffer                     |
+| *Orderless*  | Space-separated fuzzy matching (e.g. =fn js= → find-file-js) |
+| *Marginalia* | Annotations next to candidates (docstring, type, keybinding)  |
+| *Savehist*   | Persist minibuffer history across sessions                |
+
+*** Search & Navigation (=C-j s= prefix)
+| Key       | Function              | Description                     |
+|-----------+-----------------------+---------------------------------|
+| =C-j s s= | =consult-line=         | Search lines in current buffer  |
+| =C-j s r= | =consult-ripgrep=      | Ripgrep search in project       |
+| =C-j s f= | =consult-find=         | Find file by name               |
+| =C-j s g= | =consult-grep=         | Grep search                     |
+| =C-j s o= | =consult-outline=      | Jump to heading/outline         |
+| =C-j s i= | =consult-imenu=        | Jump to symbol (imenu)          |
+| =C-j s I= | =consult-imenu-multi=  | Jump to symbol (cross-buffer)   |
+| =C-j s b= | =consult-bookmark=     | Open bookmark                   |
+
+*** Standard Emacs Prefix Bindings (=M-g= / =M-s=)
+
+The same commands are also available under Emacs standard prefixes:
+
+| Key       | Function              | Description                     |
+|-----------+-----------------------+---------------------------------|
+| =M-g g=   | =consult-goto-line=    | Go to line number               |
+| =M-g o=   | =consult-outline=      | Jump to outline heading         |
+| =M-g i=   | =consult-imenu=        | Jump to symbol                  |
+| =M-g I=   | =consult-imenu-multi=  | Jump to symbol (cross-buffer)   |
+| =M-s l=   | =consult-line=         | Search lines in buffer          |
+| =M-s r=   | =consult-ripgrep=      | Ripgrep search in project       |
+| =M-s f=   | =consult-find=         | Find file by name               |
+| =M-s g=   | =consult-grep=         | Grep search                     |
+
+*** Embark (Context Actions)
+| Key     | Function          | Description                          |
+|---------+-------------------+--------------------------------------|
+| =C-.=   | =embark-act=       | Context menu on current candidate    |
+| =C-;=   | =embark-dwim=      | Execute default action               |
+| =C-h B= | =embark-bindings=  | Show all embark key bindings         |
+| =M-A=   | =marginalia-cycle= | Cycle annotation detail (minibuffer) |
+
+*** Vertico Directory Navigation (in =find-file= etc.)
+| Key     | Function                       | Description                    |
+|---------+--------------------------------+--------------------------------|
+| =RET=   | =vertico-directory-enter=       | Enter directory / open file    |
+| =DEL=   | =vertico-directory-delete-char= | Delete path component          |
+| =M-DEL= | =vertico-directory-delete-word= | Delete word in path            |
 
 ** Org Mode Bindings
 :PROPERTIES:
@@ -314,6 +393,74 @@ Utility functions (=skemacs/= namespace):
 
 Defines prefix keys and global keybindings independent of packages. See [[#key-bindings-reference][Key Bindings Reference]].
 
+* Feature Modules
+:PROPERTIES:
+:CUSTOM_ID: feature-modules
+:END:
+
+All modules reside in =modules/= and are loaded alphabetically. Each is self-contained with package declarations, configuration, and keybindings.
+
+** init-completion.el
+:PROPERTIES:
+:CUSTOM_ID: init-completion-el
+:END:
+
+Modern minibuffer completion framework replacing the default =completing-read= UI:
+
+| Package            | Role                                                   |
+|--------------------+--------------------------------------------------------|
+| *vertico*          | Vertical candidate list UI in the minibuffer           |
+| *vertico-directory* | Path-aware navigation (DEL deletes path component)    |
+| *orderless*        | Flexible matching: space-separated terms, any order    |
+| *marginalia*       | Rich annotations beside candidates                     |
+| *consult*          | Enhanced search, navigation, and buffer commands       |
+| *embark*           | Context-actions on candidates (like a right-click menu)|
+| *embark-consult*   | Integration bridge between Embark and Consult          |
+| *savehist*         | Persist minibuffer history across sessions (built-in)  |
+
+See [[#completion--search-bindings][Completion & Search Bindings]] for all keybindings.
+
+** init-which-key.el
+:PROPERTIES:
+:CUSTOM_ID: init-which-key-el
+:END:
+
+Displays available keybinding hints after pressing a prefix key. Uses Emacs 30+ built-in =which-key=.
+
+** init-recentf.el
+:PROPERTIES:
+:CUSTOM_ID: init-recentf-el
+:END:
+
+Tracks recently opened files (=recentf-mode=) and provides =ibuffer= as an enhanced buffer list.
+
+| Key       | Command              | Description               |
+|-----------+----------------------+---------------------------|
+| =C-x b r= | =recentf-open=        | Recent files (completing) |
+| =C-x b R= | =recentf-open-files=  | Recent files (list)       |
+| =C-x b l= | =ibuffer=             | Buffer list               |
+
+** init-dired.el
+:PROPERTIES:
+:CUSTOM_ID: init-dired-el
+:END:
+
+Dired enhancements: auto-enable =dired-omit-mode= to hide clutter files (.DS_Store, Thumbs.db, etc.).
+
+** init-lsp.el
+:PROPERTIES:
+:CUSTOM_ID: init-lsp-el
+:END:
+
+LSP integration via =lsp-bridge= for code intelligence (completion, diagnostics, navigation). Includes language server setup script (=setup-lsp.sh=).
+
+** init-web.el
+:PROPERTIES:
+:CUSTOM_ID: init-web-el
+:END:
+
+Web development support via =web-mode= for HTML, CSS, JSX, Vue, and template files.
+
 * Adding New Modules
 :PROPERTIES:
 :CUSTOM_ID: adding-new-modules
@@ -388,20 +535,22 @@ Add before =skemacs-load-all-modules= in =init.el=:
 
 Incrementally migrate features from the old config, by priority:
 
-| Priority | Module File           | Feature                             |
-|----------+-----------------------+-------------------------------------|
-|        1 | =init-theme.el=       | Theme setup                         |
-|        2 | =init-which-key.el=   | Key discovery (useful for all)      |
-|        3 | =init-completion.el=  | Ivy / Counsel / Swiper              |
-|        4 | =init-navigation.el=  | Avy + Ace-window                    |
-|        5 | =init-editing.el=     | Multiple-cursors + Undo-tree + Mwim |
-|        6 | =init-project.el=     | Projectile + Dashboard              |
-|        7 | =init-git.el=         | Magit                               |
-|        8 | =init-lsp.el=         | lsp-bridge + Company + YASnippet    |
-|        9 | =init-terminal.el=    | Vterm                               |
-|       10 | =init-ui.el=          | Modeline + Treemacs + Rainbow       |
-|       11 | =init-flycheck.el=    | Syntax checking                     |
-|       12 | =init-org.el=         | Org-mode full config                |
+| Priority | Module File           | Feature                                               | Status |
+|----------+-----------------------+-------------------------------------------------------+--------|
+|        1 | =init-theme.el=       | Theme setup                                           | —      |
+|        2 | =init-which-key.el=   | Key discovery (useful for all)                        | ✓ Done |
+|        3 | =init-completion.el=  | Vertico + Orderless + Marginalia + Consult + Embark   | ✓ Done |
+|        4 | =init-navigation.el=  | Avy + Ace-window                                      | —      |
+|        5 | =init-editing.el=     | Multiple-cursors + Undo-tree + Mwim                   | —      |
+|        6 | =init-project.el=     | Projectile + Dashboard                                | —      |
+|        7 | =init-git.el=         | Magit                                                 | —      |
+|        8 | =init-lsp.el=         | lsp-bridge + Company + YASnippet                      | ✓ Done |
+|        9 | =init-terminal.el=    | Vterm                                                 | —      |
+|       10 | =init-ui.el=          | Modeline + Treemacs + Rainbow                         | —      |
+|       11 | =init-flycheck.el=    | Syntax checking                                       | —      |
+|       12 | =init-org.el=         | Org-mode full config                                  | —      |
+
+Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=.
 
 * Usage Guide
 :PROPERTIES:
@@ -431,10 +580,18 @@ Incrementally migrate features from the old config, by priority:
 :CUSTOM_ID: daily-workflow
 :END:
 
+*** Search & Navigation (Consult)
+1. =C-j s s= — Search lines in current buffer
+2. =C-j s r= — Ripgrep search across project
+3. =C-j s f= — Find file by name
+4. =C-j s o= — Jump to outline heading
+5. =C-j s i= — Jump to symbol (imenu)
+6. =C-.= — Context actions on any candidate (Embark)
+
 *** Window Management
 1. =C-x w v/s= — Split windows
 2. =C-x w h/j/k/l= — Navigate between windows
-3. =C-x b b= — Switch buffer
+3. =C-x b b= — Switch buffer (Consult: includes recentf + bookmarks)
 
 *** Org Mode Workflow
 1. =C-j o a= — View agenda
@@ -477,7 +634,8 @@ Incrementally migrate features from the old config, by priority:
 *** View Keybindings
 1. =C-h k= — Describe what a key does
 2. =C-h b= — List all current bindings
-3. =M-x describe-personal-keybindings= — View all =:bind= custom bindings
+3. =C-h B= — Embark bindings overview (if init-completion loaded)
+4. =M-x describe-personal-keybindings= — View all =:bind= custom bindings
 
 *** Slow Startup
 1. =M-x skemacs/show-load-times= — Find the slowest module
