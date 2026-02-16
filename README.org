@@ -17,6 +17,7 @@
   - [[#prefix-keys][Prefix Keys]]
   - [[#global-key-bindings][Global Key Bindings]]
   - [[#completion--search-bindings][Completion & Search Bindings]]
+  - [[#highlight-symbol-bindings][Highlight Symbol Bindings]]
   - [[#org-mode-bindings][Org Mode Bindings]]
 - [[#core-files][Core Files]]
   - [[#early-init-el][early-init.el]]
@@ -36,6 +37,8 @@
   - [[#init-lsp-el][init-lsp.el]]
   - [[#init-web-el][init-web.el]]
   - [[#init-hydra-el][init-hydra.el]]
+  - [[#init-highlight-symbol-el][init-highlight-symbol.el]]
+  - [[#init-rainbow-delimiters-el][init-rainbow-delimiters.el]]
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
   - [[#module-management][Module Management]]
@@ -90,7 +93,9 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── init-dired.el        # Dired enhancements (omit mode)
 │   ├── init-lsp.el          # LSP configuration (lsp-bridge)
 │   ├── init-recentf.el      # Recent files + ibuffer
+│   ├── init-highlight-symbol.el # Symbol highlighting
 │   ├── init-hydra.el        # Operation panels (hydra)
+│   ├── init-rainbow-delimiters.el # Rainbow parentheses
 │   ├── init-web.el          # Web development (web-mode)
 │   └── init-which-key.el    # Key discovery (which-key)
 ├── local/                   # Local custom configs (not tracked by Git)
@@ -292,6 +297,20 @@ The same commands are also available under Emacs standard prefixes:
 | =DEL=   | =vertico-directory-delete-char= | Delete path component          |
 | =M-DEL= | =vertico-directory-delete-word= | Delete word in path            |
 
+** Highlight Symbol Bindings
+:PROPERTIES:
+:CUSTOM_ID: highlight-symbol-bindings
+:END:
+
+Provided by =init-highlight-symbol.el=. Automatically highlights all occurrences of the symbol under cursor in =prog-mode= buffers.
+
+| Key       | Function                          | Description                     |
+|-----------+-----------------------------------+---------------------------------|
+| =C-j h n= | =highlight-symbol-next=            | Jump to next same symbol        |
+| =C-j h p= | =highlight-symbol-prev=            | Jump to previous same symbol    |
+| =C-j h h= | =highlight-symbol-at-point=        | Toggle highlight current symbol |
+| =C-j h r= | =highlight-symbol-query-replace=   | Rename symbol in buffer         |
+
 ** Org Mode Bindings
 :PROPERTIES:
 :CUSTOM_ID: org-mode-bindings
@@ -474,6 +493,29 @@ LSP integration via =lsp-bridge= for code intelligence (completion, diagnostics,
 
 Web development support via =web-mode= for HTML, CSS, JSX, Vue, and template files.
 
+** init-highlight-symbol.el
+:PROPERTIES:
+:CUSTOM_ID: init-highlight-symbol-el
+:END:
+
+Highlights all occurrences of the symbol under cursor in =prog-mode= buffers via the [[https://github.com/nschum/highlight-symbol.el][highlight-symbol]] package.
+
+- Auto-highlights after 0.3s idle time
+- Jump between occurrences with =C-j h n= / =C-j h p=
+- Query-replace symbol in buffer with =C-j h r=
+
+See [[#highlight-symbol-bindings][Highlight Symbol Bindings]] for all keybindings.
+
+** init-rainbow-delimiters.el
+:PROPERTIES:
+:CUSTOM_ID: init-rainbow-delimiters-el
+:END:
+
+Colorizes nested parentheses/brackets/braces by depth via [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]]. Each nesting level gets a distinct color, making it easy to visually match delimiters. Especially useful for Lisp-family languages.
+
+- Enabled automatically in all =prog-mode= buffers
+- No keybindings (purely visual enhancement)
+
 ** init-hydra.el
 :PROPERTIES:
 :CUSTOM_ID: init-hydra-el
@@ -582,7 +624,7 @@ Incrementally migrate features from the old config, by priority:
 |       11 | =init-flycheck.el=    | Syntax checking                                       | —      |
 |       12 | =init-org.el=         | Org-mode full config                                  | —      |
 
-Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=.
+Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=.
 
 * Usage Guide
 :PROPERTIES:
