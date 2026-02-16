@@ -37,6 +37,9 @@
   :ensure t
   :defer t)
 
+(use-package posframe
+  :ensure t)
+
 ;; ============================================================================
 ;; lsp-bridge (via git clone at ~/.emacs.d/lsp-bridge/)
 ;; ============================================================================
@@ -182,7 +185,22 @@
   (setq lsp-bridge-multi-lang-server-extension-list
         '((("vue") . "volar_vtsls")))
   ;; 启用诊断提示
-  (setq lsp-bridge-enable-diagnostics t))
+  (setq lsp-bridge-enable-diagnostics t)
+  (setq lsp-bridge-enable-hover-diagnostic t)  ; 启用悬浮诊断
+  (setq acm-enable-doc t)                      ; 启用补全文档
+  (setq acm-enable-doc-markdown-render t)      ; 渲染 Markdown
+
+  ;; 自定义 posframe 样式
+  (setq acm-frame-background-dark-color "#191a1b")
+  (setq acm-frame-background-light-color "#f0f0f0")
+
+  ;; 文档窗口位置
+  ;; (setq acm-doc-frame-pos 'top)  ; 或 'bottom
+
+  ;; 边框样式(需要 Emacs 29+)
+  ;; (set-face-attribute 'child-frame-border nil 
+  ;;                   :background "#5B6268")
+  )
 
 (provide 'init-lsp)
 ;;; init-lsp.el ends here
