@@ -26,6 +26,7 @@
   - [[#avy-bindings][Avy Bindings]]
   - [[#git-bindings][Git Bindings]]
   - [[#multiple-cursors-bindings][Multiple Cursors Bindings]]
+  - [[#vterm-bindings][Vterm Bindings]]
   - [[#org-mode-bindings][Org Mode Bindings]]
 - [[#core-files][Core Files]]
   - [[#early-init-el][early-init.el]]
@@ -56,6 +57,7 @@
   - [[#init-git-el][init-git.el]]
   - [[#init-multiple-cursors-el][init-multiple-cursors.el]]
   - [[#init-rainbow-delimiters-el][init-rainbow-delimiters.el]]
+  - [[#init-vterm-el][init-vterm.el]]
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
   - [[#module-management][Module Management]]
@@ -122,6 +124,7 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── init-undo-tree.el    # Undo/redo tree with hydra panel
 │   ├── init-multiple-cursors.el # Multi-cursor editing with hydra panel
 │   ├── init-rainbow-delimiters.el # Rainbow parentheses
+│   ├── init-vterm.el        # Terminal emulator (vterm)
 │   ├── init-web.el          # Web development (web-mode)
 │   └── init-which-key.el    # Key discovery (which-key)
 ├── themes/                  # Local theme files (modus-themes, loaded via custom-theme-load-path)
@@ -204,6 +207,7 @@ Prefix keys are defined in =core-keybindings.el=. Modules bind commands under th
 | =C-j f=   | =skemacs-filetree-prefix= | File tree (Treemacs) |
 | =C-j g=   | =skemacs-git-prefix=     | Git (Magit)      |
 | =C-j j=   | =skemacs-jump-prefix=    | Jump (Avy)       |
+| =C-j v=   | =skemacs-terminal-prefix= | Terminal (Vterm) |
 | =C-j T=   | =skemacs-theme-prefix=   | Theme management |
 | =C-j l=   | (lsp-bridge bindings)    | LSP commands     |
 | =C-j u=   | (hydra-undo-tree)        | Undo tree panel  |
@@ -505,6 +509,19 @@ In the multiple cursors panel (=C-j m=):
 | =0= | =mc/insert-numbers=          | Insert incremental numbers             |
 | =A= | =mc/insert-letters=          | Insert incremental letters             |
 | =q= | quit                         | Exit panel                             |
+
+** Vterm Bindings
+:PROPERTIES:
+:CUSTOM_ID: vterm-bindings
+:END:
+
+Provided by =init-vterm.el=. High-performance terminal emulator via [[https://github.com/akermu/emacs-libvterm][vterm]] (based on libvterm C library).
+
+| Key       | Function                   | Description                                     |
+|-----------+----------------------------+-------------------------------------------------|
+| =C-j v v= | =vterm=                    | Open new vterm terminal                         |
+| =C-j v t= | =skemacs/vterm-toggle=     | Toggle vterm (switch to existing or create new) |
+| =C-j v o= | =vterm-other-window=       | Open vterm in another window                    |
 
 ** Org Mode Bindings
 :PROPERTIES:
@@ -919,6 +936,39 @@ Colorizes nested parentheses/brackets/braces by depth via [[https://github.com/F
 - Enabled automatically in all =prog-mode= buffers
 - No keybindings (purely visual enhancement)
 
+** init-vterm.el
+:PROPERTIES:
+:CUSTOM_ID: init-vterm-el
+:END:
+
+High-performance terminal emulator via [[https://github.com/akermu/emacs-libvterm][vterm]], based on the libvterm C library. Supports full terminal features (colors, cursor movement, scrolling) with performance far exceeding =ansi-term=.
+
+*** Dependencies
+
+First-time loading auto-compiles the C module. System requirements:
+
+| OS     | Install Command                    | Notes                                        |
+|--------+------------------------------------+----------------------------------------------|
+| macOS  | =brew install cmake libtool=       | libtool installs as =glibtool=; system Apple libtool is incompatible |
+| Ubuntu | =sudo apt install cmake libtool-bin= |                                            |
+
+*** Configuration
+
+| Setting                      | Value             | Description                          |
+|------------------------------+-------------------+--------------------------------------|
+| =vterm-max-scrollback=       | 10000             | Maximum scrollback lines             |
+| =vterm-kill-buffer-on-exit=  | t                 | Auto-close buffer when shell exits   |
+| =vterm-shell=                | =$SHELL= or =/bin/zsh= | Use system default shell        |
+| =vterm-buffer-name-string=   | ="vterm: %s"=     | Buffer naming pattern                |
+
+*** Toggle Function
+
+=skemacs/vterm-toggle= (=C-j v t=) provides smart switching:
+- If currently in vterm: switch back to previous buffer
+- If not in vterm: switch to an existing vterm buffer, or create a new one
+
+See [[#vterm-bindings][Vterm Bindings]] for keybindings.
+
 ** init-hydra.el
 :PROPERTIES:
 :CUSTOM_ID: init-hydra-el
@@ -1025,7 +1075,7 @@ Incrementally migrate features from the old config, by priority:
 |        6 | =init-project.el=     | Project management (built-in project.el)              | ✓ Done |
 |        7 | =init-git.el=         | Magit + diff-hl                                       | ✓ Done |
 |        8 | =init-lsp.el=         | lsp-bridge + Company + YASnippet                      | ✓ Done |
-|        9 | =init-terminal.el=    | Vterm                                                 | —      |
+|        9 | =init-vterm.el=       | Vterm                                                 | ✓ Done |
 |       10 | =init-treemacs.el=    | Treemacs file tree sidebar                            | ✓ Done |
 |          | =init-ui.el=          | Modeline + other UI enhancements                      | —      |
 |       11 | =init-flycheck.el=    | Syntax checking                                       | —      |
@@ -1047,11 +1097,19 @@ Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.
 
 2. Clone/copy this config to =~/.emacs.d/=
 
-3. Start Emacs — packages install automatically when modules need them
+3. Install system dependencies for vterm (terminal emulator):
+   #+BEGIN_SRC bash
+   # macOS
+   brew install cmake libtool
+   # Ubuntu
+   sudo apt install cmake libtool-bin
+   #+END_SRC
 
-4. Add feature modules in =modules/= as needed
+4. Start Emacs — packages install automatically when modules need them
 
-5. Set up Org directory:
+5. Add feature modules in =modules/= as needed
+
+6. Set up Org directory:
    #+BEGIN_SRC bash
    mkdir -p ~/org
    #+END_SRC
@@ -1108,6 +1166,11 @@ Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.
 3. =C-j g b= — Blame current file
 4. =C-j g d= — Diff current file
 5. =C-j g s= / =C-j g u= — Stage / unstage current file
+
+*** Terminal (Vterm)
+1. =C-j v v= — Open new terminal
+2. =C-j v t= — Toggle terminal (switch to existing or create new)
+3. =C-j v o= — Open terminal in another window
 
 *** Org Mode Workflow
 1. =C-j o a= — View agenda

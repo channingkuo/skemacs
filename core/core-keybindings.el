@@ -47,6 +47,10 @@
 (define-prefix-command 'skemacs-jump-prefix)
 (global-set-key (kbd "C-j j") 'skemacs-jump-prefix)
 
+;; C-j v — 终端相关（Vterm）
+(define-prefix-command 'skemacs-terminal-prefix)
+(global-set-key (kbd "C-j v") 'skemacs-terminal-prefix)
+
 ;; ============================================================================
 ;; 全局快捷键（不依赖任何第三方包）
 ;; ============================================================================
@@ -102,11 +106,6 @@
 (global-set-key (kbd "C-j o o") 'skemacs/open-org-directory)
 (global-set-key (kbd "C-j o a") 'org-agenda)
 (global-set-key (kbd "C-j o c") 'org-capture)
-(global-set-key (kbd "C-j o l") 'org-store-link)
-(global-set-key (kbd "C-j o i") 'org-insert-link)
-(global-set-key (kbd "C-j o C-p") 'iimage-mode)
-(global-set-key (kbd "C-j o <up>") 'org-priority-up)
-(global-set-key (kbd "C-j o <down>") 'org-priority-down)
 
 ;; --- 查看加载时间 ---
 (global-set-key (kbd "C-j t") 'skemacs/show-load-times)
