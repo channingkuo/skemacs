@@ -8,7 +8,12 @@
 #   2. 安装 LSP 服务器（Volar + vtsls + TypeScript）
 #   3. 创建 Python 虚拟环境并安装 lsp-bridge 依赖
 #   4. Clone lsp-bridge 源码
-#   5. 生成 vtsls.json 覆盖配置（修正 @vue/typescript-plugin 路径）
+#   5. 生成 langserver 覆盖配置（用 vtsls 替代 typescript-language-server）
+#      - vtsls.json          — Vue multiserver 融合（含 @vue/typescript-plugin）
+#      - typescript.json     — .ts 文件
+#      - typescriptreact.json — .tsx 文件
+#      - javascript.json     — .js 文件
+#      - javascriptreact.json — .jsx 文件
 #
 # 用法：
 #   cd ~/.emacs.d && bash setup-lsp.sh
@@ -162,11 +167,15 @@ setup_lsp_bridge() {
 }
 
 # ============================================================================
-# Step 4: 生成 vtsls.json 覆盖配置
+# Step 4: 生成 langserver 覆盖配置
 # ============================================================================
+#
+# lsp-bridge 按 server name（即文件名）匹配覆盖配置。
+# 内置的 typescript.json / javascript.json 等默认使用 typescript-language-server，
+# 我们统一用已安装的 vtsls 替代，避免额外安装 typescript-language-server。
 
-setup_vtsls_override() {
-    info "=== Step 4: 生成 vtsls.json 覆盖配置 ==="
+setup_langserver_overrides() {
+    info "=== Step 4: 生成 langserver 覆盖配置（vtsls 替代 typescript-language-server） ==="
 
     local vue_plugin_location="${NODE_DIR}/lib/node_modules/@vue/language-server"
 
@@ -177,6 +186,7 @@ setup_vtsls_override() {
 
     mkdir -p "${LANGSERVER_DIR}"
 
+    # --- vtsls.json: Vue multiserver 融合（含 @vue/typescript-plugin） ---
     cat > "${LANGSERVER_DIR}/vtsls.json" << VTSLS_EOF
 {
   "name": "vtsls",
@@ -205,9 +215,122 @@ setup_vtsls_override() {
   }
 }
 VTSLS_EOF
+    ok "vtsls.json 已生成"
 
-    ok "vtsls.json 已生成: ${LANGSERVER_DIR}/vtsls.json"
+    # --- typescript.json: .ts 文件 ---
+    cat > "${LANGSERVER_DIR}/typescript.json" << 'TS_EOF'
+{
+  "name": "vtsls",
+  "command": ["vtsls", "--stdio"],
+  "languageId": "typescript",
+  "settings": {
+    "typescript": {
+      "inlayHints": {
+        "includeInlayParameterNameHints": "all",
+        "includeInlayParameterNameHintsWhenArgumentMatchesName": true,
+        "includeInlayFunctionParameterTypeHints": true,
+        "includeInlayVariableTypeHints": true,
+        "includeInlayVariableTypeHintsWhenTypeMatchesName": true,
+        "includeInlayPropertyDeclarationTypeHints": true,
+        "includeInlayFunctionLikeReturnTypeHints": true,
+        "includeInlayEnumMemberValueHints": true
+      }
+    },
+    "vtsls": {
+      "tsserver": {
+        "globalPlugins": []
+      }
+    }
+  },
+  "initializationOptions": {
+    "typescript": {
+      "tsdk": ""
+    }
+  }
+}
+TS_EOF
+    ok "typescript.json 已生成"
+
+    # --- typescriptreact.json: .tsx 文件 ---
+    cat > "${LANGSERVER_DIR}/typescriptreact.json" << 'TSX_EOF'
+{
+  "name": "vtsls",
+  "command": ["vtsls", "--stdio"],
+  "languageId": "typescriptreact",
+  "settings": {
+    "typescript": {
+      "inlayHints": {
+        "includeInlayParameterNameHints": "all",
+        "includeInlayParameterNameHintsWhenArgumentMatchesName": true,
+        "includeInlayFunctionParameterTypeHints": true,
+        "includeInlayVariableTypeHints": true,
+        "includeInlayVariableTypeHintsWhenTypeMatchesName": true,
+        "includeInlayPropertyDeclarationTypeHints": true,
+        "includeInlayFunctionLikeReturnTypeHints": true,
+        "includeInlayEnumMemberValueHints": true
+      }
+    },
+    "vtsls": {
+      "tsserver": {
+        "globalPlugins": []
+      }
+    }
+  },
+  "initializationOptions": {
+    "typescript": {
+      "tsdk": ""
+    }
+  }
+}
+TSX_EOF
+    ok "typescriptreact.json 已生成"
+
+    # --- javascript.json: .js 文件 ---
+    cat > "${LANGSERVER_DIR}/javascript.json" << 'JS_EOF'
+{
+  "name": "vtsls",
+  "command": ["vtsls", "--stdio"],
+  "languageId": "javascript",
+  "settings": {
+    "vtsls": {
+      "tsserver": {
+        "globalPlugins": []
+      }
+    }
+  },
+  "initializationOptions": {
+    "typescript": {
+      "tsdk": ""
+    }
+  }
+}
+JS_EOF
+    ok "javascript.json 已生成"
+
+    # --- javascriptreact.json: .jsx 文件 ---
+    cat > "${LANGSERVER_DIR}/javascriptreact.json" << 'JSX_EOF'
+{
+  "name": "vtsls",
+  "command": ["vtsls", "--stdio"],
+  "languageId": "javascriptreact",
+  "settings": {
+    "vtsls": {
+      "tsserver": {
+        "globalPlugins": []
+      }
+    }
+  },
+  "initializationOptions": {
+    "typescript": {
+      "tsdk": ""
+    }
+  }
+}
+JSX_EOF
+    ok "javascriptreact.json 已生成"
+
     info "  - @vue/typescript-plugin 路径: ${vue_plugin_location}"
+    ok "所有 langserver 覆盖配置已生成: ${LANGSERVER_DIR}/"
 }
 
 # ============================================================================
@@ -229,7 +352,7 @@ main() {
     echo ""
     setup_lsp_bridge
     echo ""
-    setup_vtsls_override
+    setup_langserver_overrides
 
     echo ""
     echo -e "${GREEN}╔══════════════════════════════════════════════════╗${NC}"
@@ -237,10 +360,15 @@ main() {
     echo -e "${GREEN}╚══════════════════════════════════════════════════╝${NC}"
     echo ""
     info "已安装组件:"
-    info "  Node.js:     ${NODE_DIR}/bin/node"
-    info "  Python:      ${VENV_DIR}/bin/python"
-    info "  lsp-bridge:  ${LSP_BRIDGE_DIR}/"
-    info "  vtsls.json:  ${LANGSERVER_DIR}/vtsls.json"
+    info "  Node.js:       ${NODE_DIR}/bin/node"
+    info "  Python:        ${VENV_DIR}/bin/python"
+    info "  lsp-bridge:    ${LSP_BRIDGE_DIR}/"
+    info "  langserver 覆盖: ${LANGSERVER_DIR}/"
+    info "    - vtsls.json           (Vue multiserver)"
+    info "    - typescript.json      (.ts → vtsls)"
+    info "    - typescriptreact.json (.tsx → vtsls)"
+    info "    - javascript.json      (.js → vtsls)"
+    info "    - javascriptreact.json (.jsx → vtsls)"
     echo ""
     info "下一步：启动 Emacs，模块 init-web.el 和 init-lsp.el 将自动加载"
     echo ""
