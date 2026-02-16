@@ -43,6 +43,10 @@
 (define-prefix-command 'skemacs-git-prefix)
 (global-set-key (kbd "C-j g") 'skemacs-git-prefix)
 
+;; C-j j — 跳转相关（Avy）
+(define-prefix-command 'skemacs-jump-prefix)
+(global-set-key (kbd "C-j j") 'skemacs-jump-prefix)
+
 ;; ============================================================================
 ;; 全局快捷键（不依赖任何第三方包）
 ;; ============================================================================

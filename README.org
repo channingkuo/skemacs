@@ -23,6 +23,7 @@
   - [[#undo-tree-bindings][Undo Tree Bindings]]
   - [[#project-management-bindings][Project Management Bindings]]
   - [[#treemacs-bindings][Treemacs Bindings]]
+  - [[#avy-bindings][Avy Bindings]]
   - [[#git-bindings][Git Bindings]]
   - [[#multiple-cursors-bindings][Multiple Cursors Bindings]]
   - [[#org-mode-bindings][Org Mode Bindings]]
@@ -46,6 +47,7 @@
   - [[#init-web-el][init-web.el]]
   - [[#init-hydra-el][init-hydra.el]]
   - [[#init-highlight-symbol-el][init-highlight-symbol.el]]
+  - [[#init-avy-el][init-avy.el]]
   - [[#init-ace-window-el][init-ace-window.el]]
   - [[#init-mwim-el][init-mwim.el]]
   - [[#init-undo-tree-el][init-undo-tree.el]]
@@ -111,6 +113,7 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── init-recentf.el      # Recent files + ibuffer
 │   ├── init-highlight-symbol.el # Symbol highlighting
 │   ├── init-hydra.el        # Operation panels (hydra)
+│   ├── init-avy.el          # Quick jump (avy: char/word/line jump)
 │   ├── init-ace-window.el   # Window quick-jump (ace-window)
 │   ├── init-mwim.el         # Smart line beginning/end (mwim)
 │   ├── init-project.el      # Project management (built-in project.el)
@@ -200,6 +203,7 @@ Prefix keys are defined in =core-keybindings.el=. Modules bind commands under th
 | =C-j s=   | =skemacs-search-prefix=  | Search (Consult) |
 | =C-j f=   | =skemacs-filetree-prefix= | File tree (Treemacs) |
 | =C-j g=   | =skemacs-git-prefix=     | Git (Magit)      |
+| =C-j j=   | =skemacs-jump-prefix=    | Jump (Avy)       |
 | =C-j T=   | =skemacs-theme-prefix=   | Theme management |
 | =C-j l=   | (lsp-bridge bindings)    | LSP commands     |
 | =C-j u=   | (hydra-undo-tree)        | Undo tree panel  |
@@ -424,6 +428,29 @@ Provided by =init-treemacs.el=. File tree sidebar for project navigation.
 | =C-j f s= | =treemacs-find-file=                  | Locate current file in tree    |
 | =C-j f d= | =treemacs-select-directory=           | Select directory               |
 | =C-j f a= | =treemacs-add-project-to-workspace=   | Add project to workspace       |
+
+** Avy Bindings
+:PROPERTIES:
+:CUSTOM_ID: avy-bindings
+:END:
+
+Provided by =init-avy.el=. Fast cursor jumping to any visible position via [[https://github.com/abo-abo/avy][avy]].
+
+*** Quick Access
+| Key     | Function             | Description                         |
+|---------+----------------------+-------------------------------------|
+| =C-;=   | =avy-goto-word-1=    | Type 1 char, jump to word beginning |
+| =C-'=   | =avy-goto-char-2=    | Type 2 chars, jump to match         |
+| =M-g g= | =avy-goto-line=      | Jump to any visible line            |
+| =M-g w= | =avy-goto-word-1=    | Jump to word beginning              |
+
+*** Jump Prefix (=C-j j=)
+| Key       | Function               | Description                      |
+|-----------+------------------------+----------------------------------|
+| =C-j j c= | =avy-goto-char=        | Jump to any character            |
+| =C-j j w= | =avy-goto-word-1=      | Jump to word beginning           |
+| =C-j j l= | =avy-goto-line=        | Jump to any line                 |
+| =C-j j t= | =avy-goto-char-timer=  | Timed char search (0.5s timeout) |
 
 ** Git Bindings
 :PROPERTIES:
@@ -717,6 +744,20 @@ Highlights all occurrences of the symbol under cursor in =prog-mode= buffers via
 
 See [[#highlight-symbol-bindings][Highlight Symbol Bindings]] for all keybindings.
 
+** init-avy.el
+:PROPERTIES:
+:CUSTOM_ID: init-avy-el
+:END:
+
+Fast cursor jumping to any visible position via [[https://github.com/abo-abo/avy][avy]]. Type a few characters and avy overlays hint characters on all matching positions — press the hint to jump there instantly.
+
+- Searches across all visible windows (=avy-all-windows t=)
+- Uses home row keys (=a s d f g h j k l=) for hint characters
+- Background dimming for better hint visibility
+- =avy-goto-char-timer= timeout: 0.5s (configurable via =avy-timeout-seconds=)
+
+See [[#avy-bindings][Avy Bindings]] for keybindings.
+
 ** init-ace-window.el
 :PROPERTIES:
 :CUSTOM_ID: init-ace-window-el
@@ -977,7 +1018,7 @@ Incrementally migrate features from the old config, by priority:
 |        2 | =init-which-key.el=   | Key discovery (useful for all)                        | ✓ Done |
 |        3 | =init-completion.el=  | Vertico + Orderless + Marginalia + Consult + Embark   | ✓ Done |
 |        4 | =init-ace-window.el=  | Ace-window (window quick-jump)                        | ✓ Done |
-|          | =init-navigation.el=  | Avy (char/line jump)                                  | —      |
+|          | =init-avy.el=         | Avy (char/word/line jump)                             | ✓ Done |
 |          | =init-mwim.el=        | Smart line beginning/end (mwim)                       | ✓ Done |
 |          | =init-undo-tree.el=   | Undo-tree (tree-based undo/redo)                      | ✓ Done |
 |        5 | =init-multiple-cursors.el= | Multiple-cursors with hydra panel                | ✓ Done |
@@ -990,7 +1031,7 @@ Incrementally migrate features from the old config, by priority:
 |       11 | =init-flycheck.el=    | Syntax checking                                       | —      |
 |       12 | =init-org.el=         | Org-mode full config                                  | —      |
 
-Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-mwim.el=, =init-undo-tree.el=, =init-treemacs.el=, =init-git.el=, =init-multiple-cursors.el=.
+Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-avy.el=, =init-mwim.el=, =init-undo-tree.el=, =init-treemacs.el=, =init-git.el=, =init-multiple-cursors.el=.
 
 * Usage Guide
 :PROPERTIES:
@@ -1019,6 +1060,12 @@ Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.
 :PROPERTIES:
 :CUSTOM_ID: daily-workflow
 :END:
+
+*** Quick Jump (Avy)
+1. =C-;= — Jump to word beginning (type 1 char)
+2. =C-'= — Jump to position (type 2 chars)
+3. =C-j j t= — Timed char search (type then wait)
+4. =M-g g= — Jump to any visible line
 
 *** Search & Navigation (Consult)
 1. =C-j s s= — Search lines in current buffer
