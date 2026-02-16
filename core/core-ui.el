@@ -56,6 +56,12 @@
 ;; 滚动
 ;; ============================================================================
 
+;; 光标移出窗口时逐行滚动，而非跳半页重新居中
+(setq scroll-conservatively 101)
+
+;; 光标距离窗口边缘还有 5 行时就开始滚动，避免贴边
+(setq scroll-margin 5)
+
 ;; 平滑像素滚动（Emacs 29+）
 (when (fboundp 'pixel-scroll-precision-mode)
   (pixel-scroll-precision-mode t))

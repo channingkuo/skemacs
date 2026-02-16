@@ -171,7 +171,7 @@ TOTAL-ELAPSED 为总启动耗时（秒）。
                              emacs-version total-elapsed)
                      win-width))))
 
-        ;; 滚到顶部显示 banner
+        ;; 滚到行首
         (goto-char (point-min))
         (read-only-mode 1)
 
@@ -184,9 +184,11 @@ TOTAL-ELAPSED 为总启动耗时（秒）。
                       (lambda () (interactive) (exit-recursive-edit)))
           (use-local-map map))))
 
-    ;; 确保 splash buffer 在最前面
+    ;; 确保 splash buffer 在最前面，光标定位到左上角
     (switch-to-buffer skemacs--splash-buffer)
     (delete-other-windows)
+    (goto-char (point-min))
+    (set-window-start (selected-window) (point-min))
     (redisplay t)
 
     ;; 进入 recursive-edit：允许完整的光标移动和滚动
