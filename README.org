@@ -21,6 +21,7 @@
   - [[#highlight-symbol-bindings][Highlight Symbol Bindings]]
   - [[#theme-bindings][Theme Bindings]]
   - [[#undo-tree-bindings][Undo Tree Bindings]]
+  - [[#project-management-bindings][Project Management Bindings]]
   - [[#org-mode-bindings][Org Mode Bindings]]
 - [[#core-files][Core Files]]
   - [[#early-init-el][early-init.el]]
@@ -45,6 +46,7 @@
   - [[#init-ace-window-el][init-ace-window.el]]
   - [[#init-mwim-el][init-mwim.el]]
   - [[#init-undo-tree-el][init-undo-tree.el]]
+  - [[#init-project-el][init-project.el]]
   - [[#init-rainbow-delimiters-el][init-rainbow-delimiters.el]]
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
@@ -105,6 +107,7 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── init-hydra.el        # Operation panels (hydra)
 │   ├── init-ace-window.el   # Window quick-jump (ace-window)
 │   ├── init-mwim.el         # Smart line beginning/end (mwim)
+│   ├── init-project.el      # Project management (built-in project.el)
 │   ├── init-undo-tree.el    # Undo/redo tree with hydra panel
 │   ├── init-rainbow-delimiters.el # Rainbow parentheses
 │   ├── init-web.el          # Web development (web-mode)
@@ -184,6 +187,7 @@ Prefix keys are defined in =core-keybindings.el=. Modules bind commands under th
 |-----------+--------------------------+------------------|
 | =C-j=     | =skemacs-prefix=         | Main prefix      |
 | =C-j o=   | =skemacs-org-prefix=     | Org-related      |
+| =C-j p=   | =skemacs-project-prefix= | Project mgmt     |
 | =C-j s=   | =skemacs-search-prefix=  | Search (Consult) |
 | =C-j T=   | =skemacs-theme-prefix=   | Theme management |
 | =C-j l=   | (lsp-bridge bindings)    | LSP commands     |
@@ -374,6 +378,26 @@ In the undo tree panel (=C-j u=):
 | =n= | =undo-tree-redo=       | Redo                  |
 | =v= | =undo-tree-visualize=  | Visualize undo tree   |
 | =q= | quit                   | Exit panel            |
+
+** Project Management Bindings
+:PROPERTIES:
+:CUSTOM_ID: project-management-bindings
+:END:
+
+Provided by =init-project.el=. Uses Emacs built-in =project.el= (28+) for project management based on version control (Git etc.) root detection.
+
+| Key       | Function                        | Description                   |
+|-----------+---------------------------------+-------------------------------|
+| =C-j p p= | =project-switch-project=        | Switch to another project     |
+| =C-j p f= | =project-find-file=             | Find file in project          |
+| =C-j p g= | =project-find-regexp=           | Regexp search in project      |
+| =C-j p d= | =project-dired=                 | Dired at project root         |
+| =C-j p b= | =project-switch-to-buffer=      | Switch buffer within project  |
+| =C-j p c= | =project-compile=               | Compile in project            |
+| =C-j p e= | =project-eshell=                | Eshell at project root        |
+| =C-j p k= | =project-kill-buffers=          | Kill all project buffers      |
+| =C-j p != | =project-shell-command=         | Shell command at project root |
+| =C-j p &= | =project-async-shell-command=   | Async shell command           |
 
 ** Org Mode Bindings
 :PROPERTIES:
@@ -653,6 +677,43 @@ Tree-based undo/redo via [[https://www.emacswiki.org/emacs/UndoTree][undo-tree]]
 
 See [[#undo-tree-bindings][Undo Tree Bindings]] for keybindings.
 
+** init-project.el
+:PROPERTIES:
+:CUSTOM_ID: init-project-el
+:END:
+
+Project management via Emacs built-in =project.el= (28+). Automatically detects project root via version control (Git etc.) and provides project-scoped file finding, searching, compilation, and buffer management.
+
+*** Project Discovery
+
+Beyond default VC-based detection, the following marker files are also recognized as project roots:
+
+| Marker File       | Language/Tool |
+|-------------------+---------------|
+| =.project=        | Custom marker |
+| =Makefile=        | Make          |
+| =package.json=    | Node.js       |
+| =Cargo.toml=      | Rust          |
+| =go.mod=          | Go            |
+| =pyproject.toml=  | Python        |
+| =pom.xml=         | Java (Maven)  |
+| =build.gradle=    | Java (Gradle) |
+
+*** Switch Project Menu
+
+When switching projects (=C-j p p=), a menu is displayed with available actions:
+
+| Key | Action               |
+|-----+----------------------|
+| =f= | Find file            |
+| =g= | Find regexp           |
+| =d= | Dired                |
+| =e= | Eshell               |
+| =b= | Switch buffer         |
+| =c= | Compile              |
+
+See [[#project-management-bindings][Project Management Bindings]] for all keybindings.
+
 ** init-rainbow-delimiters.el
 :PROPERTIES:
 :CUSTOM_ID: init-rainbow-delimiters-el
@@ -766,7 +827,7 @@ Incrementally migrate features from the old config, by priority:
 |          | =init-mwim.el=        | Smart line beginning/end (mwim)                       | ✓ Done |
 |          | =init-undo-tree.el=   | Undo-tree (tree-based undo/redo)                      | ✓ Done |
 |        5 | =init-editing.el=     | Multiple-cursors                                      | —      |
-|        6 | =init-project.el=     | Projectile + Dashboard                                | —      |
+|        6 | =init-project.el=     | Project management (built-in project.el)              | ✓ Done |
 |        7 | =init-git.el=         | Magit                                                 | —      |
 |        8 | =init-lsp.el=         | lsp-bridge + Company + YASnippet                      | ✓ Done |
 |        9 | =init-terminal.el=    | Vterm                                                 | —      |
@@ -811,6 +872,14 @@ Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.
 4. =C-j s o= — Jump to outline heading
 5. =C-j s i= — Jump to symbol (imenu)
 6. =C-.= — Context actions on any candidate (Embark)
+
+*** Project Management
+1. =C-j p p= — Switch to another project
+2. =C-j p f= — Find file in current project
+3. =C-j p g= — Regexp search in project
+4. =C-j p d= — Dired at project root
+5. =C-j p b= — Switch buffer within project
+6. =C-j p c= — Compile in project
 
 *** Window Management
 1. =C-x o= — Quick jump to window (ace-window)
