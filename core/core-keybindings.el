@@ -27,6 +27,10 @@
 (define-prefix-command 'skemacs-buffer-prefix)
 (global-set-key (kbd "C-x b") 'skemacs-buffer-prefix)
 
+;; C-j s — 搜索相关（Consult 搜索命令）
+(define-prefix-command 'skemacs-search-prefix)
+(global-set-key (kbd "C-j s") 'skemacs-search-prefix)
+
 ;; ============================================================================
 ;; 全局快捷键（不依赖任何第三方包）
 ;; ============================================================================
