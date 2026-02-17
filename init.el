@@ -60,7 +60,7 @@
 ;; 自动扫描 modules/ 目录下所有 .el 文件并加载
 ;; 如需指定加载顺序或禁用某些模块，可设置:
 ;;   (setq skemacs-module-list '("init-theme" "init-which-key" ...))
-;;   (setq skemacs-disabled-modules '("init-vterm"))
+(setq skemacs-disabled-modules '("init-agent-shell"))
 (skemacs-load-all-modules)
 
 ;; ============================================================================

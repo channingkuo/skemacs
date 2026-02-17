@@ -27,6 +27,7 @@
   - [[#git-bindings][Git Bindings]]
   - [[#multiple-cursors-bindings][Multiple Cursors Bindings]]
   - [[#vterm-bindings][Vterm Bindings]]
+  - [[#ai-agent-bindings][AI Agent Bindings]]
   - [[#org-mode-bindings][Org Mode Bindings]]
 - [[#core-files][Core Files]]
   - [[#early-init-el][early-init.el]]
@@ -58,6 +59,7 @@
   - [[#init-multiple-cursors-el][init-multiple-cursors.el]]
   - [[#init-rainbow-delimiters-el][init-rainbow-delimiters.el]]
   - [[#init-vterm-el][init-vterm.el]]
+  - [[#init-agent-shell-el][init-agent-shell.el]]
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
   - [[#module-management][Module Management]]
@@ -126,13 +128,16 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── init-rainbow-delimiters.el # Rainbow parentheses
 │   ├── init-vterm.el        # Terminal emulator (vterm)
 │   ├── init-web.el          # Web development (web-mode)
-│   └── init-which-key.el    # Key discovery (which-key)
+│   ├── init-which-key.el    # Key discovery (which-key)
+│   └── init-agent-shell.el  # AI Agent integration (agent-shell + ACP)
 ├── themes/                  # Local theme files (modus-themes, loaded via custom-theme-load-path)
 │   ├── modus-themes.el      # Modus themes core library
 │   ├── modus-operandi-tinted-theme.el  # Light theme (warm tinted background)
 │   └── modus-vivendi-tritanopia-theme.el # Dark theme (black background)
 ├── lsp-bridge-langserver/   # LSP server override configs (vtsls replaces typescript-language-server)
 ├── banners/                 # Startup banner files
+├── setup-lsp.sh             # LSP environment setup script (Node.js + Python + lsp-bridge)
+├── setup-agents.sh          # ACP agent adapter setup script (Claude Code + Cursor + Gemini)
 └── custom.el                # Emacs custom-file (auto-generated, not tracked)
 #+END_SRC
 
@@ -208,6 +213,7 @@ Prefix keys are defined in =core-keybindings.el=. Modules bind commands under th
 | =C-j g=   | =skemacs-git-prefix=     | Git (Magit)      |
 | =C-j j=   | =skemacs-jump-prefix=    | Jump (Avy)       |
 | =C-j v=   | =skemacs-terminal-prefix= | Terminal (Vterm) |
+| =C-j a=   | =skemacs-agent-prefix=   | AI Agent (agent-shell) |
 | =C-j T=   | =skemacs-theme-prefix=   | Theme management |
 | =C-j l=   | (lsp-bridge bindings)    | LSP commands     |
 | =C-j u=   | (hydra-undo-tree)        | Undo tree panel  |
@@ -522,6 +528,32 @@ Provided by =init-vterm.el=. High-performance terminal emulator via [[https://gi
 | =C-j v v= | =vterm=                    | Open new vterm terminal                         |
 | =C-j v t= | =skemacs/vterm-toggle=     | Toggle vterm (switch to existing or create new) |
 | =C-j v o= | =vterm-other-window=       | Open vterm in another window                    |
+
+** AI Agent Bindings
+:PROPERTIES:
+:CUSTOM_ID: ai-agent-bindings
+:END:
+
+Provided by =init-agent-shell.el=. AI coding agent integration via [[https://github.com/xenodium/agent-shell][agent-shell]] powered by ACP (Agent Client Protocol).
+
+| Key       | Function                                  | Description              |
+|-----------+-------------------------------------------+--------------------------|
+| =C-j a a= | =agent-shell=                             | Start/reuse any Agent    |
+| =C-j a c= | =agent-shell-anthropic-start-claude-code= | Start Claude Code        |
+| =C-j a u= | =agent-shell-cursor-start-agent=          | Start Cursor Agent       |
+| =C-j a g= | =agent-shell-google-start-gemini=         | Start Gemini CLI         |
+| =C-j a n= | =agent-shell-new-shell=                   | New Agent Shell          |
+| =C-j a i= | =agent-shell-insert-file=                 | Insert file as context   |
+
+Shell-internal keybindings:
+
+| Key         | Function                | Description                   |
+|-------------+-------------------------+-------------------------------|
+| =RET=       | submit prompt           | Send prompt to agent          |
+| =M-J=       | insert newline          | Newline without sending       |
+| =C-c C-c=   | =agent-shell-interrupt= | Interrupt current operation   |
+| =TAB=       | next item               | Navigate to next element      |
+| =S-TAB=     | previous item           | Navigate to previous element  |
 
 ** Org Mode Bindings
 :PROPERTIES:
@@ -969,6 +1001,52 @@ First-time loading auto-compiles the C module. System requirements:
 
 See [[#vterm-bindings][Vterm Bindings]] for keybindings.
 
+** init-agent-shell.el
+:PROPERTIES:
+:CUSTOM_ID: init-agent-shell-el
+:END:
+
+AI coding agent integration via [[https://github.com/xenodium/agent-shell][agent-shell]], powered by ACP ([[https://agentclientprotocol.com/][Agent Client Protocol]]). Provides a native Emacs =comint-mode= shell to interact with multiple AI agents through a unified interface.
+
+*** Supported Agents
+
+| Agent          | ACP Adapter                        | Binary              | Description                    |
+|----------------+------------------------------------+----------------------+--------------------------------|
+| *Claude Code*  | =@zed-industries/claude-code-acp= | =claude-code-acp=    | Anthropic Claude Code          |
+| *Cursor Agent* | =@blowmage/cursor-agent-acp=      | =cursor-agent-acp=   | Cursor IDE agent               |
+| *Gemini CLI*   | =@google/gemini-cli=               | =gemini=             | Google Gemini (=--experimental-acp=) |
+
+*** Setup
+
+ACP adapters are installed into the project-local =nodejs/= directory via =setup-agents.sh=:
+
+#+BEGIN_SRC bash
+cd ~/.emacs.d && bash setup-agents.sh
+#+END_SRC
+
+This uses the same built-in Node.js (=nodejs/bin/node=) as =setup-lsp.sh=. Adapter binaries are installed to =nodejs/bin/=.
+
+*** Path Isolation
+
+To avoid conflicts with other Node.js versions in system =$PATH=, the module does *not* modify global =exec-path= or =$PATH=. Instead:
+
+- =agent-shell-*-command= is set to the full path of each binary (e.g. =nodejs/bin/claude-code-acp=)
+- =agent-shell-*-environment= provides an independent =PATH= for each agent subprocess, ensuring =#!/usr/bin/env node= resolves to the project-local =nodejs/bin/node=
+
+*** Authentication
+
+Each agent requires one-time authentication before first use:
+
+| Agent          | Method                                                                 |
+|----------------+------------------------------------------------------------------------|
+| *Claude Code*  | Login-based OAuth (browser opens automatically on first start)         |
+| *Cursor Agent* | Pre-authenticate via =cursor-agent login= in terminal                  |
+| *Gemini CLI*   | Login-based OAuth (browser opens automatically on first start)         |
+
+Alternatively, API keys can be set via environment variables (=ANTHROPIC_API_KEY=, =GEMINI_API_KEY=).
+
+See [[#ai-agent-bindings][AI Agent Bindings]] for keybindings.
+
 ** init-hydra.el
 :PROPERTIES:
 :CUSTOM_ID: init-hydra-el
@@ -1080,8 +1158,9 @@ Incrementally migrate features from the old config, by priority:
 |          | =init-ui.el=          | Modeline + other UI enhancements                      | —      |
 |       11 | =init-flycheck.el=    | Syntax checking                                       | —      |
 |       12 | =init-org.el=         | Org-mode full config                                  | —      |
+|       13 | =init-agent-shell.el= | AI Agent (Claude Code + Cursor + Gemini via ACP)      | ✓ Done |
 
-Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-avy.el=, =init-mwim.el=, =init-undo-tree.el=, =init-treemacs.el=, =init-git.el=, =init-multiple-cursors.el=.
+Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-avy.el=, =init-mwim.el=, =init-undo-tree.el=, =init-treemacs.el=, =init-git.el=, =init-multiple-cursors.el=, =init-agent-shell.el=.
 
 * Usage Guide
 :PROPERTIES:
@@ -1105,11 +1184,16 @@ Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.
    sudo apt install cmake libtool-bin
    #+END_SRC
 
-4. Start Emacs — packages install automatically when modules need them
+4. (Optional) Install ACP agent adapters for AI coding agents:
+   #+BEGIN_SRC bash
+   cd ~/.emacs.d && bash setup-agents.sh
+   #+END_SRC
 
-5. Add feature modules in =modules/= as needed
+5. Start Emacs — packages install automatically when modules need them
 
-6. Set up Org directory:
+6. Add feature modules in =modules/= as needed
+
+7. Set up Org directory:
    #+BEGIN_SRC bash
    mkdir -p ~/org
    #+END_SRC
@@ -1171,6 +1255,14 @@ Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.
 1. =C-j v v= — Open new terminal
 2. =C-j v t= — Toggle terminal (switch to existing or create new)
 3. =C-j v o= — Open terminal in another window
+
+*** AI Agent (agent-shell)
+1. =C-j a a= — Start or reuse any AI agent (selection menu)
+2. =C-j a c= — Start Claude Code session
+3. =C-j a u= — Start Cursor Agent session
+4. =C-j a g= — Start Gemini CLI session
+5. =C-j a i= — Insert file as context
+6. =C-j a n= — Start a new agent shell (even if one exists)
 
 *** Org Mode Workflow
 1. =C-j o a= — View agenda

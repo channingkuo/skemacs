@@ -51,6 +51,10 @@
 (define-prefix-command 'skemacs-terminal-prefix)
 (global-set-key (kbd "C-j v") 'skemacs-terminal-prefix)
 
+;; C-j a — AI Agent（agent-shell）
+(define-prefix-command 'skemacs-agent-prefix)
+(global-set-key (kbd "C-j a") 'skemacs-agent-prefix)
+
 ;; ============================================================================
 ;; 全局快捷键（不依赖任何第三方包）
 ;; ============================================================================
