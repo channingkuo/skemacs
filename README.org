@@ -1078,6 +1078,53 @@ Alternatively, API keys can be set via environment variables (=ANTHROPIC_API_KEY
 
 See [[#ai-agent-bindings][AI Agent Bindings]] for keybindings.
 
+** init-claude-code-ide.el
+:PROPERTIES:
+:CUSTOM_ID: init-claude-code-ide-el
+:END:
+
+Native Claude Code CLI integration via [[https://github.com/manzaltu/claude-code-ide.el][claude-code-ide]], powered by MCP ([[https://modelcontextprotocol.io/][Model Context Protocol]]). Unlike simple terminal wrappers, this creates a bidirectional bridge between Claude and Emacs — Claude can access Emacs' LSP, xref, tree-sitter, imenu, and project features through MCP tools.
+
+*** Features
+
+| Feature                  | Description                                                     |
+|--------------------------+-----------------------------------------------------------------|
+| *MCP Tools*              | Claude accesses xref, tree-sitter, imenu, project info via MCP |
+| *IDE Diff (ediff)*       | Visual diff with interactive editing before applying changes    |
+| *Multi-project*          | Each project gets its own Claude session, auto-detected         |
+| *Diagnostics*            | Flycheck/Flymake integration for error awareness                |
+| *Selection tracking*     | Claude knows your current file and selected text                |
+| *Side window*            | Claude opens in a configurable side window (default: right)     |
+
+*** Installation
+
+Installed via =use-package= =:vc= from GitHub (requires Emacs 30+). No manual setup needed beyond having the Claude Code CLI in =$PATH=.
+
+*** Configuration
+
+| Setting                              | Value      | Description                     |
+|--------------------------------------+------------+---------------------------------|
+| =claude-code-ide-terminal-backend=   | ='vterm=   | Terminal backend (vterm or eat) |
+| =claude-code-ide-use-side-window=    | =t=        | Use side window                 |
+| =claude-code-ide-window-side=        | ='right=   | Window position                 |
+| =claude-code-ide-window-width=       | =90=       | Window width (columns)          |
+| =claude-code-ide-focus-on-open=      | =t=        | Auto-focus on open              |
+| =claude-code-ide-use-ide-diff=       | =t=        | Use ediff for code changes      |
+
+*** MCP Tools
+
+Enabled via =claude-code-ide-emacs-tools-setup= in =:config=. Built-in tools:
+
+| Tool                    | Description                                         |
+|-------------------------+-----------------------------------------------------|
+| =xref-find-references=  | Find all references to a symbol in project          |
+| =xref-find-apropos=     | Find symbols matching a pattern across project      |
+| =treesit-info=          | Get tree-sitter syntax tree information             |
+| =imenu-list-symbols=    | List all symbols in a file                          |
+| =project-info=          | Get project directory, files, etc.                  |
+
+See [[#claude-code-ide-bindings][Claude Code IDE Bindings]] for keybindings.
+
 ** init-hydra.el
 :PROPERTIES:
 :CUSTOM_ID: init-hydra-el
@@ -1190,6 +1237,7 @@ Incrementally migrate features from the old config, by priority:
 |       11 | =init-flycheck.el=    | Syntax checking                                       | —      |
 |       12 | =init-org.el=         | Org-mode full config                                  | —      |
 |       13 | =init-agent-shell.el= | AI Agent (Claude Code + Cursor + Gemini via ACP)      | ✓ Done |
+|       14 | =init-claude-code-ide.el= | Claude Code IDE (MCP bidirectional bridge)        | ✓ Done |
 
 Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-avy.el=, =init-mwim.el=, =init-undo-tree.el=, =init-treemacs.el=, =init-git.el=, =init-multiple-cursors.el=, =init-agent-shell.el=.
 
@@ -1294,6 +1342,16 @@ Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.
 4. =C-j a g= — Start Gemini CLI session
 5. =C-j a i= — Insert file as context
 6. =C-j a n= — Start a new agent shell (even if one exists)
+
+*** Claude Code IDE (MCP)
+1. =C-j c c= — Start or switch to Claude Code (project-aware)
+2. =C-j c m= — Open command menu (transient)
+3. =C-j c p= — Send prompt from minibuffer
+4. =C-j c r= — Resume previous session
+5. =C-j c k= — Continue most recent conversation
+6. =C-j c t= — Toggle Claude window visibility
+7. =C-j c @= — Mention selected text in prompt
+8. =C-j c s= — List all active sessions
 
 *** Org Mode Workflow
 1. =C-j o a= — View agenda
