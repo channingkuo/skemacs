@@ -38,6 +38,12 @@
 (require 'core-module)
 
 ;; ============================================================================
+;; 自定义配置文件（尽早设置，防止 Custom 写入 init.el）
+;; ============================================================================
+
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+
+;; ============================================================================
 ;; 初始化 Splash 画面（在加载任何模块之前）
 ;; ============================================================================
 
@@ -60,14 +66,13 @@
 ;; 自动扫描 modules/ 目录下所有 .el 文件并加载
 ;; 如需指定加载顺序或禁用某些模块，可设置:
 ;;   (setq skemacs-module-list '("init-theme" "init-which-key" ...))
-(setq skemacs-disabled-modules '("init-agent-shell"))
+;;   (setq skemacs-disabled-modules '("init-agent-shell"))
 (skemacs-load-all-modules)
 
 ;; ============================================================================
-;; 自定义配置文件
+;; 加载自定义配置（custom-file 已在上方设置）
 ;; ============================================================================
 
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file nil t))
 

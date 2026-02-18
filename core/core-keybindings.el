@@ -55,6 +55,10 @@
 (define-prefix-command 'skemacs-agent-prefix)
 (global-set-key (kbd "C-j a") 'skemacs-agent-prefix)
 
+;; C-j c — Claude Code IDE
+(define-prefix-command 'skemacs-claude-prefix)
+(global-set-key (kbd "C-j c") 'skemacs-claude-prefix)
+
 ;; ============================================================================
 ;; 全局快捷键（不依赖任何第三方包）
 ;; ============================================================================

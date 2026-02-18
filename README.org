@@ -28,6 +28,7 @@
   - [[#multiple-cursors-bindings][Multiple Cursors Bindings]]
   - [[#vterm-bindings][Vterm Bindings]]
   - [[#ai-agent-bindings][AI Agent Bindings]]
+  - [[#claude-code-ide-bindings][Claude Code IDE Bindings]]
   - [[#org-mode-bindings][Org Mode Bindings]]
 - [[#core-files][Core Files]]
   - [[#early-init-el][early-init.el]]
@@ -60,6 +61,7 @@
   - [[#init-rainbow-delimiters-el][init-rainbow-delimiters.el]]
   - [[#init-vterm-el][init-vterm.el]]
   - [[#init-agent-shell-el][init-agent-shell.el]]
+  - [[#init-claude-code-ide-el][init-claude-code-ide.el]]
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
   - [[#module-management][Module Management]]
@@ -129,7 +131,8 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── init-vterm.el        # Terminal emulator (vterm)
 │   ├── init-web.el          # Web development (web-mode)
 │   ├── init-which-key.el    # Key discovery (which-key)
-│   └── init-agent-shell.el  # AI Agent integration (agent-shell + ACP)
+│   ├── init-agent-shell.el  # AI Agent integration (agent-shell + ACP)
+│   └── init-claude-code-ide.el # Claude Code IDE integration (MCP)
 ├── themes/                  # Local theme files (modus-themes, loaded via custom-theme-load-path)
 │   ├── modus-themes.el      # Modus themes core library
 │   ├── modus-operandi-tinted-theme.el  # Light theme (warm tinted background)
@@ -214,6 +217,7 @@ Prefix keys are defined in =core-keybindings.el=. Modules bind commands under th
 | =C-j j=   | =skemacs-jump-prefix=    | Jump (Avy)       |
 | =C-j v=   | =skemacs-terminal-prefix= | Terminal (Vterm) |
 | =C-j a=   | =skemacs-agent-prefix=   | AI Agent (agent-shell) |
+| =C-j c=   | =skemacs-claude-prefix=  | Claude Code IDE (MCP)  |
 | =C-j T=   | =skemacs-theme-prefix=   | Theme management |
 | =C-j l=   | (lsp-bridge bindings)    | LSP commands     |
 | =C-j u=   | (hydra-undo-tree)        | Undo tree panel  |
@@ -554,6 +558,33 @@ Shell-internal keybindings:
 | =C-c C-c=   | =agent-shell-interrupt= | Interrupt current operation   |
 | =TAB=       | next item               | Navigate to next element      |
 | =S-TAB=     | previous item           | Navigate to previous element  |
+
+** Claude Code IDE Bindings
+:PROPERTIES:
+:CUSTOM_ID: claude-code-ide-bindings
+:END:
+
+Provided by =init-claude-code-ide.el=. Native Claude Code CLI integration via [[https://github.com/manzaltu/claude-code-ide.el][claude-code-ide]], powered by MCP (Model Context Protocol). Creates a bidirectional bridge between Claude and Emacs, enabling Claude to access LSP, xref, tree-sitter, and other Emacs capabilities.
+
+| Key       | Function                           | Description                   |
+|-----------+------------------------------------+-------------------------------|
+| =C-j c c= | =claude-code-ide=                  | Start/switch Claude Code      |
+| =C-j c m= | =claude-code-ide-menu=             | Open command menu (transient)  |
+| =C-j c p= | =claude-code-ide-send-prompt=      | Send prompt from minibuffer   |
+| =C-j c r= | =claude-code-ide-resume=           | Resume previous session       |
+| =C-j c k= | =claude-code-ide-continue=         | Continue most recent conversation |
+| =C-j c s= | =claude-code-ide-list-sessions=    | List all active sessions      |
+| =C-j c t= | =claude-code-ide-toggle=           | Toggle window visibility      |
+| =C-j c T= | =claude-code-ide-toggle-recent=    | Toggle most recent (global)   |
+| =C-j c @= | =claude-code-ide-insert-at-mentioned= | Mention selected text      |
+| =C-j c q= | =claude-code-ide-stop=             | Stop Claude Code              |
+
+Terminal-internal keybindings (in Claude Code vterm buffer):
+
+| Key       | Function                       | Description                   |
+|-----------+--------------------------------+-------------------------------|
+| =M-RET=   | =claude-code-ide-insert-newline= | Insert newline in prompt     |
+| =C-\=     | =claude-code-ide-send-escape=    | Send escape key              |
 
 ** Org Mode Bindings
 :PROPERTIES:
