@@ -58,7 +58,7 @@
   :config
   ;; ── 命令路径：直接指向项目内 nodejs/bin/ 下的二进制 ──────────
   (setq agent-shell-anthropic-claude-command
-        (list (expand-file-name "claude-code-acp" skemacs--node-bin)))
+        (list (expand-file-name "claude-agent-acp" skemacs--node-bin)))
 
   (setq agent-shell-cursor-command
         (list (expand-file-name "cursor-agent-acp" skemacs--node-bin)))

@@ -6,7 +6,7 @@
 # 功能：
 #   使用项目内置的 Node.js (nodejs/) 安装 ACP (Agent Client Protocol) 适配器，
 #   供 Emacs agent-shell 模块调用，支持以下 AI 编码代理：
-#     - Claude Code   (Anthropic)  → claude-code-acp
+#     - Claude Code   (Anthropic)  → claude-agent-acp
 #     - Cursor Agent               → cursor-agent-acp
 #     - Gemini CLI    (Google)     → gemini
 #
@@ -68,8 +68,8 @@ check_nodejs() {
 setup_agents() {
     info "=== Step 2: 安装 ACP 代理适配器 ==="
 
-    info "安装 @zed-industries/claude-code-acp ..."
-    "${NODE_DIR}/bin/node" "${NPM}" install -g @zed-industries/claude-code-acp
+    info "安装 @zed-industries/claude-agent-acp ..."
+    "${NODE_DIR}/bin/node" "${NPM}" install -g @zed-industries/claude-agent-acp
 
     info "安装 @blowmage/cursor-agent-acp ..."
     "${NODE_DIR}/bin/node" "${NPM}" install -g @blowmage/cursor-agent-acp
@@ -89,7 +89,7 @@ verify_agents() {
 
     local all_ok=true
 
-    for cmd in claude-code-acp cursor-agent-acp gemini; do
+    for cmd in claude-agent-acp cursor-agent-acp gemini; do
         if [[ -x "${NODE_DIR}/bin/${cmd}" ]] || [[ -L "${NODE_DIR}/bin/${cmd}" ]]; then
             ok "${cmd} 已安装 → ${NODE_DIR}/bin/${cmd}"
         else
@@ -130,7 +130,7 @@ main() {
     echo -e "${GREEN}╚══════════════════════════════════════════════════╝${NC}"
     echo ""
     info "已安装的 ACP 适配器:"
-    info "  - claude-code-acp:  ${NODE_DIR}/bin/claude-code-acp"
+    info "  - claude-agent-acp:  ${NODE_DIR}/bin/claude-agent-acp"
     info "  - cursor-agent-acp: ${NODE_DIR}/bin/cursor-agent-acp"
     info "  - gemini:           ${NODE_DIR}/bin/gemini"
     echo ""
