@@ -62,6 +62,9 @@
   ;; 使用系统默认 shell
   (setq vterm-shell (or (getenv "SHELL") "/bin/zsh"))
 
+  ;; 声明 256 色终端，确保 CLI 工具（agent 等）正确渲染颜色
+  (setq vterm-term-environment-variable "xterm-256color")
+
   ;; buffer 命名规则
   (setq vterm-buffer-name-string "vterm: %s"))
 
