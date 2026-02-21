@@ -23,6 +23,15 @@
 ;; ============================================================================
 ;; lsp-bridge 依赖
 ;; ============================================================================
+;;
+;; ── yasnippet 快捷键 ────────────────────────────────────────
+;;
+;;   TAB / C-i         展开 snippet 或跳到下一个占位符
+;;   S-TAB             跳到上一个占位符
+;;   C-c & C-s         yas-insert-snippet     交互式插入 snippet
+;;   C-c & C-n         yas-new-snippet        创建新 snippet
+;;   C-c & C-v         yas-visit-snippet-file 编辑已有 snippet
+;;
 
 (use-package yasnippet
   :ensure t
@@ -32,6 +41,31 @@
   (yas-reload-all)
   (message "[init-lsp] >>> yasnippet :config 完成"))
 (message "[init-lsp] >>> yasnippet use-package 完成")
+
+;; ── markdown-mode 快捷键 ────────────────────────────────────
+;;
+;;   C-c C-s b         粗体 (**bold**)
+;;   C-c C-s i         斜体 (*italic*)
+;;   C-c C-s c         行内代码 (`code`)
+;;   C-c C-s k         添加 <kbd> 标签
+;;   C-c C-s q         引用块 (blockquote)
+;;   C-c C-s p         预格式化文本 (pre)
+;;   C-c C-s C         代码块 (code block)
+;;   C-c C-t 1~6       插入 1~6 级标题
+;;   C-c C-t h         自动插入标题 (按层级递增)
+;;   C-c C-a l         插入链接 [text](url)
+;;   C-c C-a u         插入 URL 链接
+;;   C-c C-a f         插入脚注
+;;   C-c C-i i         插入图片 ![alt](url)
+;;   C-c C-l           插入/编辑链接
+;;   C-c C-x C-l       切换隐藏 URL / 显示标记语法 (toggle-markup-hiding)
+;;   C-c C-c l         markdown-live-preview-mode
+;;   C-c C-c p         预览 (markdown-preview)
+;;   C-c C-c e         导出 (markdown-export)
+;;   TAB / S-TAB       折叠/展开标题下内容
+;;   M-RET             新建同级列表项
+;;   C-c C-n / C-c C-p 在标题间向前/向后跳转
+;;   C-c <up/down>     移动列表项上/下
 
 (use-package markdown-mode
   :ensure t
