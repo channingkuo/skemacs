@@ -299,7 +299,6 @@ In the resize panel (=C-x w r=), press keys repeatedly to adjust window size:
 *** Config & Tools
 | Key         | Function                  | Description          |
 |-------------+---------------------------+----------------------|
-| =C-x a i R= | =skemacs/reload-config=   | Reload config        |
 | =C-j t=     | =skemacs/show-load-times= | Show load times      |
 
 ** Completion & Search Bindings
@@ -735,7 +734,6 @@ Utility functions (=skemacs/= namespace):
 - Navigation: =next-ten-lines=, =previous-ten-lines=
 - Window: =split-window-vertically=, =split-window-horizontally=, =shrink/enlarge-window=
 - Clipboard: =copy-to-clipboard= (cross-platform macOS/Linux/Windows)
-- Config: =reload-config=
 - Org: =open-org-directory=
 
 ** core-keybindings.el

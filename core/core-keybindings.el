@@ -72,10 +72,6 @@
 ;; 复制选中内容到系统剪贴板
 (global-set-key (kbd "C-c C-y") 'skemacs/copy-to-clipboard)
 
-;; --- 配置管理 ---
-;; 重新加载配置
-(global-set-key (kbd "C-x a i R") 'skemacs/reload-config)
-
 ;; --- 编辑 ---
 ;; 删去光标所在行
 (global-set-key (kbd "C-j C-k") 'kill-whole-line)

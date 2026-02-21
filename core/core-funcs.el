@@ -61,7 +61,7 @@
 ;; ============================================================================
 
 (defun skemacs/copy-to-clipboard ()
-  "复制选中内容到系统剪贴板（跨平台）。"
+  "Copy selected region to system clipboard (cross-platform)."
   (interactive)
   (cond
    ((eq system-type 'gnu/linux)
@@ -74,36 +74,26 @@
                 (if (use-region-p)
                     (progn
                       (xclip-copy-region (region-beginning) (region-end))
-                      (message "已复制到剪贴板!")
+                      (message "Copied to clipboard!")
                       (deactivate-mark))
-                  (message "没有选中区域")))
-            (message "xclip 包不可用")))
-      (message "非图形界面")))
+                  (message "No region selected")))
+            (message "xclip package not available")))
+      (message "Not in graphical mode")))
    ((eq system-type 'darwin)
     (if (use-region-p)
         (progn
           (shell-command-on-region (region-beginning) (region-end) "pbcopy")
-          (message "已复制到剪贴板!")
+          (message "Copied to clipboard!")
           (deactivate-mark))
-      (message "没有选中区域")))
+      (message "No region selected")))
    ((eq system-type 'windows-nt)
     (if (use-region-p)
         (progn
           (shell-command-on-region (region-beginning) (region-end) "clip.exe")
-          (message "已复制到剪贴板!")
+          (message "Copied to clipboard!")
           (deactivate-mark))
-      (message "没有选中区域")))
-   (t (message "不支持的系统类型"))))
-
-;; ============================================================================
-;; 配置管理
-;; ============================================================================
-
-(defun skemacs/reload-config ()
-  "重新加载 Emacs 配置。"
-  (interactive)
-  (load-file (concat user-emacs-directory "init.el"))
-  (message "[skemacs] 配置重载完成"))
+      (message "No region selected")))
+   (t (message "Unsupported system type"))))
 
 ;; ============================================================================
 ;; Org 目录
@@ -115,7 +105,7 @@
   (let ((org-dir "~/org/"))
     (if (file-directory-p org-dir)
         (dired org-dir)
-      (message "目录 %s 不存在" org-dir))))
+      (message "Directory %s does not exist" org-dir))))
 
 (provide 'core-funcs)
 ;;; core-funcs.el ends here

@@ -318,7 +318,7 @@ DIR 为模块所在目录，默认为 `skemacs-modules-dir'。
          (disabled skemacs-modules-disabled))
     (message "")
     (message "══════════════════════════════════════════════════════════")
-    (message "              Emacs Startup Timing Report")
+    (message "              Emacs Starting Timing Report")
     (message "══════════════════════════════════════════════════════════")
     (message " %-32s %10s  %s" "Module" "Time" "Status")
     (message "──────────────────────────────────────────────────────────")
@@ -347,7 +347,7 @@ DIR 为模块所在目录，默认为 `skemacs-modules-dir'。
     (with-current-buffer buf
       (let ((inhibit-read-only t))
         (erase-buffer)
-        (insert "Startup Timing Report\n")
+        (insert "Starting Timing Report\n")
         (insert (make-string 56 ?─) "\n")
         (insert (format "  %-32s %10s  %s\n" "Module" "Time" "Status"))
         (insert (make-string 56 ?─) "\n")
