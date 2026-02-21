@@ -106,7 +106,7 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 #+BEGIN_SRC
 ~/.emacs.d/
 ├── early-init.el            # GC optimization + native-comp + disable package autoload
-├── init.el                  # Entry point (load core → splash → modules → Enter/file)
+├── init.el                  # Entry point (custom.el → core → splash → modules → Enter/file)
 ├── core/                    # Core infrastructure (no third-party dependencies)
 │   ├── core-load-paths.el   # Path constants + load-path setup
 │   ├── core-module.el       # Module loading system (timing + error isolation + splash)
@@ -147,7 +147,7 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 ├── banners/                 # Startup banner files
 ├── setup-lsp.sh             # LSP environment setup script (Node.js + Python + lsp-bridge)
 ├── setup-agents.sh          # ACP agent adapter setup script (Claude Code + Cursor + Gemini)
-└── custom.el                # Emacs custom-file (auto-generated, not tracked)
+└── custom.el                # Emacs custom-file + module control (skemacs-disabled-modules etc.)
 #+END_SRC
 
 ** Startup Flow
@@ -159,18 +159,19 @@ The startup flow adapts based on how Emacs is invoked:
 
 #+BEGIN_SRC
 # Normal mode (emacs / emacs . / emacs ~/dir)
-early-init.el → init.el → splash → core/*.el → modules/*.el → Press Enter → dired
+early-init.el → init.el → custom.el → splash → core/*.el → modules/*.el → Press Enter → dired
 
 # File mode (emacs file.txt / emacs -nw file.txt)
-early-init.el → init.el → splash → core/*.el → modules/*.el → open file (no wait)
+early-init.el → init.el → custom.el → splash → core/*.el → modules/*.el → open file (no wait)
 #+END_SRC
 
 1. =early-init.el= — Set GC threshold to 800MB, disable package autoload, hide UI elements
 2. =init.el= — Bootstrap =core/= into =load-path=, require core-load-paths and core-module
-3. =skemacs--splash-init= — Display banner and table header in =*skemacs*= buffer
-4. =skemacs-load-core-module= — Load remaining core files (each line appears in real-time)
-5. =skemacs-load-all-modules= — Scan =modules/= directory, load each (real-time display)
-6. =emacs-startup-hook= — Restore GC to 16MB, show summary, detect startup mode:
+3. =custom.el= — Load user customizations (=skemacs-disabled-modules= etc.) before module loading
+4. =skemacs--splash-init= — Display banner and table header in =*skemacs*= buffer
+5. =skemacs-load-core-module= — Load remaining core files (each line appears in real-time)
+6. =skemacs-load-all-modules= — Scan =modules/= directory, load each (real-time display)
+7. =emacs-startup-hook= — Restore GC to 16MB, show summary, detect startup mode:
    - *Normal mode* (no file argument): wait for Enter, then dismiss splash and open =dired=
    - *File mode* (file argument detected): skip wait, dismiss splash and switch to file buffer
 
@@ -670,10 +671,11 @@ Loaded by Emacs 27+ before =init.el= and before GUI initialization:
 Entry point:
 1. Record startup time
 2. Bootstrap =core/= into =load-path=
-3. Initialize splash screen with banner
-4. Load core modules (real-time display in splash)
-5. Load feature modules (real-time display in splash)
-6. On =emacs-startup-hook=: restore GC, show summary, detect startup mode
+3. Load =custom.el= early (module control variables take effect before loading)
+4. Initialize splash screen with banner
+5. Load core modules (real-time display in splash)
+6. Load feature modules (real-time display in splash)
+7. On =emacs-startup-hook=: restore GC, show summary, detect startup mode
    - =emacs= / =emacs dir= → wait for Enter, then open dired
    - =emacs file= → skip wait, directly open file buffer
 
@@ -1218,7 +1220,7 @@ Remote paths also disable =vc= (version control) queries to avoid slow Git looku
 
 *** Enabling
 
-Remove ="init-tramp"= from =skemacs-disabled-modules= in =init.el=.
+Remove ="init-tramp"= from =skemacs-disabled-modules= in =custom.el=.
 
 For best performance, configure SSH connection multiplexing in =~/.ssh/config=:
 
@@ -1297,7 +1299,7 @@ All =.el= files in =modules/= are loaded in alphabetical order.
 
 *** Manual Module List
 
-Add before =skemacs-load-all-modules= in =init.el=:
+Add to =custom.el= (loaded before modules):
 
 #+BEGIN_SRC elisp
 (setq skemacs-module-list
@@ -1308,6 +1310,8 @@ Add before =skemacs-load-all-modules= in =init.el=:
 #+END_SRC
 
 *** Disable Specific Modules
+
+Add to =custom.el=:
 
 #+BEGIN_SRC elisp
 (setq skemacs-disabled-modules

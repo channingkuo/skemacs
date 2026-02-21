@@ -43,6 +43,11 @@
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
+;; 尽早加载 custom.el，使其中的 skemacs-disabled-modules 等设置
+;; 在模块加载之前生效
+(when (file-exists-p custom-file)
+  (load custom-file nil t))
+
 ;; ============================================================================
 ;; 初始化 Splash 画面（在加载任何模块之前）
 ;; ============================================================================
@@ -64,17 +69,10 @@
 ;; ============================================================================
 
 ;; 自动扫描 modules/ 目录下所有 .el 文件并加载
-;; 如需指定加载顺序或禁用某些模块，可设置:
+;; 如需指定加载顺序或禁用某些模块，可在 custom.el 中设置:
 ;;   (setq skemacs-module-list '("init-theme" "init-which-key" ...))
-(setq skemacs-disabled-modules '("init-tramp"))
+;;   (setq skemacs-disabled-modules '("init-tramp"))
 (skemacs-load-all-modules)
-
-;; ============================================================================
-;; 加载自定义配置（custom-file 已在上方设置）
-;; ============================================================================
-
-(when (file-exists-p custom-file)
-  (load custom-file nil t))
 
 ;; ============================================================================
 ;; 启动完成：恢复 GC + 完成 splash 画面
