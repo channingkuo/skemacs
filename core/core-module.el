@@ -93,6 +93,9 @@
                  (format "Emacs %s  |  Skemacs Configuration" emacs-version)
                  win-width) "\n\n")
 
+        ;; ── 统计占位符（加载完成后替换为实际数据）──
+        (insert (skemacs--center-string "Loading modules..." win-width) "\n")
+
         ;; ── 表头 ──
         (let* ((table-width 56)
                (left-pad (max 0 (/ (- win-width table-width) 2)))
@@ -148,19 +151,32 @@ TOTAL-ELAPSED 为总启动耗时（秒）。
              (disabled skemacs-modules-disabled))
         (goto-char (point-max))
 
-        ;; ── 汇总行 ──
+        ;; ── 底部分隔线 ──
         (insert pad (make-string table-width ?─) "\n")
-        (insert pad (format "  Total: %-8s | %d loaded | %d disabled | %d errors\n"
-                            (skemacs--format-time total-time) loaded disabled errors))
 
-        ;; ── 错误详情 ──
-        (when skemacs-module-errors
+        ;; ── 错误信息（表格下方）──
+        (if skemacs-module-errors
+            (progn
+              (insert "\n")
+              (insert (skemacs--center-string "── Error Details ──" win-width) "\n")
+              (dolist (err (reverse skemacs-module-errors))
+                (insert (skemacs--center-string
+                         (format "%s: %s" (car err) (cdr err))
+                         win-width) "\n")))
           (insert "\n")
-          (insert (skemacs--center-string "── Error Details ──" win-width) "\n")
-          (dolist (err (reverse skemacs-module-errors))
+          (insert (skemacs--center-string "no error" win-width) "\n"))
+
+        ;; ── 将统计信息写入占位符位置（表格上方）──
+        (goto-char (point-min))
+        (when (search-forward "Loading modules..." nil t)
+          (beginning-of-line)
+          (let ((beg (point)))
+            (end-of-line)
+            (delete-region beg (point))
             (insert (skemacs--center-string
-                     (format "%s: %s" (car err) (cdr err))
-                     win-width) "\n")))
+                     (format "Modules Total: %s  |  %d loaded  |  %d disabled  |  %d errors"
+                             (skemacs--format-time total-time) loaded disabled errors)
+                     win-width))))
 
         ;; ── 将启动时间写入欢迎信息行（居中显示）──
         (goto-char (point-min))
@@ -330,7 +346,7 @@ DIR 为模块所在目录，默认为 `skemacs-modules-dir'。
              (time-str (skemacs--format-time time)))
         (message " %-32s %10s  %s" name time-str status)))
     (message "──────────────────────────────────────────────────────────")
-    (message " Total: %s | %d loaded | %d disabled | %d errors"
+    (message " Modules Total: %s | %d loaded | %d disabled | %d errors"
              (skemacs--format-time total-time) loaded disabled errors)
     (message "══════════════════════════════════════════════════════════")
     (message "")))

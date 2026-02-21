@@ -87,7 +87,7 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 - *Startup timing*: Every module's load time is recorded; view with =M-x skemacs/show-load-times=
 - *Error isolation*: A single module failure won't break others (=condition-case= wrapped)
 - *Flexible management*: Enable/disable modules via config lists, no need to delete files
-- *Dynamic splash screen*: Real-time loading progress displayed at startup
+- *Dynamic splash screen*: Real-time loading progress displayed at startup; stats summary above the table, error details (or "no error") below
 - *Smart startup mode*: =emacs= / =emacs dir= shows splash and waits for Enter; =emacs file= skips the wait and opens the file directly
 - *Deferred package init*: =package-initialize= is deferred until first package install for fast startup
 - *Centralized prefix keys*: Prefix keys defined in =core-keybindings.el=, modules bind under them
@@ -168,10 +168,10 @@ early-init.el → init.el → custom.el → splash → core/*.el → modules/*.e
 1. =early-init.el= — Set GC threshold to 800MB, disable package autoload, hide UI elements
 2. =init.el= — Bootstrap =core/= into =load-path=, require core-load-paths and core-module
 3. =custom.el= — Load user customizations (=skemacs-disabled-modules= etc.) before module loading
-4. =skemacs--splash-init= — Display banner and table header in =*skemacs*= buffer
+4. =skemacs--splash-init= — Display banner, stats placeholder ("Loading modules..."), and table header in =*skemacs*= buffer
 5. =skemacs-load-core-module= — Load remaining core files (each line appears in real-time)
 6. =skemacs-load-all-modules= — Scan =modules/= directory, load each (real-time display)
-7. =emacs-startup-hook= — Restore GC to 16MB, show summary, detect startup mode:
+7. =emacs-startup-hook= — Restore GC to 16MB, finalize splash screen, detect startup mode:
    - *Normal mode* (no file argument): wait for Enter, then dismiss splash and open =dired=
    - *File mode* (file argument detected): skip wait, dismiss splash and switch to file buffer
 
@@ -692,6 +692,25 @@ Defines path constants (=skemacs-dir=, =skemacs-core-dir=, =skemacs-modules-dir=
 :END:
 
 Module loading system with dynamic splash screen. See [[#module-system][Module System]] section.
+
+Splash screen layout:
+
+#+BEGIN_SRC
+Banner
+[ Press Enter to continue ]
+Emacs XX.X  |  Skemacs Configuration  |  Starting time: X.XXXs
+Total: XXXms  |  N loaded  |  N disabled  |  N errors    ← stats summary
+────────────────────────────────────────────────────────
+  Module                             Time  Status
+────────────────────────────────────────────────────────
+  core-packages                       59ms  OK
+  ...
+────────────────────────────────────────────────────────
+
+                      no error                           ← or error details
+#+END_SRC
+
+During loading, "Loading modules..." is shown in the stats position and replaced with actual statistics after all modules finish loading. Error details (if any) or "no error" are displayed below the table.
 
 ** core-packages.el
 :PROPERTIES:
