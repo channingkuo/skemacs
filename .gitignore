@@ -62,3 +62,5 @@ packages/
 CLAUDE.md
 .claude/
 .agent-shell/
+
+keybindings.md
