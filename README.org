@@ -29,6 +29,7 @@
   - [[#vterm-bindings][Vterm Bindings]]
   - [[#ai-agent-bindings][AI Agent Bindings]]
   - [[#claude-code-ide-bindings][Claude Code IDE Bindings]]
+  - [[#readonly-view-mode-bindings][Readonly / View-Mode Bindings]]
   - [[#org-mode-bindings][Org Mode Bindings]]
 - [[#core-files][Core Files]]
   - [[#early-init-el][early-init.el]]
@@ -62,6 +63,7 @@
   - [[#init-vterm-el][init-vterm.el]]
   - [[#init-agent-shell-el][init-agent-shell.el]]
   - [[#init-claude-code-ide-el][init-claude-code-ide.el]]
+  - [[#init-readonly-el][init-readonly.el]]
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
   - [[#module-management][Module Management]]
@@ -133,7 +135,8 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── init-web.el          # Web development (web-mode)
 │   ├── init-which-key.el    # Key discovery (which-key)
 │   ├── init-agent-shell.el  # AI Agent integration (agent-shell + ACP)
-│   └── init-claude-code-ide.el # Claude Code IDE integration (MCP)
+│   ├── init-claude-code-ide.el # Claude Code IDE integration (MCP)
+│   └── init-readonly.el     # Default read-only browsing (view-mode)
 ├── themes/                  # Local theme files (modus-themes, loaded via custom-theme-load-path)
 │   ├── modus-themes.el      # Modus themes core library
 │   ├── modus-operandi-tinted-theme.el  # Light theme (warm tinted background)
@@ -594,6 +597,37 @@ Terminal-internal keybindings (in Claude Code vterm buffer):
 |-----------+--------------------------------+-------------------------------|
 | =M-RET=   | =claude-code-ide-insert-newline= | Insert newline in prompt     |
 | =C-\=     | =claude-code-ide-send-escape=    | Send escape key              |
+
+** Readonly / View-Mode Bindings
+:PROPERTIES:
+:CUSTOM_ID: readonly-view-mode-bindings
+:END:
+
+Provided by =init-readonly.el=. All files opened via =find-file= enter =view-mode= (read-only browsing) by default. Press =C-x C-q= to exit read-only and start editing.
+
+*** Navigation
+| Key       | Function              | Description              |
+|-----------+-----------------------+--------------------------|
+| =SPC=     | scroll down           | Scroll one page down     |
+| =DEL=     | scroll up             | Scroll one page up       |
+| =d= / =u= | half-page down/up    | Scroll half page         |
+| =n= / =p= | next/previous line   | Move by line             |
+| =<=       | beginning-of-buffer   | Jump to buffer start     |
+| =>=       | end-of-buffer         | Jump to buffer end       |
+
+*** Search
+| Key       | Function              | Description              |
+|-----------+-----------------------+--------------------------|
+| =s=       | =isearch-forward=     | Incremental search       |
+| =r=       | =isearch-backward=    | Reverse incremental search |
+| =/= or =\= | regex search         | Regular expression search |
+
+*** Exit
+| Key       | Function              | Description                          |
+|-----------+-----------------------+--------------------------------------|
+| =q=       | quit                  | Exit view-mode and close buffer      |
+| =e=       | exit                  | Exit view-mode, keep buffer          |
+| =C-x C-q= | read-only-mode       | Exit read-only, enter editing mode   |
 
 ** Org Mode Bindings
 :PROPERTIES:
@@ -1136,6 +1170,21 @@ Enabled via =claude-code-ide-emacs-tools-setup= in =:config=. Built-in tools:
 
 See [[#claude-code-ide-bindings][Claude Code IDE Bindings]] for keybindings.
 
+** init-readonly.el
+:PROPERTIES:
+:CUSTOM_ID: init-readonly-el
+:END:
+
+Default read-only file browsing via Emacs built-in =view-mode=. All files opened via =find-file= (=C-x C-f=) automatically enter =view-mode=, preventing accidental edits. Press =C-x C-q= to exit read-only mode and start editing.
+
+*** Why view-mode
+
+- Prevents accidental changes to files you're only reading
+- Provides convenient single-key navigation (=SPC=, =n=, =p=, =q=, etc.)
+- Zero dependencies — uses Emacs built-in =view-mode=
+
+See [[#readonly-view-mode-bindings][Readonly / View-Mode Bindings]] for all keybindings.
+
 ** init-hydra.el
 :PROPERTIES:
 :CUSTOM_ID: init-hydra-el
@@ -1250,7 +1299,7 @@ Incrementally migrate features from the old config, by priority:
 |       13 | =init-agent-shell.el= | AI Agent (Claude Code + Cursor + Gemini via ACP)      | ✓ Done |
 |       14 | =init-claude-code-ide.el= | Claude Code IDE (MCP bidirectional bridge)        | ✓ Done |
 
-Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-avy.el=, =init-mwim.el=, =init-undo-tree.el=, =init-treemacs.el=, =init-git.el=, =init-multiple-cursors.el=, =init-agent-shell.el=.
+Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-avy.el=, =init-mwim.el=, =init-undo-tree.el=, =init-treemacs.el=, =init-git.el=, =init-multiple-cursors.el=, =init-agent-shell.el=, =init-readonly.el=.
 
 * Usage Guide
 :PROPERTIES:
