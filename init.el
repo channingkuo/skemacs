@@ -87,11 +87,12 @@
             (setq gc-cons-percentage 0.1)
             ;; 打印加载时间报告到 *Messages*
             (skemacs--print-load-report)
-            ;; 在 splash 画面追加汇总，阻塞等待 Enter，然后进入 dired
-            (let ((elapsed (float-time (time-subtract (current-time) skemacs-start-time))))
-              (message "[skemacs] Emacs ready, startup time: %.3fs" elapsed)
-              ;; splash-finalize 内部会阻塞等待 Enter，按下后自动进入 dired
-              (skemacs--splash-finalize elapsed))))
+            ;; 检测启动模式：emacs file → 跳过等待；emacs / emacs dir → 等待 Enter
+            (let ((elapsed (float-time (time-subtract (current-time) skemacs-start-time)))
+                  (file-mode (skemacs--started-with-file-p)))
+              (message "[skemacs] Emacs ready, startup time: %.3fs%s"
+                       elapsed (if file-mode " (file mode)" ""))
+              (skemacs--splash-finalize elapsed file-mode))))
 
 (provide 'init)
 ;;; init.el ends here

@@ -84,7 +84,8 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 - *Startup timing*: Every module's load time is recorded; view with =M-x skemacs/show-load-times=
 - *Error isolation*: A single module failure won't break others (=condition-case= wrapped)
 - *Flexible management*: Enable/disable modules via config lists, no need to delete files
-- *Dynamic splash screen*: Real-time loading progress displayed at startup, press Enter to continue
+- *Dynamic splash screen*: Real-time loading progress displayed at startup
+- *Smart startup mode*: =emacs= / =emacs dir= shows splash and waits for Enter; =emacs file= skips the wait and opens the file directly
 - *Deferred package init*: =package-initialize= is deferred until first package install for fast startup
 - *Centralized prefix keys*: Prefix keys defined in =core-keybindings.el=, modules bind under them
 - *use-package :bind*: All custom bindings viewable via =M-x describe-personal-keybindings=
@@ -102,7 +103,7 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 #+BEGIN_SRC
 ~/.emacs.d/
 ├── early-init.el            # GC optimization + native-comp + disable package autoload
-├── init.el                  # Entry point (load core → splash → modules → Enter → dired)
+├── init.el                  # Entry point (load core → splash → modules → Enter/file)
 ├── core/                    # Core infrastructure (no third-party dependencies)
 │   ├── core-load-paths.el   # Path constants + load-path setup
 │   ├── core-module.el       # Module loading system (timing + error isolation + splash)
@@ -149,8 +150,14 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 :CUSTOM_ID: startup-flow
 :END:
 
+The startup flow adapts based on how Emacs is invoked:
+
 #+BEGIN_SRC
-early-init.el → init.el → splash screen → core/*.el → modules/*.el → Press Enter → dired
+# Normal mode (emacs / emacs . / emacs ~/dir)
+early-init.el → init.el → splash → core/*.el → modules/*.el → Press Enter → dired
+
+# File mode (emacs file.txt / emacs -nw file.txt)
+early-init.el → init.el → splash → core/*.el → modules/*.el → open file (no wait)
 #+END_SRC
 
 1. =early-init.el= — Set GC threshold to 800MB, disable package autoload, hide UI elements
@@ -158,8 +165,9 @@ early-init.el → init.el → splash screen → core/*.el → modules/*.el → P
 3. =skemacs--splash-init= — Display banner and table header in =*skemacs*= buffer
 4. =skemacs-load-core-module= — Load remaining core files (each line appears in real-time)
 5. =skemacs-load-all-modules= — Scan =modules/= directory, load each (real-time display)
-6. =emacs-startup-hook= — Restore GC to 16MB, show summary, wait for Enter
-7. Press Enter — Dismiss splash, open =dired= on current directory
+6. =emacs-startup-hook= — Restore GC to 16MB, show summary, detect startup mode:
+   - *Normal mode* (no file argument): wait for Enter, then dismiss splash and open =dired=
+   - *File mode* (file argument detected): skip wait, dismiss splash and switch to file buffer
 
 ** Module System
 :PROPERTIES:
@@ -176,6 +184,7 @@ The module system is provided by =core/core-module.el=:
 | =skemacs-module-errors=      | Error records =(("name" . "message") ...)=      |
 | =skemacs-load-module=        | Load a single module (condition-case isolation)  |
 | =skemacs-load-all-modules=   | Load all enabled modules                        |
+| =skemacs--started-with-file-p= | Detect if Emacs was started with a file argument |
 | =skemacs/show-load-times=    | Interactive command: show formatted timing report|
 
 Timing report example (=M-x skemacs/show-load-times=):
@@ -629,7 +638,9 @@ Entry point:
 3. Initialize splash screen with banner
 4. Load core modules (real-time display in splash)
 5. Load feature modules (real-time display in splash)
-6. On =emacs-startup-hook=: restore GC, show summary, wait for Enter, open dired
+6. On =emacs-startup-hook=: restore GC, show summary, detect startup mode
+   - =emacs= / =emacs dir= → wait for Enter, then open dired
+   - =emacs file= → skip wait, directly open file buffer
 
 ** core-load-paths.el
 :PROPERTIES:

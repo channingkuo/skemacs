@@ -10,6 +10,8 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+
 ;; ============================================================================
 ;; 用户可配置变量
 ;; ============================================================================
@@ -127,10 +129,11 @@ NAME 为模块名，TIME-STR 为格式化的耗时，STATUS 为状态字符串�
   "在 splash buffer 中显示跳过的模块。"
   (skemacs--splash-append-line name "--" "SKIP"))
 
-(defun skemacs--splash-finalize (total-elapsed)
-  "在 splash buffer 末尾追加汇总行和提示，进入 recursive-edit 等待 Enter。
+(defun skemacs--splash-finalize (total-elapsed &optional skip-wait)
+  "在 splash buffer 末尾追加汇总行和提示。
 TOTAL-ELAPSED 为总启动耗时（秒）。
-用户可自由移动光标和滚动，按 Enter 后关闭 splash 并进入 dired。"
+当 SKIP-WAIT 为 nil 时，进入 recursive-edit 等待用户按 Enter，然后进入 dired。
+当 SKIP-WAIT 非 nil 时（如通过 emacs file 启动），跳过等待直接打开文件。"
   (when (and skemacs--splash-buffer (buffer-live-p skemacs--splash-buffer))
     (with-current-buffer skemacs--splash-buffer
       (let* ((inhibit-read-only t)
@@ -191,20 +194,34 @@ TOTAL-ELAPSED 为总启动耗时（秒）。
     (set-window-start (selected-window) (point-min))
     (redisplay t)
 
-    ;; 进入 recursive-edit：允许完整的光标移动和滚动
-    ;; 只有按 Enter 才会退出循环
-    (recursive-edit)
+    (if skip-wait
+        ;; emacs file 模式：跳过等待，直接切换到文件 buffer
+        (skemacs--dismiss-startup-splash t)
+      ;; 普通模式：进入 recursive-edit 等待用户按 Enter
+      (recursive-edit)
+      (skemacs--dismiss-startup-splash))))
 
-    ;; Enter 按下，进入 dired
-    (skemacs--dismiss-startup-splash)))
-
-(defun skemacs--dismiss-startup-splash ()
-  "关闭启动 splash 画面，进入 dired。"
+(defun skemacs--dismiss-startup-splash (&optional file-mode)
+  "关闭启动 splash 画面。
+FILE-MODE 为 nil 时打开 dired；非 nil 时切换到命令行指定的文件 buffer。"
   (interactive)
   (when (get-buffer "*skemacs*")
     (kill-buffer "*skemacs*"))
-  ;; 打开当前目录的 dired
-  (dired default-directory))
+  (if file-mode
+      (let ((file-buf (cl-find-if #'buffer-file-name (buffer-list))))
+        (when file-buf
+          (switch-to-buffer file-buf)))
+    (dired default-directory)))
+
+;; ============================================================================
+;; 启动模式检测
+;; ============================================================================
+
+(defun skemacs--started-with-file-p ()
+  "判断 Emacs 是否通过指定文件参数启动（如 emacs file.txt）。
+在 `emacs-startup-hook' 中调用，此时命令行参数已处理完毕，
+文件参数对应的 buffer 已存在。"
+  (cl-some #'buffer-file-name (buffer-list)))
 
 ;; ============================================================================
 ;; 核心加载函数
