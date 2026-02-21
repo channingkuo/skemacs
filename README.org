@@ -64,6 +64,7 @@
   - [[#init-agent-shell-el][init-agent-shell.el]]
   - [[#init-claude-code-ide-el][init-claude-code-ide.el]]
   - [[#init-readonly-el][init-readonly.el]]
+  - [[#init-tramp-el][init-tramp.el]]
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
   - [[#module-management][Module Management]]
@@ -136,7 +137,8 @@ Skemacs is a modular, high-performance Emacs configuration framework. Key featur
 │   ├── init-which-key.el    # Key discovery (which-key)
 │   ├── init-agent-shell.el  # AI Agent integration (agent-shell + ACP)
 │   ├── init-claude-code-ide.el # Claude Code IDE integration (MCP)
-│   └── init-readonly.el     # Default read-only browsing (view-mode)
+│   ├── init-readonly.el     # Default read-only browsing (view-mode)
+│   └── init-tramp.el       # Remote file access via TRAMP (SSH) [disabled]
 ├── themes/                  # Local theme files (modus-themes, loaded via custom-theme-load-path)
 │   ├── modus-themes.el      # Modus themes core library
 │   ├── modus-operandi-tinted-theme.el  # Light theme (warm tinted background)
@@ -1183,6 +1185,50 @@ Default read-only file browsing via Emacs built-in =view-mode=. All files opened
 
 See [[#readonly-view-mode-bindings][Readonly / View-Mode Bindings]] for all keybindings.
 
+** init-tramp.el
+:PROPERTIES:
+:CUSTOM_ID: init-tramp-el
+:END:
+
+*[Disabled by default]* — Remote file access via Emacs built-in [[https://www.gnu.org/software/tramp/][TRAMP]] (Transparent Remote Access, Multiple Protocols). Transparently edit files on remote servers as if they were local.
+
+*** Usage
+
+Use =C-x C-f= (or =C-x d= for directories) and enter a remote path:
+
+| Path Format                              | Description             |
+|------------------------------------------+-------------------------|
+| =/ssh:user@host:/path/to/file=           | Basic SSH access        |
+| =/ssh:user@host#2222:/path=              | Non-default port        |
+| =/ssh:myalias:/path=                     | SSH config alias        |
+| =/ssh:user@host\vert{}sudo:host:/etc/conf= | Remote sudo editing   |
+| =/sudo::/etc/hosts=                      | Local sudo              |
+| =/ssh:user@jump\vert{}ssh:user@target:/p=  | Multi-hop (jump host) |
+
+*** Configuration
+
+| Setting                              | Value   | Description                                 |
+|--------------------------------------+---------+---------------------------------------------|
+| =tramp-default-method=              | ="ssh"= | Default connection method                   |
+| =tramp-verbose=                     | =1=     | Minimal logging (0=silent, 10=most verbose) |
+| =remote-file-name-inhibit-cache=    | =nil=   | Enable file name cache for performance      |
+| =tramp-use-ssh-controlmaster-options= | =t=   | Reuse SSH ControlMaster connections         |
+
+Remote paths also disable =vc= (version control) queries to avoid slow Git lookups over SSH.
+
+*** Enabling
+
+Remove ="init-tramp"= from =skemacs-disabled-modules= in =init.el=.
+
+For best performance, configure SSH connection multiplexing in =~/.ssh/config=:
+
+#+BEGIN_SRC
+Host *
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/%r@%h-%p
+    ControlPersist 600
+#+END_SRC
+
 ** init-hydra.el
 :PROPERTIES:
 :CUSTOM_ID: init-hydra-el
@@ -1296,8 +1342,9 @@ Incrementally migrate features from the old config, by priority:
 |       12 | =init-org.el=         | Org-mode full config                                  | —      |
 |       13 | =init-agent-shell.el= | AI Agent (Claude Code + Cursor + Gemini via ACP)      | ✓ Done |
 |       14 | =init-claude-code-ide.el= | Claude Code IDE (MCP bidirectional bridge)        | ✓ Done |
+|       15 | =init-tramp.el=       | TRAMP remote file access (SSH)                        | ✓ Done (disabled) |
 
-Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-avy.el=, =init-mwim.el=, =init-undo-tree.el=, =init-treemacs.el=, =init-git.el=, =init-multiple-cursors.el=, =init-agent-shell.el=, =init-readonly.el=.
+Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-avy.el=, =init-mwim.el=, =init-undo-tree.el=, =init-treemacs.el=, =init-git.el=, =init-multiple-cursors.el=, =init-agent-shell.el=, =init-readonly.el=, =init-tramp.el=.
 
 * Usage Guide
 :PROPERTIES:
