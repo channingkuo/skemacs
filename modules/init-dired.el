@@ -92,6 +92,10 @@
   ;; 隐藏 omit 模式的 modeline 提示，减少视觉干扰
   (setq dired-omit-verbose nil)
 
+  ;; macOS 的 BSD ls 不支持 --dired 和 -N，禁用以避免警告
+  (when (eq system-type 'darwin)
+    (setq dired-use-ls-dired nil))
+
   ;; ── 其他实用 dired 设置 ─────────────────────────────────────
   ;; 两个 dired 窗口时，操作（复制/移动）默认目标为另一个窗口的目录
   ;; (setq dired-dwim-target t)
