@@ -34,6 +34,13 @@
       "C-j f d" "Select directory"
       "C-j f a" "Add project"))
   :config
+  ;; 解绑 C-j，让全局 skemacs-prefix 生效
+  (define-key treemacs-mode-map (kbd "C-j") nil)
+
+  ;; 让 ace-window (C-x o) 不跳过 treemacs 窗口
+  (with-eval-after-load 'ace-window
+    (setq aw-ignored-buffers (delete 'treemacs-mode aw-ignored-buffers)))
+
   ;; ── 基础配置 ──────────────────────────────────────────────
   (setq treemacs-width 30                          ; 侧边栏宽度
         treemacs-width-is-initially-locked nil     ; Allow resizing from start

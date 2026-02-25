@@ -31,6 +31,8 @@
 (add-hook 'find-file-hook #'view-mode)
 
 (with-eval-after-load 'view
+  ;; 解绑 C-j，让全局 skemacs-prefix 生效
+  (define-key view-mode-map (kbd "C-j") nil)
   (define-key view-mode-map (kbd "C-x C-q")
               (lambda ()
                 (interactive)
