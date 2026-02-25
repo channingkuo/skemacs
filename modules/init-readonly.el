@@ -28,7 +28,12 @@
 ;; view-mode：默认只读浏览
 ;; ============================================================================
 
-(add-hook 'find-file-hook #'view-mode)
+(defun skemacs/maybe-view-mode ()
+  "Enable `view-mode' unless the file is used for internal persistence."
+  (unless (string-match-p "treemacs-persist" (or buffer-file-name ""))
+    (view-mode)))
+
+(add-hook 'find-file-hook #'skemacs/maybe-view-mode)
 
 (with-eval-after-load 'view
   ;; 解绑 C-j，让全局 skemacs-prefix 生效
