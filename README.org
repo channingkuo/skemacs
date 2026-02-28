@@ -68,7 +68,6 @@
 - [[#adding-new-modules][Adding New Modules]]
   - [[#module-template][Module Template]]
   - [[#module-management][Module Management]]
-- [[#migration-roadmap][Migration Roadmap]]
 - [[#usage-guide][Usage Guide]]
   - [[#first-time-setup][First Time Setup]]
   - [[#daily-workflow][Daily Workflow]]
@@ -1337,37 +1336,6 @@ Add to =custom.el=:
       '("init-vterm"
         "init-treemacs"))
 #+END_SRC
-
-* Migration Roadmap
-:PROPERTIES:
-:CUSTOM_ID: migration-roadmap
-:END:
-
-Incrementally migrate features from the old config, by priority:
-
-| Priority | Module File           | Feature                                               | Status |
-|----------+-----------------------+-------------------------------------------------------+--------|
-|        1 | =init-theme.el=       | Theme setup (modus + doom + ef + catppuccin)           | ✓ Done |
-|        2 | =init-which-key.el=   | Key discovery (useful for all)                        | ✓ Done |
-|        3 | =init-completion.el=  | Vertico + Orderless + Marginalia + Consult + Embark   | ✓ Done |
-|        4 | =init-ace-window.el=  | Ace-window (window quick-jump)                        | ✓ Done |
-|          | =init-avy.el=         | Avy (char/word/line jump)                             | ✓ Done |
-|          | =init-mwim.el=        | Smart line beginning/end (mwim)                       | ✓ Done |
-|          | =init-undo-tree.el=   | Undo-tree (tree-based undo/redo)                      | ✓ Done |
-|        5 | =init-multiple-cursors.el= | Multiple-cursors with hydra panel                | ✓ Done |
-|        6 | =init-project.el=     | Project management (built-in project.el)              | ✓ Done |
-|        7 | =init-git.el=         | Magit + diff-hl                                       | ✓ Done |
-|        8 | =init-lsp.el=         | lsp-bridge + Company + YASnippet                      | ✓ Done |
-|        9 | =init-vterm.el=       | Vterm                                                 | ✓ Done |
-|       10 | =init-treemacs.el=    | Treemacs file tree sidebar                            | ✓ Done |
-|          | =init-ui.el=          | Modeline + other UI enhancements                      | —      |
-|       11 | =init-flycheck.el=    | Syntax checking                                       | —      |
-|       12 | =init-org.el=         | Org-mode full config                                  | —      |
-|       13 | =init-agent-shell.el= | AI Agent (Claude Code + Cursor + Gemini via ACP)      | ✓ Done |
-|       14 | =init-claude-code-ide.el= | Claude Code IDE (MCP bidirectional bridge)        | ✓ Done |
-|       15 | =init-tramp.el=       | TRAMP remote file access (SSH)                        | ✓ Done (disabled) |
-
-Other completed modules not on original roadmap: =init-recentf.el=, =init-dired.el=, =init-web.el=, =init-highlight-symbol.el=, =init-rainbow-delimiters.el=, =init-hydra.el=, =init-ace-window.el=, =init-avy.el=, =init-mwim.el=, =init-undo-tree.el=, =init-treemacs.el=, =init-git.el=, =init-multiple-cursors.el=, =init-agent-shell.el=, =init-readonly.el=, =init-tramp.el=.
 
 * Usage Guide
 :PROPERTIES:

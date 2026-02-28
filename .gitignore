@@ -23,6 +23,7 @@ local/
 # ============================================================================
 .cache/
 backups/
+.backups/
 auto-save/
 eln-cache/
 auto-save-list/
