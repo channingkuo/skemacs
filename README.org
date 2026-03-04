@@ -235,7 +235,7 @@ Prefix keys are defined in =core-keybindings.el=. Modules bind commands under th
 | =C-j T=   | =skemacs-theme-prefix=   | Theme management |
 | =C-j l=   | (lsp-bridge bindings)    | LSP commands     |
 | =C-j u=   | (hydra-undo-tree)        | Undo tree panel  |
-| =C-j m=   | (hydra-multiple-cursors) | Multi-cursor panel |
+| =C-j m=   | (multiple-cursors)       | Multi-cursor commands |
 | =C-j h=   | (highlight-symbol)       | Symbol highlight |
 | =C-x w=   | =skemacs-window-prefix=  | Window ops       |
 | =C-x b=   | =skemacs-buffer-prefix=  | Buffer ops       |
@@ -301,6 +301,8 @@ In the resize panel (=C-x w r=), press keys repeatedly to adjust window size:
 *** Config & Tools
 | Key         | Function                  | Description          |
 |-------------+---------------------------+----------------------|
+| =C-j n=     | =display-line-numbers-mode=       | Toggle line numbers  |
+| =C-j r=     | =skemacs/toggle-line-numbers-type= | Toggle relative/absolute |
 | =C-j t=     | =skemacs/show-load-times= | Show load times      |
 
 ** Completion & Search Bindings
@@ -501,37 +503,20 @@ Provided by =init-git.el=. Full Git integration via Magit.
 :CUSTOM_ID: multiple-cursors-bindings
 :END:
 
-Provided by =init-multiple-cursors.el=. Multi-cursor editing with a hydra operation panel.
+Provided by =init-multiple-cursors.el=. Multi-cursor editing with =C-j m= prefix.
 
-| Key              | Function                       | Description                    |
-|------------------+--------------------------------+--------------------------------|
-| =C-j m=          | =hydra-multiple-cursors/body=  | Open multiple cursors panel    |
-| =C-S-<mouse-1>= | =mc/toggle-cursor-on-click=    | Toggle cursor at click point   |
-
-In the multiple cursors panel (=C-j m=):
-
-*** Cursor Navigation
-
-| Key   | Function                       | Description                     |
-|-------+--------------------------------+---------------------------------|
-| =n=   | =mc/mark-next-like-this=       | Mark next occurrence            |
-| =p=   | =mc/mark-previous-like-this=   | Mark previous occurrence        |
-| =N=   | =mc/skip-to-next-like-this=    | Skip current, mark next         |
-| =P=   | =mc/skip-to-previous-like-this= | Skip current, mark previous    |
-| =M-n= | =mc/unmark-next-like-this=     | Unmark last next                |
-| =M-p= | =mc/unmark-previous-like-this= | Unmark last previous            |
-
-*** Batch Operations
-
-| Key | Function                     | Description                            |
-|-----+------------------------------+----------------------------------------|
-| =l= | =mc/edit-lines=              | Place cursor on each selected line     |
-| =a= | =mc/mark-all-like-this=      | Mark all occurrences in buffer         |
-| =s= | =mc/mark-all-in-region-regexp= | Mark by regexp in region             |
-| =\vert= | =mc/vertical-align=      | Align cursors by input character       |
-| =0= | =mc/insert-numbers=          | Insert incremental numbers             |
-| =A= | =mc/insert-letters=          | Insert incremental letters             |
-| =q= | quit                         | Exit panel                             |
+| Key              | Function                         | Description                    |
+|------------------+----------------------------------+--------------------------------|
+| =C-j m n=        | =mc/mark-next-like-this=         | Mark next occurrence           |
+| =C-j m p=        | =mc/mark-previous-like-this=     | Mark previous occurrence       |
+| =C-j m a=        | =mc/mark-all-like-this=          | Mark all occurrences           |
+| =C-j m l=        | =mc/edit-lines=                  | Cursor on each selected line   |
+| =C-j m s=        | =mc/mark-all-in-region-regexp=   | Mark by regexp in region       |
+| =C-j m N=        | =mc/skip-to-next-like-this=      | Skip current, mark next        |
+| =C-j m P=        | =mc/skip-to-previous-like-this=  | Skip current, mark previous    |
+| =C-j m 0=        | =mc/insert-numbers=              | Insert incremental numbers     |
+| =C-j m \vert=    | =mc/vertical-align=              | Align cursors by input char    |
+| =C-S-<mouse-1>=  | =mc/toggle-cursor-on-click=      | Toggle cursor at click point   |
 
 ** Vterm Bindings
 :PROPERTIES:
@@ -756,6 +741,7 @@ Utility functions (=skemacs/= namespace):
 - Navigation: =next-ten-lines=, =previous-ten-lines=
 - Window: =split-window-vertically=, =split-window-horizontally=, =shrink/enlarge-window=
 - Clipboard: =copy-to-clipboard= (cross-platform macOS/Linux/Windows)
+- Display: =toggle-line-numbers-type= (relative/absolute)
 - Org: =open-org-directory=
 
 ** core-keybindings.el
@@ -1034,7 +1020,7 @@ See [[#git-bindings][Git Bindings]] for keybindings.
 :CUSTOM_ID: init-multiple-cursors-el
 :END:
 
-Multi-cursor editing via [[https://github.com/magnars/multiple-cursors.el][multiple-cursors]], with a hydra operation panel for visual command selection. Depends on =hydra= (=:after hydra=).
+Multi-cursor editing via [[https://github.com/magnars/multiple-cursors.el][multiple-cursors]], with keybindings under =C-j m= prefix.
 
 | Package              | Role                                                |
 |----------------------+-----------------------------------------------------|
@@ -1042,13 +1028,13 @@ Multi-cursor editing via [[https://github.com/magnars/multiple-cursors.el][multi
 
 *** Usage
 
-1. Select a word or region, then press =C-j m= to open the hydra panel
-2. Use =n= / =p= to incrementally add cursors on matching occurrences
-3. Use =N= / =P= to skip unwanted matches
-4. Use =a= to mark all matches at once
-5. Use =l= to place a cursor on each line of a selected region
+1. Select a word or region
+2. Use =C-j m n= / =C-j m p= to incrementally add cursors on matching occurrences
+3. Use =C-j m N= / =C-j m P= to skip unwanted matches
+4. Use =C-j m a= to mark all matches at once
+5. Use =C-j m l= to place a cursor on each line of a selected region
 6. Type normally — all cursors edit simultaneously
-7. Press =C-g= to exit multi-cursor mode, or =q= to close the panel
+7. Press =C-g= to exit multi-cursor mode
 
 Additional entry point: =C-S-<mouse-1>= toggles a cursor at click position.
 
@@ -1413,11 +1399,10 @@ Add to =custom.el=:
 3. =C-j f a= — Add project to workspace
 
 *** Multi-Cursor Editing
-1. =C-j m= — Open multiple cursors panel
-2. Select word → =n= / =p= — Add cursors on next/previous match
-3. Select word → =a= — Mark all same occurrences
-4. Select lines → =l= — One cursor per line
-5. =C-S-click= — Toggle cursor at mouse position
+1. =C-j m n= / =C-j m p= — Add cursors on next/previous match
+2. =C-j m a= — Mark all same occurrences
+3. =C-j m l= — One cursor per line
+4. =C-S-click= — Toggle cursor at mouse position
 
 *** Git (Magit)
 1. =C-j g g= — Open Magit status panel

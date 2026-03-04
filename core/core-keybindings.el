@@ -111,6 +111,12 @@
 (global-set-key (kbd "C-j o a") 'org-agenda)
 (global-set-key (kbd "C-j o c") 'org-capture)
 
+;; --- 显示 ---
+;; 切换行号显示
+(global-set-key (kbd "C-j n") 'display-line-numbers-mode)
+;; 切换相对/绝对行号
+(global-set-key (kbd "C-j r") 'skemacs/toggle-line-numbers-type)
+
 ;; --- 查看加载时间 ---
 (global-set-key (kbd "C-j t") 'skemacs/show-load-times)
 

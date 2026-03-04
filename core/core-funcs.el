@@ -107,5 +107,22 @@
         (dired org-dir)
       (message "Directory %s does not exist" org-dir))))
 
+;; ============================================================================
+;; 显示
+;; ============================================================================
+
+(setq display-line-numbers-type 'relative)
+
+(defun skemacs/toggle-line-numbers-type ()
+  "在相对行号和绝对行号之间切换。"
+  (interactive)
+  (if (eq display-line-numbers-type 'relative)
+      (progn (setq display-line-numbers-type t)
+             (message "Line numbers: absolute"))
+    (setq display-line-numbers-type 'relative)
+    (message "Line numbers: relative"))
+  (when display-line-numbers-mode
+    (display-line-numbers-mode 1)))
+
 (provide 'core-funcs)
 ;;; core-funcs.el ends here
