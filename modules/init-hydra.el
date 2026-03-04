@@ -19,17 +19,12 @@
   :config
   (defhydra hydra-window-resize (:hint nil :color amaranth)
     "
- 窗口大小调整
- ─────────────────────────────────
- _h_: ← 水平缩小   _l_: → 水平放大
- _j_: ↓ 垂直缩小   _k_: ↑ 垂直放大
- _q_: 退出
-"
+  _h_: Shrink H  _l_: Enlarge H  _j_: Shrink V  _k_: Enlarge V   "
     ("h" skemacs/shrink-window-horizontally)
     ("l" skemacs/enlarge-window-horizontally)
     ("j" skemacs/shrink-window)
     ("k" skemacs/enlarge-window)
-    ("q" nil :color blue)))
+    ("q" nil "Quit" :color blue)))
 
 (provide 'init-hydra)
 ;;; init-hydra.el ends here

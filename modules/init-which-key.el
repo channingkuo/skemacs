@@ -40,6 +40,8 @@
     "C-j o C-p" "iimage-mode"               ;; 内联图片模式
     "C-j C-k"   "Kill Line"                 ;; 删除行
     "C-j t"     "Load Times"                ;; 加载耗时
+    "C-j n"     "Line numbers"              ;; 显示行号
+    "C-j r"     "Relative Line numbers"     ;; 行号格式
     "C-x w"     "Window"                    ;; 窗口操作
     "C-x w h"   "Move Cursor Left"          ;; 光标左移
     "C-x w j"   "Move Cursor Down"          ;; 光标下移
