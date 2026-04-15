@@ -69,7 +69,14 @@
 
 (use-package markdown-mode
   :ensure t
-  :defer t)
+  :defer t
+  :mode (("\\.md\\'"       . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode)
+         ("README\\.md\\'" . gfm-mode))
+  :init
+  (setq markdown-command "pandoc -f markdown -t html5 --standalone"
+        markdown-live-preview-window-function
+          #'markdown-live-preview-window-eww))
 
 (use-package posframe
   :ensure t)
