@@ -46,6 +46,7 @@ places
 # ============================================================================
 lsp-bridge/
 lsp-bridge-langserver/
+lsp-bridge-multiserver/
 nodejs/
 .venv/
 agent/

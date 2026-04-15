@@ -218,6 +218,15 @@
   ;; Vue 文件: 使用 Volar + vtsls 多服务器融合
   (setq lsp-bridge-multi-lang-server-extension-list
         '((("vue") . "volar_vtsls")))
+  
+  ;; 尝试设置tailwindcss失败
+  ;; 用户自定义 multiserver 目录（volar_vtsls_tailwindcss.json）
+  ;; (setq lsp-bridge-user-multiserver-dir
+  ;;       (expand-file-name "lsp-bridge-multiserver" user-emacs-directory))
+  ;; Vue 文件: 使用 Volar + vtsls + TailwindCSS 三合一多服务器
+  ;; (setq lsp-bridge-multi-lang-server-extension-list
+  ;;       '((("vue") . "volar_vtsls_tailwindcss")))
+
   ;; 启用诊断提示
   (setq lsp-bridge-enable-diagnostics t)
   (setq lsp-bridge-enable-hover-diagnostic t)  ; 启用悬浮诊断

@@ -5,7 +5,7 @@
 #
 # 功能：
 #   1. 下载内置 Node.js v22 LTS (darwin-arm64) 到 nodejs/
-#   2. 安装 LSP 服务器（Volar + vtsls + TypeScript）
+#   2. 安装 LSP 服务器（Volar + vtsls + TypeScript + TailwindCSS）
 #   3. 创建 Python 虚拟环境并安装 lsp-bridge 依赖
 #   4. Clone lsp-bridge 源码
 #   5. 生成 langserver 覆盖配置（用 vtsls 替代 typescript-language-server）
@@ -14,6 +14,8 @@
 #      - typescriptreact.json — .tsx 文件
 #      - javascript.json     — .js 文件
 #      - javascriptreact.json — .jsx 文件
+#   6. 生成 multiserver 覆盖配置（Vue = Volar + vtsls + TailwindCSS）
+#      - volar_vtsls_tailwindcss.json — Vue 三合一多服务器
 #
 # 用法：
 #   cd ~/.emacs.d && bash setup-lsp.sh
@@ -40,6 +42,7 @@ NODE_DIR="${EMACS_DIR}/nodejs"
 VENV_DIR="${EMACS_DIR}/.venv"
 LSP_BRIDGE_DIR="${EMACS_DIR}/lsp-bridge"
 LANGSERVER_DIR="${EMACS_DIR}/lsp-bridge-langserver"
+MULTISERVER_DIR="${EMACS_DIR}/lsp-bridge-multiserver"
 
 # ============================================================================
 # 工具函数
@@ -88,15 +91,17 @@ setup_nodejs() {
 
     # 安装 LSP 服务器
     info "安装 LSP 服务器..."
-    "${NODE_DIR}/bin/node ${NODE_DIR}/bin/npm" install -g \
+    "${NODE_DIR}/bin/node" "${NODE_DIR}/bin/npm" install -g \
         @vue/language-server \
         typescript \
-        @vtsls/language-server
+        @vtsls/language-server \
+        @tailwindcss/language-server
 
     ok "LSP 服务器安装完成"
     info "  - vue-language-server: $("${NODE_DIR}/bin/vue-language-server" --version 2>/dev/null || echo 'installed')"
     info "  - vtsls: installed"
     info "  - typescript: $("${NODE_DIR}/bin/tsc" --version 2>/dev/null || echo 'installed')"
+    info "  - tailwindcss-language-server: $("${NODE_DIR}/bin/tailwindcss-language-server" --version 2>/dev/null || echo 'installed')"
 }
 
 # ============================================================================
@@ -334,6 +339,35 @@ JSX_EOF
 }
 
 # ============================================================================
+# Step 5: 生成 multiserver 覆盖配置
+# ============================================================================
+#
+# Vue 文件使用三合一多服务器: Volar（Vue 语法）+ vtsls（TypeScript）+ TailwindCSS
+# 配置放入 lsp-bridge-multiserver/ 目录，lsp-bridge 会优先读取用户目录。
+
+setup_multiserver_overrides() {
+    info "=== Step 5: 生成 multiserver 覆盖配置（Vue = Volar + vtsls + TailwindCSS） ==="
+
+    mkdir -p "${MULTISERVER_DIR}"
+
+    # --- volar_vtsls_tailwindcss.json: Vue 三合一（Volar + vtsls + TailwindCSS） ---
+    cat > "${MULTISERVER_DIR}/volar_vtsls_tailwindcss.json" << 'VUE_MULTI_EOF'
+{
+  "default": "vtsls",
+  "servers": ["volar", "vtsls", "tailwindcss"],
+  "completion": ["volar", "vtsls", "tailwindcss"],
+  "completion_item_resolve": ["volar", "vtsls", "tailwindcss"],
+  "diagnostics": ["volar", "vtsls", "tailwindcss"],
+  "code_action": ["volar", "vtsls", "tailwindcss"],
+  "hover": "tailwindcss"
+}
+VUE_MULTI_EOF
+    ok "volar_vtsls_tailwindcss.json 已生成"
+
+    ok "所有 multiserver 覆盖配置已生成: ${MULTISERVER_DIR}/"
+}
+
+# ============================================================================
 # 主流程
 # ============================================================================
 
@@ -353,6 +387,8 @@ main() {
     setup_lsp_bridge
     echo ""
     setup_langserver_overrides
+    echo ""
+    setup_multiserver_overrides
 
     echo ""
     echo -e "${GREEN}╔══════════════════════════════════════════════════╗${NC}"
@@ -369,8 +405,11 @@ main() {
     info "    - typescriptreact.json (.tsx → vtsls)"
     info "    - javascript.json      (.js → vtsls)"
     info "    - javascriptreact.json (.jsx → vtsls)"
+    info "  multiserver 覆盖: ${MULTISERVER_DIR}/"
+    info "    - volar_vtsls_tailwindcss.json (Vue = Volar + vtsls + TailwindCSS)"
     echo ""
     info "下一步：启动 Emacs，模块 init-web.el 和 init-lsp.el 将自动加载"
+    info "提示：TailwindCSS 补全需要项目中存在 tailwind.config.js/ts"
     echo ""
 }
 
