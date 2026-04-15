@@ -76,7 +76,8 @@
   :init
   (setq markdown-command "pandoc -f markdown -t html5 --standalone"
         markdown-live-preview-window-function
-          #'markdown-live-preview-window-eww))
+          #'markdown-live-preview-window-eww
+        markdown-live-preview-delete-export 'delete-on-destroy))
 
 (use-package posframe
   :ensure t)

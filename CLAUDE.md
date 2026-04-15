@@ -233,3 +233,15 @@ All modules loaded via `skemacs-load-module` are wrapped in `condition-case`:
 2. Uncomment proxy settings in `core-packages.el` if needed
 3. Run `M-x package-refresh-contents`
 4. Delete `~/.emacs.d/elpa/` and restart if corrupted
+
+## Superpowers 文档路径规范
+
+所有通过 Superpowers 技能生成的文档（设计 spec、实现计划等）统一存放在：
+
+```
+.claude/docs/superpowers/
+  specs/    ← 设计文档（brainstorming 输出）
+  plans/    ← 实现计划（writing-plans 输出）
+```
+
+不使用 `docs/superpowers/`（项目根目录下），避免与项目文档混淆。
