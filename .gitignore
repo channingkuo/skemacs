@@ -61,9 +61,6 @@ packages/
 # 系统与编辑器
 # ============================================================================
 .DS_Store
-.cursor/
-CLAUDE.md
-.claude/
 .agent-shell/
 
 keybindings.md
